@@ -1,0 +1,221 @@
+<?php
+function exam_spider_schema() {
+	$schema['exam_list'] = array (
+		'description' => t('Exam list Information'),
+		'fields' => array (
+			'id' => array (
+				'description' => t('The primary identifier for exam.'), //compulsary ok
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+            'exam_name' => array (
+				'description' => 'Exam Name',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+            ),
+            'exam_description' => array (
+				'description' => 'Exam Description',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+            ),
+	        'uid' => array(
+		        'description' => 'The {users}.uid that owns this exam; initially, this is the user that created it.',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	        'exam_duration' => array(
+		        'description' => 'The {exam_duration} for individual exam;',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	        'total_marks' => array(
+		        'description' => 'The {total_marks} for individual exam;',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	        'mark_per_quest' => array(
+		        'description' => 'The {users}.uid that owns this exam; initially, this is the user that created it.',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	        'negative_mark' => array(
+		        'description' => 'negative marking enable for exam.',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	        'random_quest' => array(
+		        'description' => 'Random question displaty for this exam.',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	      	'status' => array(
+		        'description' => 'Boolean indicating whether the exam is published (visible to non-administrators).',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 1,
+	     	 ),
+			'created' => array(
+				'description' => 'The Unix timestamp when the exam was created.',
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+			'changed' => array(
+				'description' => 'The Unix timestamp when the exam was most recently saved.',
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+            
+		),
+		'primary key' => array('id'), //compulsary
+	);
+	$schema['exam_questions'] = array (
+		'description' => t('Exam Questions Information'),
+		'fields' => array (
+			'id' => array (
+				'description' => t('The primary identifier for question.'), //compulsary ok
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+			'examid' => array (
+				'description' => t('Exam ID.'), //compulsary ok
+				'type' => 'int',
+				'not null' => TRUE,
+			),
+            'question' => array (
+				'description' => 'Quiz Question Name',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'opt1' => array (
+				'description' => 'Option 1',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'opt2' => array (
+				'description' => 'Option 2',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'opt3' => array (
+				'description' => 'Option 3',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'opt4' => array (
+				'description' => 'Option 4',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'answer' => array (
+				'description' => 'Answer',
+				'type' => 'varchar',
+				'length' =>200,
+				'not null' => TRUE,
+		    ),
+		    'multiple' => array(
+		        'description' => 'Multiple option Y/N.',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	      	'status' => array(
+		        'description' => 'Boolean indicating whether the question is published (visible to non-administrators).',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 1,
+	     	 ),
+			'created' => array(
+				'description' => 'The Unix timestamp when the question was created.',
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+			'changed' => array(
+				'description' => 'The Unix timestamp when the question was most recently saved.',
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+            
+		),
+		'primary key' => array('id'), //compulsary
+		/*'foreign keys' => array(
+	      	'quiz_matrix' => array(
+		        'table' => 'quiz_matrix',
+		        'columns' => array('qid' => 'qid'),
+	    	),
+	    ),*/
+	);
+  	$schema['exam_results'] = array (
+		'description' => t('Exam results list Information'),
+		'fields' => array (
+			'id' => array (
+				'description' => t('The primary identifier for result.'), //compulsary ok
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+            'examid' => array (
+				'description' => t('Exam ID.'), //compulsary ok
+				'type' => 'int',
+				'not null' => TRUE,
+			),
+	        'uid' => array(
+		        'description' => '{users}.uid',
+		        'type' => 'int',
+		        'not null' => TRUE,
+		        'default' => 0,
+	        ),
+	      	'total' => array (
+				'description' => t('Result Total.'), //compulsary ok
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+
+			),
+			'obtain' => array (
+				'description' => t('Obtain Marks.'), //compulsary ok
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+			'wrong' => array (
+				'description' => t('Wrong Answers.'), //compulsary ok
+				'type' => 'int',
+				'not null' => TRUE,
+				'default' => 0,
+			),
+            
+		),
+		'primary key' => array('id'), //compulsary
+	);
+	return $schema;
+}
+/*function exam_spider_install() {
+    // Create exam spider tables.
+    drupal_install_schema('exam_spider');
+
+}
+function exam_spider_uninstall() {
+    // Drop exam spider tables.
+    drupal_uninstall_schema('exam_spider');
+}
+
+*/

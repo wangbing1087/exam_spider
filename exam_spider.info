@@ -1,1 +1,11 @@
-"name = exam_spider" 
+name = Exam Spider
+description = Provides Exam with four options.
+core = 7.x
+package = Other
+
+; Information added by Drupal.org packaging script on 2016-04-26
+version = "7.x-1.0"
+core = "7.x"
+project = "exam_spider"
+datestamp = "1461650619"
+
