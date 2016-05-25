@@ -11,10 +11,10 @@
 function exam_spider_schema() {
   $schema = array();
   $schema['exam_list'] = array(
-    'description' => t('Exam list Information'),
+    'description' => 'Exam list Information',
     'fields'      => array(
       'id'               => array(
-        'description' => t('The primary identifier for exam.'),
+        'description' => 'The primary identifier for exam.',
         'type'        => 'serial',
         'unsigned'    => TRUE,
         'not null'    => TRUE,
@@ -89,10 +89,10 @@ function exam_spider_schema() {
     'primary key' => array('id'),
   );
   $schema['exam_questions'] = array(
-    'description' => t('Exam Questions Information'),
+    'description' => 'Exam Questions Information',
     'fields'      => array(
       'id'       => array(
-        'description' => t('The primary identifier for question.'),
+        'description' => 'The primary identifier for question.',
         'type'        => 'serial',
         'unsigned'    => TRUE,
         'not null'    => TRUE,
@@ -166,16 +166,16 @@ function exam_spider_schema() {
     'primary key' => array('id'),
   );
   $schema['exam_results'] = array(
-    'description' => t('Exam results list Information'),
+    'description' => 'Exam results list Information',
     'fields'      => array(
       'id'     => array(
-        'description' => t('The primary identifier for result.'),
+        'description' => 'The primary identifier for result.',
         'type'        => 'serial',
         'unsigned'    => TRUE,
         'not null'    => TRUE,
       ),
       'examid' => array(
-        'description' => t('Exam ID.'),
+        'description' => 'Exam ID.',
         'type'        => 'int',
         'not null'    => TRUE,
       ),
@@ -186,19 +186,19 @@ function exam_spider_schema() {
         'default'     => 0,
       ),
       'total'  => array(
-        'description' => t('Result Total.'),
+        'description' => 'Result Total.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
       'obtain' => array(
-        'description' => t('Obtain Marks.'),
+        'description' => 'Obtain Marks.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
       'wrong'  => array(
-        'description' => t('Wrong Answers.'),
+        'description' => 'Wrong Answers.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
