@@ -334,8 +334,6 @@ function DigiClock($frmCls){
       return $clock->_showClock($frmCls);
   }
 function exam_continue($form, &$form_state, $exam_id) {  
-
-    global $user;
     $output ='';
     $form['#prefix'] = '<div id="exTimer"></div>';
     if(is_numeric($exam_id)){

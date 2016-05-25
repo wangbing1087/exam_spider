@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Enable and uninstall functions for the Exam Spider module.
+ */
+
+/**
  * Implements hook_schema().
  */
 function exam_spider_schema() {
