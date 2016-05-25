@@ -9,7 +9,7 @@
  */
 function exam_dashboard() {
     $output = '';
-    $output .= l(t('+ Create Exam'), "admin/structure/exam/add", $options = array('html' => TRUE));
+    $output .= l(t('+ Create Exam'), "admin/structure/exam/add", array('html' => TRUE));
     $header = array(
             array('data' => 'Exam Id', 'field' => 'id', 'sort' => 'desc'),
             array('data' => 'Exam Name', 'field' => 'exam_name'),
