@@ -8,92 +8,94 @@ define('EXAM', 'exam');
  */
 function exam_spider_permission() {
   return array(
-  'exam spider dashboard' => array(
-     'title' => t("Use exam spider Dashboard"),
+    'exam spider dashboard' => array(
+      'title'       => t("Use exam spider Dashboard"),
       'description' => t('Allows a user to access the <a href="@url">exam spider Dashboard</a>.', array('@url' => url('admin/structure/exam_spider'))),
     ),
   );
 }
+
 /**
  * Implements hook_menu().
  */
 function exam_spider_menu() {
   $exam_base = array(
-    'file' => 'includes/exams.inc',
+    'file'             => 'includes/exams.inc',
     'access arguments' => array('exam spider dashboard'),
   );
   $question_base = array(
-    'file' => 'includes/questions.inc',
+    'file'             => 'includes/questions.inc',
     'access arguments' => array('exam spider dashboard'),
   );
   $items['admin/structure/exam'] = array(
-    'title' => 'Exam Spider',
-    'page callback' => 'exam_dashboard',
-  ) + $exam_base;
-   $items['admin/structure/exam/dashboard'] = array(
-    'title' => 'Dashboard',
-    'page callback' => 'exam_spider_dashboard',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => 1,
-  ) + $exam_base;
+      'title'         => 'Exam Spider',
+      'page callback' => 'exam_dashboard',
+    ) + $exam_base;
+  $items['admin/structure/exam/dashboard'] = array(
+      'title'         => 'Dashboard',
+      'page callback' => 'exam_spider_dashboard',
+      'type'          => MENU_DEFAULT_LOCAL_TASK,
+      'weight'        => 1,
+    ) + $exam_base;
   $items['admin/structure/exam/add'] = array(
-    'title' => 'Create Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('add_exam'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 2,
-  ) + $exam_base;
+      'title'          => 'Create Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('add_exam'),
+      'type'           => MENU_LOCAL_TASK,
+      'weight'         => 2,
+    ) + $exam_base;
   $items['admin/structure/exam/%/edit'] = array(
-    'title' => 'Edit Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('edit_exam', 3),
-    'type' => MENU_CALLBACK,
-  ) + $exam_base;
+      'title'          => 'Edit Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('edit_exam', 3),
+      'type'           => MENU_CALLBACK,
+    ) + $exam_base;
   $items['admin/structure/exam/%/delete'] = array(
-    'title' => 'Delete Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('exam_delete_confirm', 3),
-    'type' => MENU_CALLBACK,
-  )+ $exam_base;
+      'title'          => 'Delete Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('exam_delete_confirm', 3),
+      'type'           => MENU_CALLBACK,
+    ) + $exam_base;
   $items['exam/%/start'] = array(
-    'title' => 'Start Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('exam_start', 1),
-    'type' => MENU_CALLBACK,
-  )+ $exam_base;
-   $items['exam/%/continue'] = array(
-    'title' => 'Start Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('exam_continue', 1),
-    'type' => MENU_CALLBACK,
-  )+ $exam_base;
+      'title'          => 'Start Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('exam_start', 1),
+      'type'           => MENU_CALLBACK,
+    ) + $exam_base;
+  $items['exam/%/continue'] = array(
+      'title'          => 'Start Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('exam_continue', 1),
+      'type'           => MENU_CALLBACK,
+    ) + $exam_base;
   $items['admin/structure/exam/results'] = array(
-    'title' => 'Exam Results',
-    'page callback' => 'exam_results',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 3,
-  ) + $exam_base;
+      'title'         => 'Exam Results',
+      'page callback' => 'exam_results',
+      'type'          => MENU_LOCAL_TASK,
+      'weight'        => 3,
+    ) + $exam_base;
   $items['admin/structure/question/add_question/%'] = array(
-    'title' => 'Add questions to Exam',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('add_question', 4),
-    'type' => MENU_LOCAL_TASK,
-  ) + $question_base;
-   $items['admin/structure/question/%/edit'] = array(
-    'title' => 'Edit Question',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('edit_question', 3),
-    'type' => MENU_CALLBACK,
-  ) + $question_base;
+      'title'          => 'Add questions to Exam',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('add_question', 4),
+      'type'           => MENU_LOCAL_TASK,
+    ) + $question_base;
+  $items['admin/structure/question/%/edit'] = array(
+      'title'          => 'Edit Question',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('edit_question', 3),
+      'type'           => MENU_CALLBACK,
+    ) + $question_base;
   $items['admin/structure/question/%/delete'] = array(
-    'title' => 'Delete Question',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('question_delete_confirm', 3),
-    'type' => MENU_CALLBACK,
-  )+ $question_base;
+      'title'          => 'Delete Question',
+      'page callback'  => 'drupal_get_form',
+      'page arguments' => array('question_delete_confirm', 3),
+      'type'           => MENU_CALLBACK,
+    ) + $question_base;
   return $items;
 }
-/* 
+
+/*
 function exam_spider_admin_settings ($form, &$form_state) {
   $form['exam_spider_number'] = array(
     '#type' => 'textfield',
@@ -105,37 +107,37 @@ function exam_spider_admin_settings ($form, &$form_state) {
   return system_settings_form($form);
 }
 */
-function getExam ($exam_id='') {
+function getExam($exam_id = '') {
   global $user;
   if (is_numeric($exam_id)) {
-    $query = db_select("exam_list","el")  
+    $query = db_select("exam_list", "el")
       ->fields("el")
-      ->condition('id', $exam_id,'=')
-      ->condition('uid', $user->uid,'=');
+      ->condition('id', $exam_id, '=')
+      ->condition('uid', $user->uid, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
 
   }
-  else{
-   $query = db_select("exam_list","el")  
+  else {
+    $query = db_select("exam_list", "el")
       ->fields("el")
-      ->condition('uid', $user->uid,'=');
+      ->condition('uid', $user->uid, '=');
     $query = $query->execute();
     return $query->fetchAll();
   }
 }
 
-function getQuestion ($question_id='') {
+function getQuestion($question_id = '') {
   if (is_numeric($question_id)) {
-    $query = db_select("exam_questions","eq")  
+    $query = db_select("exam_questions", "eq")
       ->fields("eq")
-      ->condition('id', $question_id,'=');
+      ->condition('id', $question_id, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
 
   }
-  else{
-   $query = db_select("exam_questions","eq") 
+  else {
+    $query = db_select("exam_questions", "eq")
       ->fields("eq");
     $query = $query->execute();
     return $query->fetchAll();
