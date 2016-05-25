@@ -22,13 +22,13 @@ function exam_spider_schema() {
       'exam_name' => array(
 				'description' => 'Exam Name',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
       ),
       'exam_description' => array(
 				'description' => 'Exam Description',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
       ),
 	    'uid' => array(
@@ -105,37 +105,37 @@ function exam_spider_schema() {
       'question' => array(
 				'description' => 'Quiz Question Name',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		  ),
 		  'opt1' => array(
 				'description' => 'Option 1',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		  ),
 		  'opt2' => array(
 				'description' => 'Option 2',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		  ),
 		  'opt3' => array(
 				'description' => 'Option 3',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		  ),
 		  'opt4' => array(
 				'description' => 'Option 4',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		    ),
 		  'answer' => array(
 				'description' => 'Answer',
 				'type' => 'varchar',
-				'length' =>200,
+				'length' => 200,
 				'not null' => TRUE,
 		  ),
 		  'multiple' => array(
