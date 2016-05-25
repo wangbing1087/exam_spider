@@ -114,13 +114,13 @@ function add_exam($form, &$form_state) {
 }
 function add_exam_validate($form, &$form_state) {
   if (!is_numeric($form_state['values']['total_marks']) &&  intval($form_state['values']['total_marks'])>0) {
-    form_set_error('total_marks', 'You must enter a positive integer value for total marks.');  
+    form_set_error('total_marks', t('You must enter a positive integer value for total marks.'));  
   }
   if (!is_numeric($form_state['values']['mark_per_quest'])) {
-   form_set_error('mark_per_quest', 'You must enter a positive integer value for mark per question.');    
+   form_set_error('mark_per_quest', t('You must enter a positive integer value for mark per question.'));    
   }
   if (!is_numeric($form_state['values']['exam_duration'])) {
-    form_set_error('exam_duration', 'You must enter a positive integer value for Exam duration.');    
+    form_set_error('exam_duration', t('You must enter a positive integer value for Exam duration.'));    
   }
   
 }
@@ -232,13 +232,13 @@ function edit_exam($form, &$form_state, $exam_id) {
 }
 function edit_exam_validate($form, &$form_state) {
   if (!is_numeric($form_state['values']['total_marks']) ) {
-    form_set_error('total_marks', 'You must enter a integer value for total marks.');  
+    form_set_error('total_marks', t('You must enter a integer value for total marks.'));  
   }
   if (!is_numeric($form_state['values']['mark_per_quest'])) {
-   form_set_error('mark_per_quest', 'You must enter a integer value for mark per question.');    
+   form_set_error('mark_per_quest', t('You must enter a integer value for mark per question.'));    
   }
   if (!is_numeric($form_state['values']['exam_duration'])) {
-    form_set_error('exam_duration', 'You must enter a integer value for Exam duration.');    
+    form_set_error('exam_duration', t('You must enter a integer value for Exam duration.'));    
   }
 }
 function edit_exam_submit(&$form, &$form_state) {
@@ -329,8 +329,8 @@ function exam_start_submit(&$form, &$form_state) {
 }
 function DigiClock($frmCls){
    module_load_include('inc', 'exam_spider', 'DigitalClock');
-    require_once( drupal_get_path('module', 'exam_spider').'/includes/DigitalClock.php');
-      $clock = new DigitalClock();
+    require_once( drupal_get_path('module', 'exam_spider').'/includes/ExamSpiderDigitalClock.php');
+      $clock = new ExamSpiderDigitalClock();
       return $clock->_showClock($frmCls);
   }
 function exam_continue($form, &$form_state, $exam_id) {  

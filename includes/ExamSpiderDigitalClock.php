@@ -1,6 +1,6 @@
 <?php
 
-class DigitalClock {
+class ExamSpiderDigitalClock {
     private $noLimit;
     public function __construct(){
         $this->noLimit = FALSE;

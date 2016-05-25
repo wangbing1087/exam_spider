@@ -2,18 +2,10 @@
 
 define('EXAM_SPIDER', 'exam_spider');
 define('EXAM', 'exam');
-
-/*************Module help function***********************/
-function exam_spider_help($path, $arg) {
- switch ($path) {
- case 'admin/help#exam_spider':
-   $output = '';
-   $output .= '<h3>' . t('About exam spider Module') . '</h3>';
-   $output .= '<p>' . t("You may check status of link count for any link field by using this module . You may also check the yearly and custom date selcted link count report . ") . '</p>';
- return $output;
-   }
- }
-/*************Module premission function***********************/
+/**
+ * Implements hook_perm().
+ * Permissions for Exam Spider
+ */
 function exam_spider_permission() {
   return array(
   'exam spider dashboard' => array(
@@ -22,6 +14,9 @@ function exam_spider_permission() {
     ),
   );
 }
+/**
+ * Implements hook_menu().
+ */
 function exam_spider_menu() {
   $exam_base = array(
     'file' => 'includes/exams.inc',

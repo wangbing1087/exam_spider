@@ -9,7 +9,7 @@ function add_question($form, &$form_state, $default_sel) {
     drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
     $form  = $exam_options = array();
     $allExam = getExam ();
-    foreach ($allExam as $key => $option) {
+    foreach ($allExam as $option) {
       $exam_options[$option->id] = $option->exam_name;
     }
     $form['#attributes'] = array('class' => array('questions-action'));
@@ -101,7 +101,7 @@ function edit_question($form, &$form_state, $question_id) {
     drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
     $form  = $exam_options = array();
     $allExam = getExam ();
-    foreach ($allExam as $key => $option) {
+    foreach ($allExam as $option) {
       $exam_options[$option->id] = $option->exam_name;
     }
     
