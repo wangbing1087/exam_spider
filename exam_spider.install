@@ -9,6 +9,7 @@
  * Implements hook_schema().
  */
 function exam_spider_schema() {
+
 	$schema = array();
 	$schema['exam_list'] = array(
 		'description' => t('Exam list Information'),
