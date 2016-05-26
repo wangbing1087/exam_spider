@@ -1,21 +1,20 @@
 <?php
 
-define('EXAM_SPIDER', 'exam_spider');
-define('EXAM', 'exam');
-/**
+define('EXAM_SPIDER_EXAM', 'exam');
+/*
  * Implements hook_perm().
- * Permissions for Exam Spider
+ * Permissions for Exam Spider.
  */
 function exam_spider_permission() {
   return array(
     'exam spider dashboard' => array(
       'title'       => t("Use exam spider Dashboard"),
-      'description' => t('Allows a user to access the <a href="@url">exam spider Dashboard</a>.', array('@url' => url('admin/structure/exam_spider'))),
+      'description' => t('Allows a user to access the <a href="@url">exam spider Dashboard</a>.', array('@url' => url('admin/structure/exam'))),
     ),
   );
 }
 
-/**
+/*
  * Implements hook_menu().
  */
 function exam_spider_menu() {
@@ -29,7 +28,7 @@ function exam_spider_menu() {
   );
   $items['admin/structure/exam'] = array(
       'title'         => 'Exam Spider',
-      'page callback' => 'exam_dashboard',
+      'page callback' => 'exam_spider_dashboard',
     ) + $exam_base;
   $items['admin/structure/exam/dashboard'] = array(
       'title'         => 'Dashboard',
@@ -107,7 +106,7 @@ function exam_spider_admin_settings ($form, &$form_state) {
   return system_settings_form($form);
 }
 */
-function getExam($exam_id = '') {
+function exam_spider_get_exam($exam_id = '') {
   global $user;
   if (is_numeric($exam_id)) {
     $query = db_select("exam_list", "el")
@@ -127,7 +126,7 @@ function getExam($exam_id = '') {
   }
 }
 
-function getQuestion($question_id = '') {
+function exam_spider_get_question($question_id = '') {
   if (is_numeric($question_id)) {
     $query = db_select("exam_questions", "eq")
       ->fields("eq")

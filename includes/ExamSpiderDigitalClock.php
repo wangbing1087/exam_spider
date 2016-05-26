@@ -8,9 +8,8 @@ class ExamSpiderDigitalClock {
 
         //$this->noLimit = TRUE;
     }
-
+    
     public function _showClock($for) { ?>
-        <!-- <div id="exTimer"></div>  <div id="testing">fsdffsdf</div> -->
         <script type="text/javascript">
             var TimeLimit = new Date('<?php echo $this->_getTimeLimit(); ?>');
             var forForm = '<?php echo $for; ?>';

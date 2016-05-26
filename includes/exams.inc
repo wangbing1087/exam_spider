@@ -7,7 +7,7 @@
 /**
  * A central administrative page for quiz matrix.
  */
-function exam_dashboard() {
+function exam_spider_dashboard() {
   $output = '';
   $output .= l(t('+ Create Exam'), "admin/structure/exam/add", array('html' => TRUE));
   $header = array(
@@ -45,18 +45,16 @@ function exam_dashboard() {
     $user_data = user_load($row->uid);
     $rows[] = array(
       'data' => array(
-        //'<input type = "checkbox" id = "main_check'.$i.'" value = "'.$row->id.'" name = "id[]">',
         'EXAM-' . $row->id,
         l($row->exam_name, 'exam/' . $row->id . '/start'),
         $row->exam_description,
         $user_data->name,
         $status,
-        l('Questions', 'admin/structure/question/add_question/' . $row->id) . ' | ' . l('Edit', 'admin/structure/exam/' . $row->id . '/edit') . ' | ' . l('Delete', 'admin/structure/exam/' . $row->id . '/delete'),
+        l(t('Questions'), 'admin/structure/question/add_question/' . $row->id) . ' | ' . l(t('Edit'), 'admin/structure/exam/' . $row->id . '/edit') . ' | ' . l(t('Delete'), 'admin/structure/exam/' . $row->id . '/delete'),
       )
     );
     $i++;
   }
-  //$rows[] = array("<input type = 'submit' name  = 'delete' value = 'Delete'>");
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
@@ -169,17 +167,6 @@ function add_exam_submit(&$form, &$form_state) {
     ))
     ->execute();
   drupal_set_message(t('You have successfully created Exam, Please add Questions for this exam.'));
-
-//$schoolid = $form_state['values']['exam_name']
-  $node = new stdClass();
-  $node->type = 'page';
-  $node->status = 1;
-  $node->language = LANGUAGE_NONE;
-  $node->title = 'Neeraj';
-  $node->body =
-    node_save($node);
-
-
   drupal_goto('admin/structure/exam');
   return $form;
 
@@ -314,7 +301,6 @@ function exam_delete_confirm_submit($form, &$form_state) {
 
     drupal_set_message(t('EXAM-%exam_id has been deleted.', array('%exam_id' => $exam_id)));
   }
-
   $form_state['redirect'] = 'admin/structure/exam';
 }
 
@@ -380,7 +366,6 @@ function exam_continue($form, &$form_state, $exam_id) {
   if (is_numeric($exam_id)) {
     DigiClock('exam-continue');
   }
-  // drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/jquery.bxslider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/jquery.bxslider.min.js');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
 
@@ -388,8 +373,6 @@ function exam_continue($form, &$form_state, $exam_id) {
     ->fields("eq")
     ->condition('examid', $exam_id, '=')->orderRandom()->execute();
   $results = $query->fetchAll();
-  // print_r($results);
-  //$form['#prefix'] = '<ul class="bxslider">';
   $form['li_prefix'] = array(
     '#markup' => '<ul class="exam-slider">',
   );
@@ -427,7 +410,6 @@ function exam_continue($form, &$form_state, $exam_id) {
   $output .= ' <p><span id="slider-next"></span></p>';
   $form['#suffix'] = $output;
   return $form;
-  //DigiClock('exam-continue');
 }
 
 function exam_continue_submit(&$form, &$form_state) {

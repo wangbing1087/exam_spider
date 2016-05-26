@@ -8,7 +8,7 @@ function add_question($form, &$form_state, $default_sel) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
   $form = $exam_options = array();
-  $allExam = getExam();
+  $allExam = exam_spider_get_exam();
   foreach ($allExam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
@@ -19,7 +19,6 @@ function add_question($form, &$form_state, $default_sel) {
     '#options'       => $exam_options,
     '#default_value' => $default_sel,
     '#required'      => TRUE,
-    //'#attributes' => array('onchange' => "form.submit('selected_exam')"),
   );
   $form['question_name'] = array(
     '#title'     => t('Question Name'),
@@ -114,12 +113,12 @@ function edit_question($form, &$form_state, $question_id) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
   $form = $exam_options = array();
-  $allExam = getExam();
+  $allExam = exam_spider_get_exam();
   foreach ($allExam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
 
-  $values = getQuestion($question_id);
+  $values = exam_spider_get_question($question_id);
   $answer = array_flip(explode('-', $values['answer']));
 
   $form['#attributes'] = array('class' => array('questions-action'));
@@ -130,7 +129,6 @@ function edit_question($form, &$form_state, $question_id) {
     '#options'       => $exam_options,
     '#default_value' => isset($values['examid']) ? $values['examid'] : NULL,
     '#required'      => TRUE,
-    //'#attributes' => array('onchange' => "form.submit('selected_exam')"),
   );
   $form['question_name'] = array(
     '#title'         => t('Question Name'),
@@ -160,7 +158,6 @@ function edit_question($form, &$form_state, $question_id) {
       '#rows'          => 1,
       '#required'      => TRUE,
       '#default_value' => isset($values['opt' . $i]) ? $values['opt' . $i] : NULL,
-      /*'#resizable' => FALSE,*/
       '#prefix'        => '<div class="option_set">',
     );
     $form['options']['answer' . $i] = array(
@@ -208,12 +205,10 @@ function edit_question_submit(&$form, &$form_state) {
     ->condition('id', $form_state['values']['question_id'], '=')
     ->execute();
   drupal_set_message(t('You have successfully updated question for this exam.'));
-  //drupal_goto('admin/structure/exam');
   return $form;
 }
 
 function question_delete_confirm($form, &$form_state, $question_id) {
-  // Always provide entity id in the same form key as in the entity edit form.
   $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
   $path = 'admin/structure/exam';
   return confirm_form($form,
@@ -240,7 +235,6 @@ function question_delete_confirm_submit($form, &$form_state) {
 function getQuestions($exam_id) {
   $output = '';
   if (is_numeric($exam_id)) {
-    // $output .= l('Add Question', 'admin/structure/question/add_question/'.$exam_id);
     $header = array(
       array('data' => 'Question', 'field' => 'question'),
       array('data' => "Status", 'field' => 'status'),
@@ -274,7 +268,6 @@ function getQuestions($exam_id) {
       );
       $i++;
     }
-    //$rows[] = array("<input type = 'submit' name  = 'delete' value = 'Delete'>");
     $output .= theme('table', array(
       'header' => $header,
       'rows'   => $rows,
