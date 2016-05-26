@@ -36,7 +36,8 @@
             nextText: 'Next',
             onSlideNext: function ($slideElement, oldIndex, newIndex) {
               totalslider = (examslider.getSlideCount() - 1);
-              if (newIndex == totalslider) $('#slider-next').hide('fast');
+              if (newIndex == totalslider) 
+              $('#slider-next').hide('fast');
             }
         });
     });

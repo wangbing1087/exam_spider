@@ -203,6 +203,12 @@ function exam_spider_schema() {
         'not null'    => TRUE,
         'default'     => 0,
       ),
+      'created'          => array(
+        'description' => 'The Unix timestamp when the exam was attempt.',
+        'type'        => 'int',
+        'not null'    => TRUE,
+        'default'     => 0,
+      ),
     ),
     'primary key' => array('id'),
   );

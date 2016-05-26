@@ -19,3 +19,9 @@
 .questions-action fieldset .form-item-multi-answer {
     padding: 0;
 }
+#exam_timer {
+    float: right;
+    font-size: 23px;
+    font-weight: bold;
+    position: relative;
+}
