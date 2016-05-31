@@ -1,6 +1,6 @@
 <?php
 /**
- * ExamSpiderDigitalClock Class Doc Comment
+ * ExamSpiderDigitalClock Class Doc Comment.
  *
  */
 class ExamSpiderDigitalClock {
