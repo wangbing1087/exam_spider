@@ -124,7 +124,7 @@ function exam_spider_get_exam($exam_id = '') {
   }
   else {
     $query = db_select("exam_list", "el")
-      ->fields("el")
+      ->fields("el");
     $query = $query->execute();
     return $query->fetchAll();
   }

@@ -345,7 +345,7 @@ function exam_spider_exam_start() {
     if ($row->status == 1) {
       $rows[] = array(
         'data' => array(
-          l(t(@examName, array('@examName' => $row->exam_name)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
+          l(t('@examName', array('@examName' => $row->exam_name)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
           $row->exam_description,
           l(t('Start @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
         ),
@@ -369,7 +369,7 @@ function exam_spider_exam_start() {
 function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   if (isset($form_state['storage']['exam_result'])) {
     $form['exam_result_score'] = array(
-      '#markup' => t(@examResult, array('@examResult' => $form_state['storage']['exam_result'])),
+      '#markup' => t('@examResult', array('@examResult' => $form_state['storage']['exam_result'])),
     );
   }
   else {
@@ -415,7 +415,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
           $form['question'][$value->id] = array(
             '#type'    => 'checkboxes',
             '#options' => $options,
-            '#title'   => t(@question, array('@question' => $value->question)),
+            '#title'   => t('@question', array('@question' => $value->question)),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
           );
@@ -423,7 +423,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         else {
           $form['question'][$value->id] = array(
             '#type'    => 'radios',
-            '#title'   =>  t(@question, array('@question' => $value->question)),
+            '#title'   =>  t('@question', array('@question' => $value->question)),
             '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
@@ -434,7 +434,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         '#type'   => 'submit',
         '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . t('<h2>I am done.</h2><br />'),
         '#suffix' => '</li>',
-        '#value'  => t('Submit')
+        '#value'  => t('Submit'),
       );
       $form['#tree'] = TRUE;
       $form['li_suffix'] = array(

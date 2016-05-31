@@ -303,7 +303,7 @@ function exam_spider_get_questions($exam_id) {
       'header' => $header,
       'rows'   => $rows,
       'empty'  => t('No question created yet for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)) . l(t('+Add Question'), 'admin/structure/question/add_question/' . $exam_id),
-    ),);
+    ));
     $output .= theme('pager');
   }
   return $output;
