@@ -73,8 +73,8 @@ function exam_spider_dashboard() {
 }
 
 /**
-* Add exam page callbacks.
-*/
+ * Add exam page callbacks.
+ */
 function exam_spider_add_exam($form, &$form_state) {
   $form = array();
   $form['exam_name'] = array(

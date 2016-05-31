@@ -19,7 +19,7 @@ class ExamSpiderDigitalClock {
   }
 
   /**
-   * Show clock function.
+   * Implementation of ExamSpiderDigitalClock::showClock().
    */
   public function showClock($for) {
     ?>
