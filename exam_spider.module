@@ -12,7 +12,7 @@ define('EXAM_SPIDER_EXAM_URL', 'quizspider');
 define('EXAM_SPIDER_EXAM_TITLE', 'Quiz');
 
 /**
- *  Hook_perm() for Exam Spider permissions.
+ * Hook_perm() for Exam Spider permissions.
  */
 function exam_spider_permission() {
   return array(
@@ -114,7 +114,6 @@ function exam_spider_menu() {
  * Get exam list using exam id and without exam id complete exam list.
  */
 function exam_spider_get_exam($exam_id = '') {
-  global $user;
   if (is_numeric($exam_id)) {
     $query = db_select("exam_list", "el")
       ->fields("el")
@@ -132,7 +131,7 @@ function exam_spider_get_exam($exam_id = '') {
 }
 
 /**
- * Get question list using question id and without question id complete exam list.
+ * Get questions using question id and without question id questions list.
  */
 function exam_spider_get_question($question_id = '') {
   if (is_numeric($question_id)) {

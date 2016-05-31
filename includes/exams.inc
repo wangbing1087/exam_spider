@@ -74,7 +74,7 @@ function exam_spider_dashboard() {
 
 /**
 * Add exam page callbacks.
- */
+*/
 function exam_spider_add_exam($form, &$form_state) {
   $form = array();
   $form['exam_name'] = array(
@@ -319,12 +319,12 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
 function exam_spider_exam_start() {
   $output = '';
   $header = array(
-    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name',),
+    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name'),
     array(
       'data'  => EXAM_SPIDER_EXAM_TITLE . ' Description',
       'field' => 'exam_description',
     ),
-    array('data' => "Operations",),
+    array('data' => "Operations"),
 
   );
   $query = db_select("exam_list", "a")
@@ -336,7 +336,7 @@ function exam_spider_exam_start() {
       'id',
       'exam_name',
       'exam_description',
-      'status'
+      'status',
     ));
   $results = $query->execute();
   $rows = array();
@@ -348,7 +348,7 @@ function exam_spider_exam_start() {
           l(t($row->exam_name), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
           $row->exam_description,
           l(t('Start ' . EXAM_SPIDER_EXAM_TITLE), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
-        )
+        ),
       );
 
     }

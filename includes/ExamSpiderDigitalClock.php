@@ -7,23 +7,20 @@
 
 /**
  * ExamSpiderDigitalClock Class.
- *
  */
 class ExamSpiderDigitalClock {
     private $noLimit;
 
     /**
      * ExamSpiderDigitalClock construct function.
-     *
-     */
+    */
     public function __construct() {
         $this->noLimit = FALSE;
     }
 
     /**
      * Show clock function.
-     *
-     */
+    */
     public function show_clock($for) { ?>
         <script type="text/javascript">
             var TimeLimit = new Date('<?php echo $this->get_time_limit(); ?>');
@@ -53,8 +50,7 @@ class ExamSpiderDigitalClock {
     }
     /**
      * Get time limit function.
-     *
-     */
+    */
     private function get_time_limit() {
         $values = exam_spider_get_exam(arg(1));
         $timer = time() + intval($values['exam_duration'] * 60);

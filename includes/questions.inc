@@ -13,8 +13,8 @@ function exam_spider_add_question($form, &$form_state, $default_sel) {
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
   $form = $exam_options = array();
   $form['#prefix'] = l(t('Back to ' . EXAM_SPIDER_EXAM_TITLE . ' Dashboard'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL);
-  $allExam = exam_spider_get_exam();
-  foreach ($allExam as $option) {
+  $all_exam = exam_spider_get_exam();
+  foreach ($all_exam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
   $form['#attributes'] = array('class' => array('questions-action'));
@@ -100,7 +100,7 @@ function exam_spider_add_question_submit(&$form, &$form_state) {
       'answer',
       'multiple',
       'created',
-      'changed'
+      'changed',
     ))
     ->values(array(
       'examid'   => $form_state['values']['selected_exam'],
@@ -292,8 +292,8 @@ function exam_spider_get_questions($exam_id) {
         'data' => array(
           $row->question,
           $status,
-          l('Edit', 'admin/structure/question/' . $row->id . '/edit', array('query' => array($destination))) . ' | ' . l('Delete', 'admin/structure/question/' . $row->id . '/delete', array('query' => array($destination))),
-        )
+          l(t('Edit'), 'admin/structure/question/' . $row->id . '/edit', array('query' => array($destination))) . ' | ' . l(t('Delete'), 'admin/structure/question/' . $row->id . '/delete', array('query' => array($destination))),
+        ),
       );
       $i++;
     }
@@ -301,7 +301,7 @@ function exam_spider_get_questions($exam_id) {
       'header' => $header,
       'rows'   => $rows,
       'empty'  => t('No question created yet for this ' . EXAM_SPIDER_EXAM_TITLE . ' ') . l(t('+Add Question'), 'admin/structure/question/add_question/' . $exam_id)
-    ));
+    ),);
     $output .= theme('pager');
   }
   return $output;
