@@ -16,14 +16,14 @@ function exam_spider_dashboard() {
       'field' => 'id',
       'sort'  => 'desc',
     ),
-    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name',),
+    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name'),
     array(
       'data'  => EXAM_SPIDER_EXAM_TITLE . ' Description',
       'field' => 'exam_description',
     ),
-    array('data' => "Created By", 'field' => 'uid',),
-    array('data' => "Status", 'field' => 'status',),
-    array('data' => "Operations",),
+    array('data' => "Created By", 'field' => 'uid'),
+    array('data' => "Status", 'field' => 'status'),
+    array('data' => "Operations"),
 
   );
   $query = db_select("exam_list", "a")
@@ -497,7 +497,7 @@ function exam_spider_exam_results() {
       'uid',
       'total',
       'obtain',
-      'wrong'
+      'wrong',
     ));
   $results = $query->execute();
   $rows = array();
@@ -513,14 +513,14 @@ function exam_spider_exam_results() {
         $row->total,
         $row->obtain,
         $row->wrong,
-      )
+      ),
     );
     $i++;
   }
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
-    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' attempt by any user.')
+    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' attempt by any user.'),
   ));
   $output .= theme('pager');
   return ($output);
