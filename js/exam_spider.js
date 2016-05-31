@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Exam custom slider abd multiple answer checkbox enable/disable.
+ */
+
 (function ($) {
   'use strict';
   $('document').ready(function () {
@@ -35,7 +40,7 @@
           $('.exam_spider_slider_exam .exam_spider_slider').removeClass('show');
           $('#examslide_' + counter_next).addClass('show');
         }
-        else if (counter_next == total_slides) {
+        else if (counter_next === total_slides) {
           $('.exam_spider_slider_exam .exam_spider_slider').removeClass('show');
           $('#examslide_' + counter_next).addClass('show');
           $('.exam_spider_slide_next').hide();
