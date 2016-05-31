@@ -66,7 +66,7 @@ function exam_spider_dashboard() {
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
-    'empty'  => t('No @examSpiderExamTitle created yet. ', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)) . l(t('+ Create @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'),
+    'empty'  => t('No @examSpiderExamTitle created yet.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)) . l(t('+ Create @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'),
   ));
   $output .= theme('pager');
   return ($output);
@@ -173,7 +173,7 @@ function exam_spider_add_exam_submit(&$form, &$form_state) {
       'changed'          => REQUEST_TIME,
     ))
     ->execute();
-  drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName'=>$form_state['values']['exam_name'])));
+  drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName' => $form_state['values']['exam_name'])));
   drupal_goto('admin/structure/' . EXAM_SPIDER_EXAM_URL);
   return $form;
 
@@ -276,7 +276,7 @@ function exam_spider_edit_exam_submit(&$form, &$form_state) {
     ))
     ->condition('id', $form_state['values']['exam_id'], '=')
     ->execute();
-  drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName'=>$form_state['values']['exam_name'])));
+  drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName' => $form_state['values']['exam_name'])));
   return $form;
 
 }
@@ -288,7 +288,7 @@ function exam_spider_exam_delete_confirm($form, &$form_state, $exam_id) {
   $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
   $path = 'admin/structure/' . EXAM_SPIDER_EXAM_URL;
   return confirm_form($form,
-    t('Are you sure you want to delete @examSpiderExamTitle-%exam_id ?', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,'%exam_id' => $exam_id)),
+    t('Are you sure you want to delete @examSpiderExamTitle-%exam_id ?', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '%exam_id' => $exam_id)),
     $path,
     t('This action cannot be undone.'),
     t('Delete'),
@@ -345,9 +345,9 @@ function exam_spider_exam_start() {
     if ($row->status == 1) {
       $rows[] = array(
         'data' => array(
-          l(t($row->exam_name), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
+          l(t(@examName, array('@examName' => $row->exam_name)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
           $row->exam_description,
-          l(t('Start ' . EXAM_SPIDER_EXAM_TITLE), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
+          l(t('Start @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
         ),
       );
 
@@ -357,7 +357,7 @@ function exam_spider_exam_start() {
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
-    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' created yet.'),
+    'empty'  => t('No @examSpiderExamTitle created yet.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
   ));
   $output .= theme('pager');
   return ($output);
@@ -369,7 +369,7 @@ function exam_spider_exam_start() {
 function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   if (isset($form_state['storage']['exam_result'])) {
     $form['exam_result_score'] = array(
-      '#markup' => t($form_state['storage']['exam_result']),
+      '#markup' => t(@examResult, array('@examResult' => $form_state['storage']['exam_result'])),
     );
   }
   else {
@@ -399,7 +399,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
     }
     $results = $query->fetchAll();
     if (empty($results)) {
-      $output .= t('No question created yet for this ' . EXAM_SPIDER_EXAM_TITLE . '.');
+      $output .= t('No question created yet for this @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
     }
     else {
       $form['li_prefix'] = array(
@@ -415,7 +415,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
           $form['question'][$value->id] = array(
             '#type'    => 'checkboxes',
             '#options' => $options,
-            '#title'   => t($value->question),
+            '#title'   => t(@question, array('@question' => $value->question)),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
           );
@@ -423,7 +423,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         else {
           $form['question'][$value->id] = array(
             '#type'    => 'radios',
-            '#title'   => t($value->question),
+            '#title'   =>  t(@question, array('@question' => $value->question)),
             '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
