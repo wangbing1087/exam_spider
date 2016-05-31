@@ -104,18 +104,6 @@ function exam_spider_menu() {
   return $items;
 }
 
-/*
-function exam_spider_admin_settings ($form, &$form_state) {
-  $form['exam_spider_number'] = array(
-    '#type' => 'textfield',
-    '#description' => t('Set pagination value for total link count report .'),
-    '#default_value' => variable_get('exam_spider_number', '2'),
-    '#size' => 2,
-  );
-
-  return system_settings_form($form);
-}
-*/
 function exam_spider_get_exam($exam_id = '') {
   global $user;
   if (is_numeric($exam_id)) {

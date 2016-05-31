@@ -14,16 +14,16 @@ function exam_spider_dashboard() {
     array(
       'data'  => EXAM_SPIDER_EXAM_TITLE . ' Id',
       'field' => 'id',
-      'sort'  => 'desc'
+      'sort'  => 'desc',
     ),
-    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name'),
+    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name',),
     array(
       'data'  => EXAM_SPIDER_EXAM_TITLE . ' Description',
-      'field' => 'exam_description'
+      'field' => 'exam_description',
     ),
-    array('data' => "Created By", 'field' => 'uid'),
-    array('data' => "Status", 'field' => 'status'),
-    array('data' => "Operations"),
+    array('data' => "Created By", 'field' => 'uid',),
+    array('data' => "Status", 'field' => 'status',),
+    array('data' => "Operations",),
 
   );
   $query = db_select("exam_list", "a")
@@ -36,7 +36,7 @@ function exam_spider_dashboard() {
       'exam_name',
       'exam_description',
       'uid',
-      'status'
+      'status',
     ));
   $results = $query->execute();
   $rows = array();
@@ -58,14 +58,14 @@ function exam_spider_dashboard() {
         $user_data->name,
         $status,
         l(t('Questions'), 'admin/structure/question/add_question/' . $row->id) . ' | ' . l(t('Edit'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/edit', array('query' => array($destination))) . ' | ' . l(t('Delete'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/delete', array('query' => array($destination))),
-      )
+      ),
     );
     $i++;
   }
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
-    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' created yet. ') . l(t('+ Create ' . EXAM_SPIDER_EXAM_TITLE), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add')
+    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' created yet. ') . l(t('+ Create ' . EXAM_SPIDER_EXAM_TITLE), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'),
   ));
   $output .= theme('pager');
   return ($output);
@@ -292,12 +292,12 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
 function exam_spider_exam_start() {
   $output = '';
   $header = array(
-    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name'),
+    array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name',),
     array(
       'data'  => EXAM_SPIDER_EXAM_TITLE . ' Description',
-      'field' => 'exam_description'
+      'field' => 'exam_description',
     ),
-    array('data' => "Operations"),
+    array('data' => "Operations",),
 
   );
   $query = db_select("exam_list", "a")
@@ -330,7 +330,7 @@ function exam_spider_exam_start() {
   $output .= theme('table', array(
     'header' => $header,
     'rows'   => $rows,
-    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' created yet.')
+    'empty'  => t('No ' . EXAM_SPIDER_EXAM_TITLE . ' created yet.'),
   ));
   $output .= theme('pager');
   return ($output);
@@ -527,7 +527,7 @@ function exam_spider_exam_results() {
 }
 
 function exam_spider_clock($formid) {
-  require_once (drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php');
+  require_once drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php';
   $clock = new ExamSpiderDigitalClock();
   return $clock->show_clock($formid);
 }

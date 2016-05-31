@@ -9,7 +9,7 @@ class ExamSpiderDigitalClock {
 
     public function show_clock($for) { ?>
         <script type="text/javascript">
-            var TimeLimit = new Date('<?php echo $this->_get_time_limit(); ?>');
+            var TimeLimit = new Date('<?php echo $this->get_time_limit(); ?>');
             var forForm = '<?php echo $for; ?>';
             function countdownto() {
                 var date = Math.round((TimeLimit - new Date()) / 1000);
@@ -35,7 +35,7 @@ class ExamSpiderDigitalClock {
         </script> <?php
     }
 
-    private function _get_time_limit() {
+    private function get_time_limit() {
         $values = exam_spider_get_exam(arg(1));
         $timer = time() + intval($values['exam_duration'] * 60);
         return date('r', $timer);
