@@ -12,8 +12,7 @@ define('EXAM_SPIDER_EXAM_URL', 'quizspider');
 define('EXAM_SPIDER_EXAM_TITLE', 'Quiz');
 
 /**
- * Implements hook_perm().
- * Permissions for Exam Spider.
+ * Implements hook_perm() for Exam Spider permissions.
  */
 function exam_spider_permission() {
   return array(
