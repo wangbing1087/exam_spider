@@ -1,9 +1,9 @@
 <?php
 /**
-* Define Exam variable for Exam title and Path
-*/
-define('EXAM_SPIDER_EXAM_URL', 'quizspider'); 
-define('EXAM_SPIDER_EXAM_TITLE', 'Quiz'); 
+ * Define Exam variable for Exam title and Path
+ */
+define('EXAM_SPIDER_EXAM_URL', 'quizspider');
+define('EXAM_SPIDER_EXAM_TITLE', 'Quiz');
 /**
  * Implements hook_perm().
  * Permissions for Exam Spider.
@@ -12,7 +12,11 @@ function exam_spider_permission() {
   return array(
     'exam spider dashboard' => array(
       'title'       => t("Use exam spider Dashboard"),
-      'description' => t('Allows a user to access the <a href="@url">exam spider Dashboard</a>.', array('@url' => url('admin/structure/'.EXAM_SPIDER_EXAM_URL))),
+      'description' => t('Allows a user to access the <a href="@url">Exam Spider Dashboard</a>.', array('@url' => url('admin/structure/' . EXAM_SPIDER_EXAM_URL))),
+    ),
+    'exam spider user'      => array(
+      'title'       => t("Use exam spider user"),
+      'description' => t('Allows a user to access the exam start.'),
     ),
   );
 }
@@ -21,6 +25,10 @@ function exam_spider_permission() {
  * Implements hook_menu().
  */
 function exam_spider_menu() {
+  $exam_base_user = array(
+    'file'             => 'includes/exams.inc',
+    'access arguments' => array('exam spider user'),
+  );
   $exam_base = array(
     'file'             => 'includes/exams.inc',
     'access arguments' => array('exam spider dashboard'),
@@ -29,55 +37,54 @@ function exam_spider_menu() {
     'file'             => 'includes/questions.inc',
     'access arguments' => array('exam spider dashboard'),
   );
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL] = array(
-      'title'         => EXAM_SPIDER_EXAM_TITLE.' Spider',
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL] = array(
+      'title'         => EXAM_SPIDER_EXAM_TITLE . ' Spider',
       'page callback' => 'exam_spider_dashboard',
     ) + $exam_base;
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL.'/dashboard'] = array(
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/dashboard'] = array(
       'title'         => 'Dashboard',
       'page callback' => 'exam_spider_dashboard',
       'type'          => MENU_DEFAULT_LOCAL_TASK,
       'weight'        => 1,
     ) + $exam_base;
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL.'/add'] = array(
-      'title'          => 'Create '.EXAM_SPIDER_EXAM_TITLE,
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'] = array(
+      'title'          => 'Create ' . EXAM_SPIDER_EXAM_TITLE,
       'page callback'  => 'drupal_get_form',
       'page arguments' => array('exam_spider_add_exam'),
       'type'           => MENU_LOCAL_TASK,
       'weight'         => 2,
     ) + $exam_base;
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL.'/%/edit'] = array(
-      'title'          => 'Edit '.EXAM_SPIDER_EXAM_TITLE,
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/edit'] = array(
+      'title'          => 'Edit ' . EXAM_SPIDER_EXAM_TITLE,
       'page callback'  => 'drupal_get_form',
       'page arguments' => array('exam_spider_edit_exam', 3),
       'type'           => MENU_CALLBACK,
     ) + $exam_base;
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL.'/%/delete'] = array(
-      'title'          => 'Delete '.EXAM_SPIDER_EXAM_TITLE,
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/delete'] = array(
+      'title'          => 'Delete ' . EXAM_SPIDER_EXAM_TITLE,
       'page callback'  => 'drupal_get_form',
       'page arguments' => array('exam_spider_exam_delete_confirm', 3),
       'type'           => MENU_CALLBACK,
     ) + $exam_base;
-  $items[EXAM_SPIDER_EXAM_URL.'/%/start'] = array(
-      'title'          => 'Start '.EXAM_SPIDER_EXAM_TITLE,
-      'page callback'  => 'drupal_get_form',
-      'page arguments' => array('exam_spider_exam_start', 1),
-      'type'           => MENU_CALLBACK,
-    ) + $exam_base;
-  $items[EXAM_SPIDER_EXAM_URL.'/%/continue'] = array(
-      'title'          => 'Start '.EXAM_SPIDER_EXAM_TITLE,
+  $items[EXAM_SPIDER_EXAM_URL . '/start'] = array(
+      'title'         => 'Start ' . EXAM_SPIDER_EXAM_TITLE,
+      'page callback' => 'exam_spider_exam_start',
+      'type'          => MENU_CALLBACK,
+    ) + $exam_base_user;
+  $items[EXAM_SPIDER_EXAM_URL . '/%/continue'] = array(
+      'title'          => 'Continue ' . EXAM_SPIDER_EXAM_TITLE,
       'page callback'  => 'drupal_get_form',
       'page arguments' => array('exam_spider_exam_continue', 1),
       'type'           => MENU_CALLBACK,
-    ) + $exam_base;
-  $items['admin/structure/'.EXAM_SPIDER_EXAM_URL.'/results'] = array(
-      'title'         => EXAM_SPIDER_EXAM_TITLE.' Results',
+    ) + $exam_base_user;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
+      'title'         => EXAM_SPIDER_EXAM_TITLE . ' Results',
       'page callback' => 'exam_spider_exam_results',
       'type'          => MENU_LOCAL_TASK,
       'weight'        => 3,
     ) + $exam_base;
   $items['admin/structure/question/add_question/%'] = array(
-      'title'          => 'Add questions to '.EXAM_SPIDER_EXAM_TITLE,
+      'title'          => 'Add questions to ' . EXAM_SPIDER_EXAM_TITLE,
       'page callback'  => 'drupal_get_form',
       'page arguments' => array('exam_spider_add_question', 4),
       'type'           => MENU_LOCAL_TASK,
@@ -114,8 +121,7 @@ function exam_spider_get_exam($exam_id = '') {
   if (is_numeric($exam_id)) {
     $query = db_select("exam_list", "el")
       ->fields("el")
-      ->condition('id', $exam_id, '=')
-      ->condition('uid', $user->uid, '=');
+      ->condition('id', $exam_id, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
 

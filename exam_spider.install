@@ -49,12 +49,6 @@ function exam_spider_schema() {
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'mark_per_quest'   => array(
-        'description' => 'The {users}.uid that owns this exam; initially, this is the user that created it.',
-        'type'        => 'int',
-        'not null'    => TRUE,
-        'default'     => 0,
-      ),
       'negative_mark'    => array(
         'description' => 'negative marking enable for exam.',
         'type'        => 'int',
@@ -168,42 +162,42 @@ function exam_spider_schema() {
   $schema['exam_results'] = array(
     'description' => 'Exam results list Information',
     'fields'      => array(
-      'id'     => array(
+      'id'      => array(
         'description' => 'The primary identifier for result.',
         'type'        => 'serial',
         'unsigned'    => TRUE,
         'not null'    => TRUE,
       ),
-      'examid' => array(
+      'examid'  => array(
         'description' => 'Exam ID.',
         'type'        => 'int',
         'not null'    => TRUE,
       ),
-      'uid'    => array(
+      'uid'     => array(
         'description' => '{users}.uid',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'total'  => array(
+      'total'   => array(
         'description' => 'Result Total.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'obtain' => array(
+      'obtain'  => array(
         'description' => 'Obtain Marks.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'wrong'  => array(
+      'wrong'   => array(
         'description' => 'Wrong Answers.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'created'          => array(
+      'created' => array(
         'description' => 'The Unix timestamp when the exam was attempt.',
         'type'        => 'int',
         'not null'    => TRUE,

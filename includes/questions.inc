@@ -8,6 +8,7 @@ function exam_spider_add_question($form, &$form_state, $default_sel) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
   $form = $exam_options = array();
+  $form['#prefix'] = l(t('Back to ' . EXAM_SPIDER_EXAM_TITLE . ' Dashboard'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL);
   $allExam = exam_spider_get_exam();
   foreach ($allExam as $option) {
     $exam_options[$option->id] = $option->exam_name;
@@ -104,7 +105,7 @@ function exam_spider_add_question_submit(&$form, &$form_state) {
       'changed'  => REQUEST_TIME,
     ))
     ->execute();
-  drupal_set_message(t('You have successfully created question for this '.EXAM_SPIDER_EXAM_TITLE));
+  drupal_set_message(t('You have successfully created question for this ' . EXAM_SPIDER_EXAM_TITLE));
   drupal_goto('admin/structure/question/add_question/' . $form_state['values']['selected_exam']);
   return $form;
 }
@@ -125,7 +126,7 @@ function exam_spider_edit_question($form, &$form_state, $question_id) {
   $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
   $form['selected_exam'] = array(
     '#type'          => 'select',
-    '#title'         => 'Select '.EXAM_SPIDER_EXAM_TITLE,
+    '#title'         => 'Select ' . EXAM_SPIDER_EXAM_TITLE,
     '#options'       => $exam_options,
     '#default_value' => isset($values['examid']) ? $values['examid'] : NULL,
     '#required'      => TRUE,
@@ -210,7 +211,7 @@ function exam_spider_edit_question_submit(&$form, &$form_state) {
 
 function exam_spider_question_delete_confirm($form, &$form_state, $question_id) {
   $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
-  $path = 'admin/structure/'.EXAM_SPIDER_EXAM_URL;
+  $path = 'admin/structure/' . EXAM_SPIDER_EXAM_URL;
   return confirm_form($form,
     t('Are you sure you want to delete %question_name ?', array('%question_name' => $question_id)),
     $path,
@@ -271,7 +272,7 @@ function exam_spider_get_questions($exam_id) {
     $output .= theme('table', array(
       'header' => $header,
       'rows'   => $rows,
-      'empty'  => t('No question created yet for this '.EXAM_SPIDER_EXAM_TITLE.' ') . l(t('+Add Question'), 'admin/structure/question/add_question/' . $exam_id)
+      'empty'  => t('No question created yet for this ' . EXAM_SPIDER_EXAM_TITLE . ' ') . l(t('+Add Question'), 'admin/structure/question/add_question/' . $exam_id)
     ));
     $output .= theme('pager');
   }
