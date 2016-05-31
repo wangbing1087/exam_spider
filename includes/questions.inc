@@ -1,9 +1,13 @@
 <?php
+
 /**
- * @file callbacks.inc
- * Minor menu callbacks for exam spider helpers.
+ * @file
+ * Administrative page callbacks for the questions of Exam Spider module.
  */
 
+/**
+ * Add question page callbacks.
+ */
 function exam_spider_add_question($form, &$form_state, $default_sel) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
@@ -65,12 +69,18 @@ function exam_spider_add_question($form, &$form_state, $default_sel) {
   return $form;
 }
 
+/**
+ * Add question validate page callbacks.
+ */
 function exam_spider_add_question_validate(&$form, &$form_state) {
   if ($form_state['values']['answer1'] == 0 && $form_state['values']['answer2'] == 0 && $form_state['values']['answer3'] == 0 && $form_state['values']['answer4'] == 0) {
     return form_set_error('time', t('Please tic correct answer.'));
   }
 }
 
+/**
+ * Add question submit page callbacks.
+ */
 function exam_spider_add_question_submit(&$form, &$form_state) {
   $answer = '';
   for ($i = 1; $i <= 4; $i++) {
@@ -110,6 +120,9 @@ function exam_spider_add_question_submit(&$form, &$form_state) {
   return $form;
 }
 
+/**
+ * Edit question page callbacks.
+ */
 function exam_spider_edit_question($form, &$form_state, $question_id) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
@@ -177,12 +190,18 @@ function exam_spider_edit_question($form, &$form_state, $question_id) {
   return $form;
 }
 
+/**
+ * Edit question validate page callbacks.
+ */
 function exam_spider_edit_question_validate(&$form, &$form_state) {
   if ($form_state['values']['answer1'] == 0 && $form_state['values']['answer2'] == 0 && $form_state['values']['answer3'] == 0 && $form_state['values']['answer4'] == 0) {
     return form_set_error('time', t('Please tic correct answer.'));
   }
 }
 
+/**
+ * Edit question submit page callbacks.
+ */
 function exam_spider_edit_question_submit(&$form, &$form_state) {
   $answer = '';
   for ($i = 1; $i <= 4; $i++) {
@@ -209,6 +228,9 @@ function exam_spider_edit_question_submit(&$form, &$form_state) {
   return $form;
 }
 
+/**
+ * Question delete confirm page callbacks.
+ */
 function exam_spider_question_delete_confirm($form, &$form_state, $question_id) {
   $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
   $path = 'admin/structure/' . EXAM_SPIDER_EXAM_URL;
@@ -221,6 +243,9 @@ function exam_spider_question_delete_confirm($form, &$form_state, $question_id) 
   );
 }
 
+/**
+ * Question delete confirm submit page callbacks.
+ */
 function exam_spider_question_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
     $question_id = $form_state['values']['question_id'];
@@ -232,6 +257,9 @@ function exam_spider_question_delete_confirm_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Get Question list using exam id function.
+ */
 function exam_spider_get_questions($exam_id) {
   $output = '';
   if (is_numeric($exam_id)) {

@@ -1,9 +1,16 @@
 <?php
+
+/**
+ * @file
+ * Exam spider module file.
+ */
+
 /**
  * Define Exam variable for Exam title and Path.
  */
 define('EXAM_SPIDER_EXAM_URL', 'quizspider');
 define('EXAM_SPIDER_EXAM_TITLE', 'Quiz');
+
 /**
  * Implements hook_perm().
  * Permissions for Exam Spider.
@@ -22,7 +29,7 @@ function exam_spider_permission() {
 }
 
 /**
- * Implements hook_menu().
+ * Hook_menu function().
  */
 function exam_spider_menu() {
   $exam_base_user = array(

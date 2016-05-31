@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @file callbacks.inc
- * Minor menu callbacks for quiz matrix helpers.
+ * @file
+ * Administrative page callbacks for the Exam Spider module.
  */
 
 /**
- * A central administrative page for quiz matrix.
+ * Exam Spider dashboard page callbacks.
  */
 function exam_spider_dashboard() {
   $output = '';
@@ -71,6 +72,9 @@ function exam_spider_dashboard() {
   return ($output);
 }
 
+/**
+* Add exam page callbacks.
+ */
 function exam_spider_add_exam($form, &$form_state) {
   $form = array();
   $form['exam_name'] = array(
@@ -129,6 +133,9 @@ function exam_spider_add_exam($form, &$form_state) {
   return $form;
 }
 
+/**
+ * Add exam page validate callbacks.
+ */
 function exam_spider_add_exam_validate($form, &$form_state) {
   if (!is_numeric($form_state['values']['exam_duration'])) {
     form_set_error('exam_duration', t('You must enter a positive integer value for ' . EXAM_SPIDER_EXAM_TITLE . ' duration.'));
@@ -136,7 +143,9 @@ function exam_spider_add_exam_validate($form, &$form_state) {
 
 }
 
-
+/**
+ * Add exam page submit callbacks.
+ */
 function exam_spider_add_exam_submit(&$form, &$form_state) {
   global $user;
   db_insert('exam_list')
@@ -170,6 +179,9 @@ function exam_spider_add_exam_submit(&$form, &$form_state) {
 
 }
 
+/**
+ * Edit exam page callbacks.
+ */
 function exam_spider_edit_exam($form, &$form_state, $exam_id) {
   $values = exam_spider_get_exam($exam_id);
   $form = array();
@@ -236,12 +248,18 @@ function exam_spider_edit_exam($form, &$form_state, $exam_id) {
   return $form;
 }
 
+/**
+ * Edit exam validate page callbacks.
+ */
 function exam_spider_edit_exam_validate($form, &$form_state) {
   if (!is_numeric($form_state['values']['exam_duration'])) {
     form_set_error('exam_duration', t('You must enter a integer value for ' . EXAM_SPIDER_EXAM_TITLE . ' duration.'));
   }
 }
 
+/**
+ * Edit exam submit page callbacks.
+ */
 function exam_spider_edit_exam_submit(&$form, &$form_state) {
   global $user;
   db_update('exam_list')
@@ -263,6 +281,9 @@ function exam_spider_edit_exam_submit(&$form, &$form_state) {
 
 }
 
+/**
+ * Delete exam confirm page callbacks.
+ */
 function exam_spider_exam_delete_confirm($form, &$form_state, $exam_id) {
   $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
   $path = 'admin/structure/' . EXAM_SPIDER_EXAM_URL;
@@ -275,6 +296,9 @@ function exam_spider_exam_delete_confirm($form, &$form_state, $exam_id) {
   );
 }
 
+/**
+ * Delete exam confirm submit page callbacks.
+ */
 function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
     $exam_id = $form_state['values']['exam_id'];
@@ -289,6 +313,9 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
   }
 }
 
+/**
+ * All exam listed page to start exam page callbacks.
+ */
 function exam_spider_exam_start() {
   $output = '';
   $header = array(
@@ -336,6 +363,9 @@ function exam_spider_exam_start() {
   return ($output);
 }
 
+/**
+ * Exam continue page callbacks.
+ */
 function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   if (isset($form_state['storage']['exam_result'])) {
     $form['exam_result_score'] = array(
@@ -416,6 +446,9 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   return $form;
 }
 
+/**
+ * Exam continue submit page callbacks.
+ */
 function exam_spider_exam_continue_submit(&$form, &$form_state) {
   global $user;
   $score_obtain = $total_marks = $wrong_quest = 0;
@@ -475,6 +508,9 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
   drupal_set_message(t('Your test has submitted successfully and your REG id is REG-' . $reg_id . '.'));
 }
 
+/**
+ * Exam results page callbacks.
+ */
 function exam_spider_exam_results() {
   $output = '';
   $header = array(
@@ -526,6 +562,9 @@ function exam_spider_exam_results() {
   return ($output);
 }
 
+/**
+ * Exam clock function.
+ */
 function exam_spider_clock($formid) {
   require_once drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php';
   $clock = new ExamSpiderDigitalClock();
