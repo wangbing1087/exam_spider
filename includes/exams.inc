@@ -568,5 +568,5 @@ function exam_spider_exam_results() {
 function exam_spider_clock($formid) {
   require_once drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php';
   $clock = new ExamSpiderDigitalClock();
-  return $clock->show_clock($formid);
+  return $clock->showClock($formid);
 }

@@ -21,7 +21,7 @@ class ExamSpiderDigitalClock {
   /**
    * Show clock function.
    */
-  public function show_clock($for) { 
+  public function showClock($for) {
     ?>
     <script type="text/javascript">
       var TimeLimit = new Date('<?php echo $this->getTimeLimit(); ?>');
