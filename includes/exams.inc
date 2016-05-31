@@ -423,7 +423,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         else {
           $form['question'][$value->id] = array(
             '#type'    => 'radios',
-            '#title'   =>  t('@question', array('@question' => $value->question)),
+            '#title'   => t('@question', array('@question' => $value->question)),
             '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
