@@ -3,4 +3,3 @@ description = Provides Exam with four options.
 core = 7.x
 package = Other
 ; Information added by Drupal.org packaging script on 2016-04-26
-core = "7.x"

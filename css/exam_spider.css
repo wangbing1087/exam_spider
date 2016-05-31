@@ -1,36 +1,36 @@
 .questions-action fieldset .form-type-textarea {
-    float: left;
-    padding: 0;
-    width: 50%;
+  float: left;
+  padding: 0;
+  width: 50%;
 }
 
 .questions-action fieldset .form-type-checkbox {
-    box-sizing: border-box;
-    float: left;
-    padding: 30px 30px;
-    width: 50%;
+  box-sizing: border-box;
+  float: left;
+  padding: 30px 30px;
+  width: 50%;
 }
 
 .fieldset-wrapper .option_set {
-    float: left;
-    width: 100%;
+  float: left;
+  width: 100%;
 }
 
 .questions-action fieldset .form-item-multi-answer {
-    padding: 0;
+  padding: 0;
 }
 
 #exam_timer {
-    float: right;
-    font-size: 23px;
-    font-weight: bold;
-    position: relative;
+  float: right;
+  font-size: 23px;
+  font-weight: bold;
+  position: relative;
 }
 
 .exam_spider_slider_exam .exam_spider_slider {
-    display: none;
+  display: none;
 }
 
 .exam_spider_slider_exam .exam_spider_slider.show {
-    display: block;
+  display: block;
 }
