@@ -1,13 +1,13 @@
 <?php
 
-class exam_spider_digital_clock {
+class ExamSpiderDigitalClock {
     private $noLimit;
 
     public function __construct() {
         $this->noLimit = FALSE;
     }
 
-    public function _show_clock($for) { ?>
+    public function show_clock($for) { ?>
         <script type="text/javascript">
             var TimeLimit = new Date('<?php echo $this->_get_time_limit(); ?>');
             var forForm = '<?php echo $for; ?>';

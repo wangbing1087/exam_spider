@@ -114,8 +114,8 @@ function exam_spider_edit_question($form, &$form_state, $question_id) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
   $form = $exam_options = array();
-  $allExam = exam_spider_get_exam();
-  foreach ($allExam as $option) {
+  $allexam = exam_spider_get_exam();
+  foreach ($allexam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
 
