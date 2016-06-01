@@ -495,8 +495,13 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
       }
     }
   }
-  $correctAnswers = $total_quest - $wrong_quest;
-  $form_state['storage']['exam_result'] = t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array('@score_obtain' => $score_obtain, '@total_marks' => $total_marks, '@correctAnswers' => $correctAnswers, '@wrong_quest' => $wrong_quest));
+  $correct_answers = $total_quest - $wrong_quest;
+  $form_state['storage']['exam_result'] = t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array(
+    '@score_obtain' => $score_obtain,
+    '@total_marks' => $total_marks,
+    '@correctAnswers' => $correct_answers,
+    '@wrong_quest' => $wrong_quest,
+   ));
   $reg_id = db_insert('exam_results')
     ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
     ->values(array(
@@ -554,7 +559,7 @@ function exam_spider_exam_results() {
         $row->total,
         $row->obtain,
         $row->wrong,
-        format_date($row->created, $type = 'short', $format = '', $timezone = NULL, $langcode = NULL),
+        format_date($row->created, $type = 'short'),
       ),
     );
     $i++;
