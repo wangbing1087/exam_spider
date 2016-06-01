@@ -501,7 +501,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
     '@total_marks' => $total_marks,
     '@correctAnswers' => $correct_answers,
     '@wrong_quest' => $wrong_quest,
-   ));
+  ));
   $reg_id = db_insert('exam_results')
     ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
     ->values(array(
@@ -559,7 +559,7 @@ function exam_spider_exam_results() {
         $row->total,
         $row->obtain,
         $row->wrong,
-        format_date($row->created, $type = 'short'),
+        format_date($row->created, 'short'),
       ),
     );
     $i++;
