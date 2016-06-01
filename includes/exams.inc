@@ -97,7 +97,7 @@ function exam_spider_add_exam($form, &$form_state) {
   );
   $form['examsettings']['exam_duration'] = array(
     '#title'         => t('@examSpiderExamTitle Duration', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#description'   => t('Time duration in minutes.'),
+    '#description'   => t('@examSpiderExamTitle time duration in minutes.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
     '#type'          => 'textfield',
     '#maxlength'     => '10',
     '#size'          => 10,
@@ -157,6 +157,7 @@ function exam_spider_add_exam_submit(&$form, &$form_state) {
       'status',
       'negative_mark',
       'random_quest',
+      'exam_duration',
       'created',
       'changed',
     ))
@@ -173,7 +174,8 @@ function exam_spider_add_exam_submit(&$form, &$form_state) {
       'changed'          => REQUEST_TIME,
     ))
     ->execute();
-  drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName' => $form_state['values']['exam_name'])));
+
+  drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
   drupal_goto('admin/structure/' . EXAM_SPIDER_EXAM_URL);
   return $form;
 
@@ -276,7 +278,7 @@ function exam_spider_edit_exam_submit(&$form, &$form_state) {
     ))
     ->condition('id', $form_state['values']['exam_id'], '=')
     ->execute();
-  drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, 'examName' => $form_state['values']['exam_name'])));
+  drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
   return $form;
 
 }
@@ -309,7 +311,7 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
       ->condition('examid', $exam_id, '=')
       ->execute();
 
-    drupal_set_message(t('EXAM-%exam_id has been deleted.', array('%exam_id' => $exam_id)));
+    drupal_set_message(t('@examSpiderExamTitle-%exam_id has been deleted.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '%exam_id' => $exam_id)));
   }
 }
 
@@ -368,8 +370,9 @@ function exam_spider_exam_start() {
  */
 function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   if (isset($form_state['storage']['exam_result'])) {
+    drupal_set_title(t('@examSpiderExamTitle Score', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
     $form['exam_result_score'] = array(
-      '#markup' => t('@examResult', array('@examResult' => $form_state['storage']['exam_result'])),
+      '#markup' => $form_state['storage']['exam_result'],
     );
   }
   else {
@@ -417,7 +420,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
             '#options' => $options,
             '#title'   => t('@question', array('@question' => $value->question)),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-            '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
+            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">Next</a></li>',
           );
         }
         else {
@@ -426,7 +429,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
             '#title'   => t('@question', array('@question' => $value->question)),
             '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-            '#suffix'  => ' <a class="exam_spider_slide_next" href="javascript:void(0);">Next</a></li>',
+            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">Next</a></li>',
           );
         }
       }
@@ -443,6 +446,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
     }
     $form['#suffix'] = $output;
   }
+  $form['#redirect'] = FALSE;
   return $form;
 }
 
@@ -491,8 +495,8 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
       }
     }
   }
-
-  $form_state['storage']['exam_result'] = 'You have got ' . $score_obtain . ' marks out of ' . $total_marks . ' <br/>Correct Answer(s) ' . ($total_quest - $wrong_quest) . '<br/>Wrong Answer(s) ' . $wrong_quest;
+  $correctAnswers = $total_quest - $wrong_quest;
+  $form_state['storage']['exam_result'] = t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array('@score_obtain' => $score_obtain, '@total_marks' => $total_marks, '@correctAnswers' => $correctAnswers, '@wrong_quest' => $wrong_quest));
   $reg_id = db_insert('exam_results')
     ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
     ->values(array(
@@ -505,7 +509,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
     ))
     ->execute();
   $form_state['rebuild'] = TRUE;
-  drupal_set_message(t('Your test has submitted successfully and your REG id is REG-@reg_id.', array('@reg_id' => $reg_id)));
+  drupal_set_message(t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id)));
 }
 
 /**
@@ -520,7 +524,7 @@ function exam_spider_exam_results() {
     array('data' => 'Total Marks', 'field' => 'total'),
     array('data' => 'Obtain Marks', 'field' => 'obtain'),
     array('data' => 'Wrong', 'field' => 'wrong'),
-
+    array('data' => 'Date', 'field' => 'created'),
   );
   $query = db_select("exam_results", "er")
     ->extend('PagerDefault')
@@ -534,6 +538,7 @@ function exam_spider_exam_results() {
       'total',
       'obtain',
       'wrong',
+      'created',
     ));
   $results = $query->execute();
   $rows = array();
@@ -549,6 +554,7 @@ function exam_spider_exam_results() {
         $row->total,
         $row->obtain,
         $row->wrong,
+        format_date($row->created, $type = 'short', $format = '', $timezone = NULL, $langcode = NULL),
       ),
     );
     $i++;
