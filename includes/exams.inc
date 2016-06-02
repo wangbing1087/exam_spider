@@ -162,9 +162,6 @@ function exam_spider_add_exam_validate($form, &$form_state) {
   if (!is_numeric($form_state['values']['re_attempt'])) {
     form_set_error('re_attempt', t('You must enter a positive integer value for Re-attempt @examSpiderExamTitle time.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
-  
-  
-
 }
 
 /**
@@ -315,17 +312,17 @@ function exam_spider_edit_exam_submit(&$form, &$form_state) {
   global $user;
   db_update('exam_list')
     ->fields(array(
-      'exam_name'        => $form_state['values']['exam_name'],
-      'exam_description' => $form_state['values']['exam_description'],
-      'uid'              => $user->uid,
-      'exam_duration'    => $form_state['values']['exam_duration'],
-      'total_marks'      => $form_state['values']['total_marks'],
-      'random_quest'     => $form_state['values']['random_quest'],
-      'negative_mark'    => $form_state['values']['negative_mark'],
-      'negative_mark_per'=> $form_state['values']['negative_mark_per'],
-      're_attempt'       => $form_state['values']['re_attempt'],
-      'status'           => $form_state['values']['status'],
-      'changed'          => REQUEST_TIME,
+      'exam_name'         => $form_state['values']['exam_name'],
+      'exam_description'  => $form_state['values']['exam_description'],
+      'uid'               => $user->uid,
+      'exam_duration'     => $form_state['values']['exam_duration'],
+      'total_marks'       => $form_state['values']['total_marks'],
+      'random_quest'      => $form_state['values']['random_quest'],
+      'negative_mark'     => $form_state['values']['negative_mark'],
+      'negative_mark_per' => $form_state['values']['negative_mark_per'],
+      're_attempt'        => $form_state['values']['re_attempt'],
+      'status'            => $form_state['values']['status'],
+      'changed'           => REQUEST_TIME,
     ))
     ->condition('id', $form_state['values']['exam_id'], '=')
     ->execute();
@@ -523,7 +520,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
   $total_quest = count($form_state['values']['question']);
   $mark_per_quest = ($total_marks / $total_quest);
   $re_attempt =  $exam_data['re_attempt'];
-  $user_last_result = any_exam_last_result($form_state['values']['exam_id']);
+  $user_last_result = exam_spider_any_exam_last_result($form_state['values']['exam_id']);
   $user_last_attempt_timestamp = $user_last_result['created'];
   $re_attempt_timestamp =  strtotime('+'.$re_attempt.' day',  $user_last_attempt_timestamp);
   if($re_attempt_timestamp > REQUEST_TIME){

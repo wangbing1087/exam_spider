@@ -153,7 +153,7 @@ function exam_spider_get_question($question_id = '') {
 /**
  * Get any user last result for any exam.
  */
-function any_exam_last_result($exam_id = '') {
+function exam_spider_any_exam_last_result($exam_id = '') {
   global $user;
   if (is_numeric($exam_id)) {
     $query = db_select("exam_results", "er")

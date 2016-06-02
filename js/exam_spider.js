@@ -17,7 +17,7 @@
           $('.answer.form-checkbox').attr('disabled', 'disabled');
           $(this).removeAttr('disabled');
         }
-        else{
+        else {
           $('.answer.form-checkbox').removeAttr('disabled');
         }
       }
