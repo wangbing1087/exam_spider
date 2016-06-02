@@ -519,15 +519,15 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
   $negative_mark_per = $exam_data['negative_mark_per'];
   $total_quest = count($form_state['values']['question']);
   $mark_per_quest = ($total_marks / $total_quest);
-  $re_attempt =  $exam_data['re_attempt'];
+  $re_attempt = $exam_data['re_attempt'];
   $user_last_result = exam_spider_any_exam_last_result($form_state['values']['exam_id']);
   $user_last_attempt_timestamp = $user_last_result['created'];
-  $re_attempt_timestamp =  strtotime('+'.$re_attempt.' day',  $user_last_attempt_timestamp);
-  if($re_attempt_timestamp > REQUEST_TIME){
-    $form_state['storage']['re_exam_warning'] = t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.',  array(
+  $re_attempt_timestamp = strtotime('+'.$re_attempt.' day', $user_last_attempt_timestamp);
+  if($re_attempt_timestamp > REQUEST_TIME) {
+    $form_state['storage']['re_exam_warning'] = t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
     '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@re_attempt' => $re_attempt));
   }
-  else{
+  else {
     $negative_marking_number = (($mark_per_quest * $negative_mark_per) / 100);
     foreach ($form_state['values']['question'] as $key => $answervalues) {
       $question_data = exam_spider_get_question($key);
@@ -543,7 +543,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
           $score_obtain += $mark_per_quest;
         }
         else {
-          if($negative_mark == 1) {
+          if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;
           }
           $wrong_quest += 1;
@@ -555,7 +555,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
           $score_obtain += $mark_per_quest;
         }
         else {
-          if($negative_mark == 1) {
+          if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;
           }
           $wrong_quest += 1;
@@ -580,7 +580,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
         'created' => REQUEST_TIME,
       ))
       ->execute();
-    drupal_set_message(t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id))); 
+    drupal_set_message(t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id)));
   }
   $form_state['rebuild'] = TRUE;
 }
