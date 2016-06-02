@@ -522,10 +522,12 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
   $re_attempt = $exam_data['re_attempt'];
   $user_last_result = exam_spider_any_exam_last_result($form_state['values']['exam_id']);
   $user_last_attempt_timestamp = $user_last_result['created'];
-  $re_attempt_timestamp = strtotime('+'.$re_attempt.' day', $user_last_attempt_timestamp);
-  if($re_attempt_timestamp > REQUEST_TIME) {
+  $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
+  if ($re_attempt_timestamp > REQUEST_TIME) {
     $form_state['storage']['re_exam_warning'] = t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
-    '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@re_attempt' => $re_attempt));
+      '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,
+      '@re_attempt' => $re_attempt,
+    ));
   }
   else {
     $negative_marking_number = (($mark_per_quest * $negative_mark_per) / 100);
