@@ -17,6 +17,9 @@
           $('.answer.form-checkbox').attr('disabled', 'disabled');
           $(this).removeAttr('disabled');
         }
+        else{
+          $('.answer.form-checkbox').removeAttr('disabled');
+        }
       }
     });
     function removedisable() {

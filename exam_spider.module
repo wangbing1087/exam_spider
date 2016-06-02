@@ -89,8 +89,8 @@ function exam_spider_menu() {
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 3,
   ) + $exam_base;
-  $items['admin/structure/question/add_question/%'] = array(
-    'title'          => 'Add questions to ' . EXAM_SPIDER_EXAM_TITLE,
+  $items['admin/structure/question/add/%'] = array(
+    'title'          => 'Add Question',
     'page callback'  => 'drupal_get_form',
     'page arguments' => array('exam_spider_add_question', 4),
     'type'           => MENU_LOCAL_TASK,
@@ -147,5 +147,24 @@ function exam_spider_get_question($question_id = '') {
       ->fields("eq");
     $query = $query->execute();
     return $query->fetchAll();
+  }
+}
+
+/**
+ * Get any user last result for any exam.
+ */
+function any_exam_last_result($exam_id = '') {
+  global $user;
+  if (is_numeric($exam_id)) {
+    $query = db_select("exam_results", "er")
+      ->fields("er")
+      ->condition('examid', $exam_id, '=')
+      ->orderBy('id', 'DESC')
+      ->condition('uid', $user->uid, '=');
+    $query = $query->execute();
+    return $query->fetchAssoc();
+  }
+  else {
+    return FALSE;
   }
 }

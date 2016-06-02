@@ -49,14 +49,26 @@ function exam_spider_schema() {
         'not null'    => TRUE,
         'default'     => 0,
       ),
+      'random_quest'     => array(
+        'description' => 'Random question displaty for this exam.',
+        'type'        => 'int',
+        'not null'    => TRUE,
+        'default'     => 0,
+      ),
       'negative_mark'    => array(
         'description' => 'negative marking enable for exam.',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
       ),
-      'random_quest'     => array(
-        'description' => 'Random question displaty for this exam.',
+      'negative_mark_per'      => array(
+        'description' => 'negative marking %',
+        'type'        => 'int',
+        'not null'    => TRUE,
+        'default'     => 0,
+      ),
+      're_attempt'      => array(
+        'description' => 'Exam re attempt time in days',
         'type'        => 'int',
         'not null'    => TRUE,
         'default'     => 0,
