@@ -420,6 +420,18 @@ function exam_spider_exam_start() {
  * Exam continue page callbacks.
  */
 function exam_spider_exam_continue($form, &$form_state, $exam_id) {
+  $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
+  $exam_data = exam_spider_get_exam($exam_id);
+  $re_attempt = $exam_data['re_attempt'];
+  $user_last_result = exam_spider_any_exam_last_result($exam_id);
+  $user_last_attempt_timestamp = $user_last_result['created'];
+  $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
+  if ($re_attempt_timestamp > REQUEST_TIME) {
+    $form_state['storage']['re_exam_warning'] = t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
+      '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,
+      '@re_attempt' => $re_attempt,
+    ));
+  }
   if (isset($form_state['storage']['exam_result'])) {
     drupal_set_title(t('@examSpiderExamTitle Score', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
     $form['exam_result_score'] = array(
@@ -433,12 +445,10 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
     );
   }
   else {
-    $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
     $output = '';
     $form['#prefix'] = '<div id="exam_timer"></div>';
     drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
     drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
-    $exam_data = exam_spider_get_exam($exam_id);
     if ($exam_data['status'] == 0) {
       return drupal_access_denied();
     }

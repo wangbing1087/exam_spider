@@ -1,5 +1,5 @@
 name = Exam Spider
-description = Provides Exam with four options.
+description = Provides Exam with single and multiple options with time clock as well as provide negative marking.
 core = 7.x
 package = Other
 ; Information added by Drupal.org packaging script on 2016-04-26

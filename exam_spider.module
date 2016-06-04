@@ -8,8 +8,8 @@
 /**
  * Define Exam variable for Exam title and Path.
  */
-define('EXAM_SPIDER_EXAM_URL', 'quizspider');
-define('EXAM_SPIDER_EXAM_TITLE', 'Quiz');
+define('EXAM_SPIDER_EXAM_URL', 'examspider');
+define('EXAM_SPIDER_EXAM_TITLE', 'Exam');
 
 /**
  * Hook_perm() for Exam Spider permissions.
