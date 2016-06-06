@@ -237,6 +237,7 @@ function exam_spider_edit_exam($form, &$form_state, $exam_id) {
   );
   $form['examsettings']['exam_duration'] = array(
     '#title'         => t('@examSpiderExamTitle Duration', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+    '#description'   => t('@examSpiderExamTitle time duration in minutes.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
     '#type'          => 'textfield',
     '#maxlength'     => '10',
     '#size'          => 10,
@@ -610,6 +611,7 @@ function exam_spider_exam_results() {
     array('data' => 'Obtain Marks', 'field' => 'obtain'),
     array('data' => 'Wrong', 'field' => 'wrong'),
     array('data' => 'Date', 'field' => 'created'),
+    array('data' => "Operations"),
   );
   $query = db_select("exam_results", "er")
     ->extend('PagerDefault')
@@ -631,6 +633,7 @@ function exam_spider_exam_results() {
   foreach ($results as $row) {
     $user_data = user_load($row->uid);
     $exam_data = exam_spider_get_exam($row->examid);
+    $destination = drupal_get_destination();
     $rows[] = array(
       'data' => array(
         t('REG -') . $row->id,
@@ -640,6 +643,7 @@ function exam_spider_exam_results() {
         $row->obtain,
         $row->wrong,
         format_date($row->created, 'short'),
+        l(t('Delete'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/' . $row->id . '/delete', array('query' => array($destination))),
       ),
     );
     $i++;
@@ -660,4 +664,32 @@ function exam_spider_clock($formid) {
   require_once drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php';
   $clock = new ExamSpiderDigitalClock();
   return $clock->showClock($formid);
+}
+
+/**
+ * Delete exam result confirm page callbacks.
+ */
+function exam_spider_exam_result_delete_confirm($form, &$form_state, $result_id) {
+  $form['result_id'] = array('#type' => 'value', '#value' => $result_id);
+  $path = 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results';
+  return confirm_form($form,
+    t('Are you sure you want to delete REG - @exam_name  result ?', array('@exam_name' => $result_id)),
+    $path,
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
+}
+
+/**
+ * Delete exam confirm submit page callbacks.
+ */
+function exam_spider_exam_result_delete_confirm_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    $result_id = $form_state['values']['result_id'];
+    db_delete('exam_results')
+      ->condition('id', $result_id, '=')
+      ->execute();
+    drupal_set_message(t('REG - @exam_name result has been deleted successfully.', array('@exam_name' => $result_id)));
+  }
 }

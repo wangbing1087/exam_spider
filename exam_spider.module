@@ -89,6 +89,12 @@ function exam_spider_menu() {
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 3,
   ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/delete'] = array(
+    'title'          => 'Delete Result',
+    'page callback'  => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_result_delete_confirm', 4),
+    'type'           => MENU_CALLBACK,
+  ) + $exam_base;
   $items['admin/structure/question/add/%'] = array(
     'title'          => 'Add Question',
     'page callback'  => 'drupal_get_form',
