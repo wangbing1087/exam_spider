@@ -601,8 +601,39 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
 /**
  * Exam results page callbacks.
  */
-function exam_spider_exam_results() {
+function exam_spider_exam_results($form, &$form_state) {
+  drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
   $output = '';
+  $exam_names = array();
+  $exams_data = exam_spider_get_exam();
+
+  foreach ($exams_data as $exam_name) {
+    $exam_names[$exam_name->id] = $exam_name->exam_name;
+  }
+  $form['#method'] = 'get';
+  $form['filter'] = array(
+    '#type'        => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed'   => TRUE,
+    '#title'       => t('Filter option'),
+    '#attributes'  => array('class' => array('container-inline')),
+  );
+
+  $form['filter']['exam_name'] = array(
+    '#type'          => 'select',
+    '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+    '#options'       => $exam_names,
+    '#default_value' => isset($_GET['exam_name']) ? $_GET['exam_name'] : NULL,
+  );
+
+  $form['filter']['submit'] = array(
+  '#type'  => 'submit',
+  '#value' => t('Filter'),
+  );
+  $form['filter']['reset_button'] = array(
+    '#markup' => l(t('Reset'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results', array('attributes' => array('class' => array('button')))),
+  );
+
   $header = array(
     array('data' => 'REG Id', 'field' => 'id', 'sort' => 'desc'),
     array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'examid'),
@@ -627,6 +658,9 @@ function exam_spider_exam_results() {
       'wrong',
       'created',
     ));
+  if (isset($_GET['exam_name'])) {
+    $query->condition('examid', $_GET['exam_name']);
+  }
   $results = $query->execute();
   $rows = array();
   $i = 0;
@@ -643,18 +677,22 @@ function exam_spider_exam_results() {
         $row->obtain,
         $row->wrong,
         format_date($row->created, 'short'),
-        l(t('Delete'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/' . $row->id . '/delete', array('query' => array($destination))),
+        l(t('Delete'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/' . $row->id . '/delete', array('query' => array($destination))) . ' | ' . l(t('Send Mail'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/' . $row->examid . '/' . $row->uid . '/mail'),
       ),
     );
     $i++;
   }
-  $output .= theme('table', array(
-    'header' => $header,
-    'rows'   => $rows,
-    'empty'  => t('No @examSpiderExamTitle attempt by any user.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-  ));
-  $output .= theme('pager');
-  return ($output);
+  $form['table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No @examSpiderExamTitle result found.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+  );    
+  $form['pager'] = array('#markup' => theme('pager'));
+  $form['results_table'] = array(
+    '#markup' => $output,
+  );
+  return $form;
 }
 
 /**
@@ -693,3 +731,49 @@ function exam_spider_exam_result_delete_confirm_submit($form, &$form_state) {
     drupal_set_message(t('REG - @exam_name result has been deleted successfully.', array('@exam_name' => $result_id)));
   }
 }
+
+/**
+ * Send result score card via mail.
+ */
+function exam_spider_exam_result_mail($exam_id, $to_uid) {
+  $exam_result_data = exam_spider_any_exam_last_result($exam_id, $to_uid);
+  $user_data = user_load($to_uid);
+  $exam_data = exam_spider_get_exam($exam_id);
+
+  $message = t('<b>You have got @score_obtain marks out of @total_marks<br/>Wrong Answer(s) @wrong_quest<b>', array(
+    '@score_obtain'   => $exam_result_data['obtain'],
+    '@total_marks'    => $exam_result_data['total'],
+    '@wrong_quest'    => $exam_result_data['wrong'],
+  ));
+
+  $module = 'exam_spider';
+  $key = 'exam_spider_result';
+  $from = variable_get('site_mail', 'admin@example.com');
+  $to = $user_data->mail;
+  $params = array(
+    'body'    => $message,
+    'subject' => 'Eaxam Result for ' . $exam_data['exam_name'],
+    'headers' => 'simple',
+  );
+  $result = drupal_mail($module, $key, $to, language_default(), $params, $from, TRUE);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Your mail has been sent.'));
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your mail and it was not sent.'), 'error');
+  }
+  drupal_goto('admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results');
+}
+
+/**
+ * Hook_mail() for Exam Spider Result Mail.
+ */
+function exam_spider_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'exam_spider_result':
+      $message['subject'] = t($params['subject']);
+      $message['body'][] = $params['body'];
+      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+    break;
+  }
+ }

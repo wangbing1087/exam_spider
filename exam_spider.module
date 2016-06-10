@@ -85,7 +85,8 @@ function exam_spider_menu() {
   ) + $exam_base_user;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
     'title'         => EXAM_SPIDER_EXAM_TITLE . ' Results',
-    'page callback' => 'exam_spider_exam_results',
+    'page callback'  => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_results'),
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 3,
   ) + $exam_base;
@@ -93,6 +94,12 @@ function exam_spider_menu() {
     'title'          => 'Delete Result',
     'page callback'  => 'drupal_get_form',
     'page arguments' => array('exam_spider_exam_result_delete_confirm', 4),
+    'type'           => MENU_CALLBACK,
+  ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/%/mail'] = array(
+    'title'          => 'Send Score Card of Result',
+    'page callback'  => 'exam_spider_exam_result_mail',
+    'page arguments' => array(4, 5),
     'type'           => MENU_CALLBACK,
   ) + $exam_base;
   $items['admin/structure/question/add/%'] = array(
@@ -126,7 +133,6 @@ function exam_spider_get_exam($exam_id = '') {
       ->condition('id', $exam_id, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
-
   }
   else {
     $query = db_select("exam_list", "el")
@@ -146,7 +152,6 @@ function exam_spider_get_question($question_id = '') {
       ->condition('id', $question_id, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
-
   }
   else {
     $query = db_select("exam_questions", "eq")
@@ -159,14 +164,17 @@ function exam_spider_get_question($question_id = '') {
 /**
  * Get any user last result for any exam.
  */
-function exam_spider_any_exam_last_result($exam_id = '') {
-  global $user;
+function exam_spider_any_exam_last_result($exam_id = '', $uid = '') {
+  if ($uid == '') {
+    global $user;
+    $uid = $user->uid;
+  }
   if (is_numeric($exam_id)) {
     $query = db_select("exam_results", "er")
       ->fields("er")
       ->condition('examid', $exam_id, '=')
       ->orderBy('id', 'DESC')
-      ->condition('uid', $user->uid, '=');
+      ->condition('uid', $uid, '=');
     $query = $query->execute();
     return $query->fetchAssoc();
   }
