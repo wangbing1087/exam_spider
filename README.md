@@ -10,11 +10,12 @@ time in days, User can reattempt exam after that time period.
  * Set exam total marks.
  * Display random questions for a specific exam.
  * Published/Unpublished exam.
- * Negative marking enable and set negative marking in percentage for each question.
+ * Negative marking enable and set negative marking in percentage
+  for each question.
  * User can retake exam after a specific timer period(days).
  * Single and multiple answer available.
  * Exam results dashboard.
 
  ### Exams list user page
- *Any user call access all exam list to start exam.
+ *Any user can access all exams list to start exam using below url:
 examspider/start

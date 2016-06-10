@@ -627,8 +627,8 @@ function exam_spider_exam_results($form, &$form_state) {
   );
 
   $form['filter']['submit'] = array(
-  '#type'  => 'submit',
-  '#value' => t('Filter'),
+    '#type'  => 'submit',
+    '#value' => t('Filter'),
   );
   $form['filter']['reset_button'] = array(
     '#markup' => l(t('Reset'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results', array('attributes' => array('class' => array('button')))),
@@ -687,7 +687,7 @@ function exam_spider_exam_results($form, &$form_state) {
     '#header' => $header,
     '#rows' => $rows,
     '#empty' => t('No @examSpiderExamTitle result found.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-  );    
+  );
   $form['pager'] = array('#markup' => theme('pager'));
   $form['results_table'] = array(
     '#markup' => $output,
@@ -771,9 +771,9 @@ function exam_spider_exam_result_mail($exam_id, $to_uid) {
 function exam_spider_mail($key, &$message, $params) {
   switch ($key) {
     case 'exam_spider_result':
-      $message['subject'] = t($params['subject']);
+      $message['subject'] = $params['subject'];
       $message['body'][] = $params['body'];
       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
-    break;
+      break;
   }
- }
+}
