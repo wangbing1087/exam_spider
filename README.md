@@ -17,5 +17,5 @@ time in days, User can reattempt exam after that time period.
  * Exam results dashboard.
 
  ### Exams list user page
- *Any user can access all exams list to start exam using below url:
+ * Any user can access all exams list to start exam using below url:
 examspider/start
