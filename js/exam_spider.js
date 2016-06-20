@@ -18,9 +18,15 @@
             var mins = Math.floor(date / 60);
             date = date - (mins * 60);
             var secs = date;
-            if (hours < 10) {hours = '0' + hours;}
-            if (mins < 10) {mins = '0' + mins;}
-            if (secs < 10) {secs = '0' + secs;}
+            if (hours < 10) {
+              hours = '0' + hours;
+            }
+            if (mins < 10) {
+              mins = '0' + mins;
+            }
+            if (secs < 10) {
+              secs = '0' + secs;
+            }
             var elem = document.getElementById('exam_timer');
             if (typeof elem !== 'undefined' && elem !== null && parseInt(hours + mins + secs) !== 0) {
               document.getElementById('exam_timer').innerHTML = hours + ':' + mins + ':' + secs;
@@ -83,5 +89,5 @@
         exam_spider_slider();
       });
     }
-  }
+  };
 })(jQuery);
