@@ -6,9 +6,9 @@
 (function ($) {
   'use strict';
   Drupal.behaviors.exam_spider = { attach: function (context, settings) {
-    if( !jQuery.countdownto ){
-      jQuery.extend( {
-        countdownto: function() { 
+    if(!jQuery.countdownto) {
+      jQuery.extend({
+        countdownto: function () {
           var TimeLimit = new Date(Drupal.settings.getTimeLimit);
           var forForm = Drupal.settings.forForm;
           var date = Math.round((TimeLimit - new Date()) / 1000);
