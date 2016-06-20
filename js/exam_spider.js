@@ -1,11 +1,37 @@
 /**
  * @file
- * Exam custom slider abd multiple answer checkbox enable/disable.
+ * Exam custom slider multiple answer checkbox enable/disable.
  */
 
 (function ($) {
   'use strict';
-  $('document').ready(function () {
+  Drupal.behaviors.exam_spider = { attach: function (context, settings) {
+    if( !jQuery.countdownto ){
+      jQuery.extend( {
+        countdownto: function() { 
+          var TimeLimit = new Date(Drupal.settings.getTimeLimit);
+          var forForm = Drupal.settings.forForm;
+          var date = Math.round((TimeLimit - new Date()) / 1000);
+          var hours = Math.floor(date / 3600);
+          date = date - (hours * 3600);
+          var mins = Math.floor(date / 60);
+          date = date - (mins * 60);
+          var secs = date;
+          if (hours < 10) hours = '0' + hours;
+          if (mins < 10) mins = '0' + mins;
+          if (secs < 10) secs = '0' + secs;
+          var elem = document.getElementById('exam_timer')
+          if (typeof elem !== 'undefined' && elem !== null && parseInt(hours + mins + secs) != 0) {
+            document.getElementById('exam_timer').innerHTML = hours + ':' + mins + ':' + secs;
+          }
+          if (hours == '00' && mins == '00' && secs == '00') {
+            document.getElementById('slider-next').disabled = true
+            document.getElementById(forForm).submit();
+          }
+          setTimeout(jQuery.countdownto, 1000);
+        }
+      });
+    }
     removedisable();
     $('#edit-multi-answer').click(function () {
       $('.answer.form-checkbox').removeAttr('checked');
@@ -55,5 +81,5 @@
     $('.exam_spider_slide_next').click(function () {
       exam_spider_slider();
     });
-  });
+  }}
 })(jQuery);

@@ -83,7 +83,7 @@ function exam_spider_add_question_validate(&$form, &$form_state) {
  * Add question submit page callbacks.
  */
 function exam_spider_add_question_submit(&$form, &$form_state) {
-  $answer = '';
+  $answer = NULL;
   for ($i = 1; $i <= 4; $i++) {
     if ($form_state['values']['answer' . $i] == 1) {
       $answer .= 'opt' . $i . '-';
@@ -205,7 +205,7 @@ function exam_spider_edit_question_validate(&$form, &$form_state) {
  * Edit question submit page callbacks.
  */
 function exam_spider_edit_question_submit(&$form, &$form_state) {
-  $answer = '';
+  $answer = NULL;
   for ($i = 1; $i <= 4; $i++) {
     if ($form_state['values']['answer' . $i] == 1) {
       $answer .= 'opt' . $i . '-';
@@ -267,7 +267,7 @@ function exam_spider_question_delete_confirm_submit($form, &$form_state) {
  * Get Question list using exam id function.
  */
 function exam_spider_get_questions($exam_id) {
-  $output = '';
+  $output = NULL;
   if (is_numeric($exam_id)) {
     $header = array(
       array('data' => 'Question', 'field' => 'question'),

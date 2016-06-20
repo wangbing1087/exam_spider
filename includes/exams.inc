@@ -9,7 +9,7 @@
  * Exam Spider dashboard page callbacks.
  */
 function exam_spider_dashboard() {
-  $output = '';
+  $output = NULL;
   $output .= l(t('+ Create @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add', array('html' => TRUE));
   $header = array(
     array(
@@ -371,7 +371,7 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
  * All exam listed page to start exam page callbacks.
  */
 function exam_spider_exam_start() {
-  $output = '';
+  $output = NULL;
   $header = array(
     array('data' => EXAM_SPIDER_EXAM_TITLE . ' Name', 'field' => 'exam_name'),
     array(
@@ -446,7 +446,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
     );
   }
   else {
-    $output = '';
+    $output = NULL;
     $form['#prefix'] = '<div id="exam_timer"></div>';
     drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
     drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
@@ -603,7 +603,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
  */
 function exam_spider_exam_results($form, &$form_state) {
   drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
-  $output = '';
+  $output = NULL;
   $exam_names = array();
   $exams_data = exam_spider_get_exam();
 

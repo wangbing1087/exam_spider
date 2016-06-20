@@ -126,7 +126,7 @@ function exam_spider_menu() {
 /**
  * Get exam list using exam id and without exam id complete exam list.
  */
-function exam_spider_get_exam($exam_id = '') {
+function exam_spider_get_exam($exam_id = NULL) {
   if (is_numeric($exam_id)) {
     $query = db_select("exam_list", "el")
       ->fields("el")
@@ -145,7 +145,7 @@ function exam_spider_get_exam($exam_id = '') {
 /**
  * Get questions using question id and without question id questions list.
  */
-function exam_spider_get_question($question_id = '') {
+function exam_spider_get_question($question_id = NULL) {
   if (is_numeric($question_id)) {
     $query = db_select("exam_questions", "eq")
       ->fields("eq")
@@ -164,8 +164,8 @@ function exam_spider_get_question($question_id = '') {
 /**
  * Get any user last result for any exam.
  */
-function exam_spider_any_exam_last_result($exam_id = '', $uid = '') {
-  if ($uid == '') {
+function exam_spider_any_exam_last_result($exam_id = NULL, $uid = NULL) {
+  if ($uid === NULL) {
     global $user;
     $uid = $user->uid;
   }
