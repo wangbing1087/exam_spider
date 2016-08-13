@@ -448,8 +448,8 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
   else {
     $output = NULL;
     $form['#prefix'] = '<div id="exam_timer"></div>';
-    drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
-    drupal_add_js(drupal_get_path('module', 'exam_spider') . '/js/exam_spider.js');
+    drupal_add_css(drupal_get_path('module', EXAM_SLIDER_MODULE_NAME) . '/css/exam_spider.css');
+    drupal_add_js(drupal_get_path('module', EXAM_SLIDER_MODULE_NAME) . '/js/exam_spider.js');
     if ($exam_data['status'] == 0) {
       return drupal_access_denied();
     }
@@ -602,7 +602,7 @@ function exam_spider_exam_continue_submit(&$form, &$form_state) {
  * Exam results page callbacks.
  */
 function exam_spider_exam_results($form, &$form_state) {
-  drupal_add_css(drupal_get_path('module', 'exam_spider') . '/css/exam_spider.css');
+  drupal_add_css(drupal_get_path('module', EXAM_SLIDER_MODULE_NAME) . '/css/exam_spider.css');
   $output = NULL;
   $exam_names = array();
   $exams_data = exam_spider_get_exam();
@@ -699,7 +699,7 @@ function exam_spider_exam_results($form, &$form_state) {
  * Exam clock function.
  */
 function exam_spider_clock($formid) {
-  require_once drupal_get_path('module', 'exam_spider') . '/includes/ExamSpiderDigitalClock.php';
+  require_once drupal_get_path('module', EXAM_SLIDER_MODULE_NAME) . '/includes/ExamSpiderDigitalClock.php';
   $clock = new ExamSpiderDigitalClock();
   return $clock->showClock($formid);
 }

@@ -39,27 +39,28 @@
           }
         });
       }
+      var answercheckbox = $('.answer.form-checkbox');
       removedisable();
       $('#edit-multi-answer').click(function () {
-        $('.answer.form-checkbox').removeAttr('checked');
-        $('.answer.form-checkbox').removeAttr('disabled');
+        answercheckbox.removeAttr('checked');
+        answercheckbox.removeAttr('disabled');
       });
-      $('.answer.form-checkbox').click(function () {
+      answercheckbox.click(function () {
         if (!$('#edit-multi-answer').is(':checked')) {
           if ($(this).is(':checked')) {
-            $('.answer.form-checkbox').attr('disabled', 'disabled');
+            answercheckbox.attr('disabled', 'disabled');
             $(this).removeAttr('disabled');
           }
           else {
-            $('.answer.form-checkbox').removeAttr('disabled');
+            answercheckbox.removeAttr('disabled');
           }
         }
       });
       function removedisable() {
         if (!$('#edit-multi-answer').is(':checked')) {
-          $('.answer.form-checkbox').each(function (i) {
+          answercheckbox.each(function (i) {
             if ($('#edit-answer' + i).is(':checked')) {
-              $('.answer.form-checkbox').attr('disabled', 'disabled');
+              answercheckbox.attr('disabled', 'disabled');
               $('#edit-answer' + i).removeAttr('disabled');
             }
           });

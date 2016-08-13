@@ -10,6 +10,20 @@
  */
 define('EXAM_SPIDER_EXAM_URL', 'examspider');
 define('EXAM_SPIDER_EXAM_TITLE', 'Exam');
+define('EXAM_SLIDER_MODULE_NAME', 'exam_spider');
+
+/**
+ * Implements hook_help().
+ */
+function exam_spider_help($path, $arg) {
+ switch ($path) {
+ case 'admin/help#exam_spider':
+   $output = '';
+   $output .= '<h3>' . t('Exam Spider') . '</h3>';
+   $output .= '<p>' . t("Exam spider module provides exam or quiz with single and multiple answer(s) options in a question.This module also provide clock for exam, negative marking,Display Random Question,Exam Published or unpublished functionalities. Easily set reattempt exam time in days, User can reattempt exam after specified time period.") . '</p>';
+ return $output;
+   }
+ }
 
 /**
  * Hook_perm() for Exam Spider permissions.
