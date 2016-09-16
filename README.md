@@ -34,4 +34,3 @@ https://www.drupal.org/node/2771203
 ##MAINTAINERS
 Current maintainers:
  * sachin tyagi (sachintyagi99) - https://www.drupal.org/user/1816458
-

@@ -10,7 +10,7 @@
  */
 define('EXAM_SPIDER_EXAM_URL', 'examspider');
 define('EXAM_SPIDER_EXAM_TITLE', 'Exam');
-define('EXAM_SLIDER_MODULE_NAME', 'exam_spider');
+define('EXAM_SLIDER_EXAM_SLIDER', 'exam_spider');
 
 /**
  * Implements hook_help().
