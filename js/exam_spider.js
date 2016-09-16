@@ -32,7 +32,7 @@
               document.getElementById('exam_timer').innerHTML = hours + ':' + mins + ':' + secs;
             }
             if (hours === '00' && mins === '00' && secs === '00') {
-              document.getElementById('slider-next').disabled = true;
+               $('a.exam_spider_slide_next.button').disabled = true;
               document.getElementById(forForm).submit();
             }
             setTimeout(jQuery.countdownto, 1000);
