@@ -766,12 +766,12 @@ Many Thanks,
     'body' => array($body),
     'headers' => array(
       'From' => $from,
-      'Sender' => $from, 
+      'Sender' => $from,
       'Return-Path' => $from,
     ),
   );
   $system = drupal_mail_system($module, $my_mail_token);
-  // The format function must be called before calling the mail function. 
+  // The format function must be called before calling the mail function.
   $message = $system->format($message);
 
   if ($system->mail($message)) {
