@@ -747,13 +747,13 @@ Wrong Answer(s) @wrong_quest.
 
 Many Thanks,
 @sitename', array(
-    '@score_obtain'   => $exam_result_data['obtain'],
-    '@total_marks'    => $exam_result_data['total'],
-    '@wrong_quest'    => $exam_result_data['wrong'],
-    '@sitename'       => variable_get('site_name', 'Drupal'),
-    '@tomail'         => @$user_data->name,
+  '@score_obtain'   => $exam_result_data['obtain'],
+  '@total_marks'    => $exam_result_data['total'],
+  '@wrong_quest'    => $exam_result_data['wrong'],
+  '@sitename'       => variable_get('site_name', 'Drupal'),
+  '@tomail'         => @$user_data->name,
 
-  ));
+));
 
   $module = 'exam_spider';
   $my_mail_token = 'exam_spider_result';
