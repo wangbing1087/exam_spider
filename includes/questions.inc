@@ -9,8 +9,8 @@
  * Add question page callbacks.
  */
 function exam_spider_add_question($form, &$form_state, $default_sel) {
-  drupal_add_css(drupal_get_path('module', EXAM_SLIDER_EXAM_SLIDER) . '/css/exam_spider.css');
-  drupal_add_js(drupal_get_path('module', EXAM_SLIDER_EXAM_SLIDER) . '/js/exam_spider.js');
+  drupal_add_css(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/css/exam_spider.css');
+  drupal_add_js(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/js/exam_spider.js');
   $form = $exam_options = array();
   $form['#prefix'] = l(t('Back To @examSpiderExamTitle Dashboard', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), 'admin/structure/' . EXAM_SPIDER_EXAM_URL);
 
@@ -125,8 +125,8 @@ function exam_spider_add_question_submit(&$form, &$form_state) {
  * Edit question page callbacks.
  */
 function exam_spider_edit_question($form, &$form_state, $question_id) {
-  drupal_add_css(drupal_get_path('module', EXAM_SLIDER_EXAM_SLIDER) . '/css/exam_spider.css');
-  drupal_add_js(drupal_get_path('module', EXAM_SLIDER_EXAM_SLIDER) . '/js/exam_spider.js');
+  drupal_add_css(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/css/exam_spider.css');
+  drupal_add_js(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/js/exam_spider.js');
   $form = $exam_options = array();
   $all_exam = exam_spider_get_exam();
   foreach ($all_exam as $option) {
