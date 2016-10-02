@@ -49,14 +49,18 @@ function exam_spider_dashboard() {
     else {
       $status = 'Open';
     }
-    $user_data = user_load($row->uid);
+    $user_data = db_select('users', 'u')
+      ->fields('u', array('name'))
+      ->condition('uid', $row->uid,'=')
+      ->execute()
+      ->fetchAssoc();
     $destination = drupal_get_destination();
     $rows[] = array(
       'data' => array(
         EXAM_SPIDER_EXAM_TITLE . '-' . $row->id,
         l($row->exam_name, EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
-        $row->exam_description,
-        $user_data->name,
+        filter_xss($row->exam_description),
+        $user_data['name'],
         $status,
         l(t('Questions'), 'admin/structure/question/add/' . $row->id) . ' | ' . l(t('Edit'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/edit', array('query' => array($destination))) . ' | ' . l(t('Delete'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/delete', array('query' => array($destination))),
       ),
@@ -75,144 +79,28 @@ function exam_spider_dashboard() {
 /**
  * Add exam page callbacks.
  */
-function exam_spider_add_exam($form, &$form_state) {
-  $form = array();
-  $form['exam_name'] = array(
-    '#title'     => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#type'      => 'textfield',
-    '#maxlength' => '170',
-    '#required'  => TRUE,
-  );
-  $form['exam_description'] = array(
-    '#title'     => t('Description'),
-    '#type'      => 'textarea',
-    '#maxlength' => '550',
-  );
-  $form['examsettings'] = array(
-    '#type'        => 'fieldset',
-    '#title'       => t('@examSpiderExamTitle settings', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#collapsible' => TRUE,
-    '#collapsed'   => FALSE,
-
-  );
-  $form['examsettings']['exam_duration'] = array(
-    '#title'         => t('@examSpiderExamTitle Duration', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#description'   => t('@examSpiderExamTitle time duration in minutes.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#type'          => 'textfield',
-    '#maxlength'     => '10',
-    '#size'          => 10,
-    '#required'      => TRUE,
-    '#default_value' => 0,
-
-  );
-  $form['examsettings']['total_marks'] = array(
-    '#title'            => t('Total Marks'),
-    '#type'             => 'textfield',
-    '#maxlength'        => '10',
-    '#size'             => 10,
-    '#required'         => TRUE,
-    '#element_validate' => array('element_validate_integer_positive'),
-  );
-  $form['examsettings']['random_quest'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Display Random Question'),
-  );
-  $form['examsettings']['status'] = array(
-    '#type'          => 'checkbox',
-    '#title'         => t('Published'),
-    '#default_value' => 1,
-  );
-  $form['examsettings']['negative_mark'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Negative Marking'),
-  );
-  $form['examsettings']['negative_mark_per'] = array(
-    '#title'         => t('Negative mark %'),
-    '#description'   => t('@examSpiderExamTitle negative marking in %.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#type'          => 'textfield',
-    '#maxlength'     => '10',
-    '#size'          => 10,
-    '#default_value' => 0,
-  );
-  $form['examsettings']['re_attempt'] = array(
-    '#title'         => t('Re-attempt @examSpiderExamTitle time', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#description'   => t('Re-attempt @examSpiderExamTitle time in days.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#type'          => 'textfield',
-    '#maxlength'     => '10',
-    '#size'          => 10,
-    '#default_value' => 0,
-  );
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Submit'),
-  );
-  return $form;
-}
-
-/**
- * Add exam page validate callbacks.
- */
-function exam_spider_add_exam_validate($form, &$form_state) {
-  if (!is_numeric($form_state['values']['exam_duration'])) {
-    form_set_error('exam_duration', t('You must enter a positive integer value for @examSpiderExamTitle duration.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
-  }
-  if (!is_numeric($form_state['values']['negative_mark_per'])) {
-    form_set_error('negative_mark_per', t('You must enter a positive integer value for @examSpiderExamTitle negative marking.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
-  }
-  if (!is_numeric($form_state['values']['re_attempt'])) {
-    form_set_error('re_attempt', t('You must enter a positive integer value for Re-attempt @examSpiderExamTitle time.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
-  }
-}
-
-/**
- * Add exam page submit callbacks.
- */
-function exam_spider_add_exam_submit(&$form, &$form_state) {
-  global $user;
-  db_insert('exam_list')
-    ->fields(array(
-      'exam_name',
-      'exam_description',
-      'uid',
-      'exam_duration',
-      'total_marks',
-      'random_quest',
-      'negative_mark',
-      'negative_mark_per',
-      're_attempt',
-      'status',
-      'created',
-      'changed',
-    ))
-    ->values(array(
-      'exam_name'         => $form_state['values']['exam_name'],
-      'exam_description'  => $form_state['values']['exam_description'],
-      'uid'               => $user->uid,
-      'exam_duration'     => $form_state['values']['exam_duration'],
-      'total_marks'       => $form_state['values']['total_marks'],
-      'random_quest'      => $form_state['values']['random_quest'],
-      'negative_mark'     => $form_state['values']['negative_mark'],
-      'negative_mark_per' => $form_state['values']['negative_mark_per'],
-      're_attempt'        => $form_state['values']['re_attempt'],
-      'status'            => $form_state['values']['status'],
-      'created'           => REQUEST_TIME,
-      'changed'           => REQUEST_TIME,
-    ))
-    ->execute();
-
-  drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
-  drupal_goto('admin/structure/' . EXAM_SPIDER_EXAM_URL);
-  return $form;
-
+function exam_spider_add_exam() {
+  $values = array();
+  return drupal_get_form('exam_spider_exam_form', $values);
 }
 
 /**
  * Edit exam page callbacks.
  */
-function exam_spider_edit_exam($form, &$form_state, $exam_id) {
-  $values = exam_spider_get_exam($exam_id);
+function exam_spider_edit_exam($exam_id) {
+  $values = exam_spider_get_exam($exam_id);  
+  return drupal_get_form('exam_spider_exam_form', $values);
+}
+
+/**
+ * Exam Add/Update form.
+ */
+
+function exam_spider_exam_form($form, &$form_state, $values) {
   $form = array();
-  $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
+  if($values){
+    $form['exam_id'] = array('#type' => 'value', '#value' => $values['id']);
+  }
   $form['exam_name'] = array(
     '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
     '#type'          => 'textfield',
@@ -242,7 +130,7 @@ function exam_spider_edit_exam($form, &$form_state, $exam_id) {
     '#maxlength'     => '10',
     '#size'          => 10,
     '#required'      => TRUE,
-    '#default_value' => isset($values['exam_duration']) ? $values['exam_duration'] : NULL,
+    '#default_value' => isset($values['exam_duration']) ? $values['exam_duration'] : 0,
   );
   $form['examsettings']['total_marks'] = array(
     '#title'            => t('Total Marks'),
@@ -292,44 +180,80 @@ function exam_spider_edit_exam($form, &$form_state, $exam_id) {
 }
 
 /**
- * Edit exam validate page callbacks.
+ * Add/Update exam page validate callbacks.
  */
-function exam_spider_edit_exam_validate($form, &$form_state) {
-  if (!is_numeric($form_state['values']['exam_duration'])) {
-    form_set_error('exam_duration', t('You must enter a integer value for @examSpiderExamTitle duration.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
+function exam_spider_exam_form_validate($form, &$form_state) {
+  if ($form_state['values']['exam_duration'] !== '' && (!is_numeric($form_state['values']['exam_duration']) || intval($form_state['values']['exam_duration']) != $form_state['values']['exam_duration'] || $form_state['values']['exam_duration'] < 0)) {
+     form_set_error('exam_duration', t('@examSpiderExamTitle duration must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
-  if (!is_numeric($form_state['values']['negative_mark_per'])) {
-    form_set_error('negative_mark_per', t('You must enter a positive integer value for @examSpiderExamTitle negative marking.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
+  if ($form_state['values']['negative_mark_per'] !== '' && (!is_numeric($form_state['values']['negative_mark_per']) || intval($form_state['values']['negative_mark_per']) != $form_state['values']['negative_mark_per'] || $form_state['values']['negative_mark_per'] < 0)) {
+    form_set_error('negative_mark_per', t('@examSpiderExamTitle negative mark must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
-  if (!is_numeric($form_state['values']['re_attempt'])) {
-    form_set_error('re_attempt', t('You must enter a positive integer value for Re-attempt @examSpiderExamTitle time.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
+  if ($form_state['values']['re_attempt'] !== '' && (!is_numeric($form_state['values']['re_attempt']) || intval($form_state['values']['re_attempt']) != $form_state['values']['re_attempt'] || $form_state['values']['re_attempt'] < 0)) {
+    form_set_error('re_attempt', t('Re-attempt @examSpiderExamTitle time must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
 }
 
 /**
- * Edit exam submit page callbacks.
+ * Exam Add/Update form submit callbacks.
  */
-function exam_spider_edit_exam_submit(&$form, &$form_state) {
-  global $user;
-  db_update('exam_list')
-    ->fields(array(
-      'exam_name'         => $form_state['values']['exam_name'],
-      'exam_description'  => $form_state['values']['exam_description'],
-      'uid'               => $user->uid,
-      'exam_duration'     => $form_state['values']['exam_duration'],
-      'total_marks'       => $form_state['values']['total_marks'],
-      'random_quest'      => $form_state['values']['random_quest'],
-      'negative_mark'     => $form_state['values']['negative_mark'],
-      'negative_mark_per' => $form_state['values']['negative_mark_per'],
-      're_attempt'        => $form_state['values']['re_attempt'],
-      'status'            => $form_state['values']['status'],
-      'changed'           => REQUEST_TIME,
-    ))
-    ->condition('id', $form_state['values']['exam_id'], '=')
-    ->execute();
-  drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
-  return $form;
 
+function exam_spider_exam_form_submit($form, &$form_state) {
+  global $user;
+  if(arg(3) == 'add') {
+    db_insert('exam_list')
+      ->fields(array(
+        'exam_name',
+        'exam_description',
+        'uid',
+        'exam_duration',
+        'total_marks',
+        'random_quest',
+        'negative_mark',
+        'negative_mark_per',
+        're_attempt',
+        'status',
+        'created',
+        'changed',
+      ))
+      ->values(array(
+        'exam_name'         => $form_state['values']['exam_name'],
+        'exam_description'  => $form_state['values']['exam_description'],
+        'uid'               => $user->uid,
+        'exam_duration'     => $form_state['values']['exam_duration'],
+        'total_marks'       => $form_state['values']['total_marks'],
+        'random_quest'      => $form_state['values']['random_quest'],
+        'negative_mark'     => $form_state['values']['negative_mark'],
+        'negative_mark_per' => $form_state['values']['negative_mark_per'],
+        're_attempt'        => $form_state['values']['re_attempt'],
+        'status'            => $form_state['values']['status'],
+        'created'           => REQUEST_TIME,
+        'changed'           => REQUEST_TIME,
+      ))
+      ->execute();
+
+    drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
+  }
+  else{
+    db_update('exam_list')
+      ->fields(array(
+        'exam_name'         => $form_state['values']['exam_name'],
+        'exam_description'  => $form_state['values']['exam_description'],
+        'uid'               => $user->uid,
+        'exam_duration'     => $form_state['values']['exam_duration'],
+        'total_marks'       => $form_state['values']['total_marks'],
+        'random_quest'      => $form_state['values']['random_quest'],
+        'negative_mark'     => $form_state['values']['negative_mark'],
+        'negative_mark_per' => $form_state['values']['negative_mark_per'],
+        're_attempt'        => $form_state['values']['re_attempt'],
+        'status'            => $form_state['values']['status'],
+        'changed'           => REQUEST_TIME,
+      ))
+      ->condition('id', $form_state['values']['exam_id'], '=')
+      ->execute();
+    drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
+  }
+  $form_state['redirect'] = 'admin/structure/' . EXAM_SPIDER_EXAM_URL;
 }
 
 /**
@@ -665,14 +589,18 @@ function exam_spider_exam_results($form, &$form_state) {
   $rows = array();
   $i = 0;
   foreach ($results as $row) {
-    $user_data = user_load($row->uid);
+    $user_data = db_select('users', 'u')
+      ->fields('u', array('name'))
+      ->condition('uid', $row->uid,'=')
+      ->execute()
+      ->fetchAssoc();
     $exam_data = exam_spider_get_exam($row->examid);
     $destination = drupal_get_destination();
     $rows[] = array(
       'data' => array(
         t('REG -') . $row->id,
         $exam_data['exam_name'],
-        $user_data->name,
+        $user_data['name'],
         $row->total,
         $row->obtain,
         $row->wrong,
@@ -781,17 +709,4 @@ Many Thanks,
     drupal_set_message(t('There was a problem sending your mail and it was not sent.'), 'error');
   }
   drupal_goto('admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results');
-}
-
-/**
- * Hook_mail() for Exam Spider Result Mail.
- */
-function exam_spider_mail($key, &$message, $params) {
-  switch ($key) {
-    case 'exam_spider_result':
-      $message['subject'] = $params['subject'];
-      $message['body'][] = $params['body'];
-      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
-      break;
-  }
 }

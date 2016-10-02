@@ -8,141 +8,45 @@
 /**
  * Add question page callbacks.
  */
-function exam_spider_add_question($form, &$form_state, $default_sel) {
-  drupal_add_css(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/css/exam_spider.css');
-  drupal_add_js(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/js/exam_spider.js');
-  $form = $exam_options = array();
-  $form['#prefix'] = l(t('Back To @examSpiderExamTitle Dashboard', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), 'admin/structure/' . EXAM_SPIDER_EXAM_URL);
-
-  $all_exam = exam_spider_get_exam();
-  foreach ($all_exam as $option) {
-    $exam_options[$option->id] = $option->exam_name;
-  }
-  $form['#attributes'] = array('class' => array('questions-action'));
-  $form['selected_exam'] = array(
-    '#type'          => 'select',
-    '#title'         => 'Select Exam',
-    '#options'       => $exam_options,
-    '#default_value' => $default_sel,
-    '#required'      => TRUE,
-  );
-  $form['question_name'] = array(
-    '#title'     => t('Question Name'),
-    '#type'      => 'textfield',
-    '#maxlength' => '170',
-    '#required'  => TRUE,
-  );
-  $form['options'] = array(
-    '#type'        => 'fieldset',
-    '#title'       => t('Option settings'),
-    '#collapsible' => TRUE,
-    '#collapsed'   => TRUE,
-
-  );
-  $form['options']['multi_answer'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Enable Multiple Answers'),
-  );
-  for ($i = 1; $i <= 4; $i++) {
-    $form['options']['opt' . $i] = array(
-      '#title'     => t('Option @i', array('@i' => $i)),
-      '#type'      => 'textarea',
-      '#maxlength' => '550',
-      '#cols'      => 20,
-      '#rows'      => 1,
-      '#required'  => TRUE,
-      /*'#resizable' => FALSE,*/
-      '#prefix'    => '<div class="option_set">',
-    );
-    $form['options']['answer' . $i] = array(
-      '#type'       => 'checkbox',
-      '#title'      => t('Correct Option'),
-      '#attributes' => array('class' => array('answer')),
-      '#suffix'     => '</div>',
-    );
-  }
-
-  $form['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Submit'),
-  );
-  $form['#suffix'] = exam_spider_get_questions($default_sel);
-  return $form;
-}
-
-/**
- * Add question validate page callbacks.
- */
-function exam_spider_add_question_validate(&$form, &$form_state) {
-  if ($form_state['values']['answer1'] == 0 && $form_state['values']['answer2'] == 0 && $form_state['values']['answer3'] == 0 && $form_state['values']['answer4'] == 0) {
-    return form_set_error('time', t('Please choose at least one answer.'));
-  }
-}
-
-/**
- * Add question submit page callbacks.
- */
-function exam_spider_add_question_submit(&$form, &$form_state) {
-  $answer = NULL;
-  for ($i = 1; $i <= 4; $i++) {
-    if ($form_state['values']['answer' . $i] == 1) {
-      $answer .= 'opt' . $i . '-';
-    }
-  }
-  $answer = rtrim($answer, "-");
-  db_insert('exam_questions')
-    ->fields(array(
-      'examid',
-      'question',
-      'opt1',
-      'opt2',
-      'opt3',
-      'opt4',
-      'answer',
-      'multiple',
-      'created',
-      'changed',
-    ))
-    ->values(array(
-      'examid'   => $form_state['values']['selected_exam'],
-      'question' => $form_state['values']['question_name'],
-      'opt1'     => $form_state['values']['opt1'],
-      'opt2'     => $form_state['values']['opt2'],
-      'opt3'     => $form_state['values']['opt3'],
-      'opt4'     => $form_state['values']['opt4'],
-      'answer'   => $answer,
-      'multiple' => $form_state['values']['multi_answer'],
-      'created'  => REQUEST_TIME,
-      'changed'  => REQUEST_TIME,
-    ))
-    ->execute();
-  drupal_set_message(t('You have successfully created question for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
-  drupal_goto('admin/structure/question/add/' . $form_state['values']['selected_exam']);
-  return $form;
+function exam_spider_add_question($default_sel) {
+  $question_id = '';
+  return drupal_get_form('exam_spider_question_form', $default_sel, $question_id);
 }
 
 /**
  * Edit question page callbacks.
  */
-function exam_spider_edit_question($form, &$form_state, $question_id) {
+function exam_spider_edit_question($question_id) {
+  $default_sel = '';
+  return drupal_get_form('exam_spider_question_form', $default_sel, $question_id);
+}
+
+/**
+ * Add/Update question form.
+ */
+
+function exam_spider_question_form($form, &$form_state, $default_sel, $question_id =  NULL){
   drupal_add_css(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/js/exam_spider.js');
-  $form = $exam_options = array();
+  $form = $exam_options = $values = $answer = array();
+  if($question_id){
+      $values = exam_spider_get_question($question_id);
+      $answer = array_flip(explode('-', $values['answer']));
+      $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
+      $default_sel = $values['examid'];
+  }
   $all_exam = exam_spider_get_exam();
   foreach ($all_exam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
 
-  $values = exam_spider_get_question($question_id);
-  $answer = array_flip(explode('-', $values['answer']));
 
   $form['#attributes'] = array('class' => array('questions-action'));
-  $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
   $form['selected_exam'] = array(
     '#type'          => 'select',
     '#title'         => 'Select ' . EXAM_SPIDER_EXAM_TITLE,
     '#options'       => $exam_options,
-    '#default_value' => isset($values['examid']) ? $values['examid'] : NULL,
+    '#default_value' => isset($default_sel) ? $default_sel : NULL,
     '#required'      => TRUE,
   );
   $form['question_name'] = array(
@@ -189,45 +93,77 @@ function exam_spider_edit_question($form, &$form_state, $question_id) {
     '#type'  => 'submit',
     '#value' => t('Submit'),
   );
+  $form['#suffix'] = exam_spider_get_questions($default_sel);
   return $form;
 }
 
 /**
- * Edit question validate page callbacks.
+ * Add/Update question validate page callbacks.
  */
-function exam_spider_edit_question_validate(&$form, &$form_state) {
+function exam_spider_question_form_validate(&$form, &$form_state) {
   if ($form_state['values']['answer1'] == 0 && $form_state['values']['answer2'] == 0 && $form_state['values']['answer3'] == 0 && $form_state['values']['answer4'] == 0) {
-    return form_set_error('time', t('Please choose at least one answer.'));
+    return form_set_error('answer', t('Please choose at least one answer.'));
   }
 }
 
 /**
- * Edit question submit page callbacks.
+ * Add/Update question submit page callbacks.
  */
-function exam_spider_edit_question_submit(&$form, &$form_state) {
-  $answer = NULL;
+
+function exam_spider_question_form_submit(&$form, &$form_state) {
+  $answer = '';
   for ($i = 1; $i <= 4; $i++) {
     if ($form_state['values']['answer' . $i] == 1) {
       $answer .= 'opt' . $i . '-';
     }
   }
   $answer = rtrim($answer, "-");
-  db_update('exam_questions')
-    ->fields(array(
-      'examid'   => $form_state['values']['selected_exam'],
-      'question' => $form_state['values']['question_name'],
-      'opt1'     => $form_state['values']['opt1'],
-      'opt2'     => $form_state['values']['opt2'],
-      'opt3'     => $form_state['values']['opt3'],
-      'opt4'     => $form_state['values']['opt4'],
-      'answer'   => $answer,
-      'multiple' => $form_state['values']['multi_answer'],
-      'changed'  => REQUEST_TIME,
-    ))
-    ->condition('id', $form_state['values']['question_id'], '=')
-    ->execute();
-  drupal_set_message(t('You have successfully updated question.'));
-  return $form;
+  if(arg(3) == 'add') {
+    db_insert('exam_questions')
+      ->fields(array(
+        'examid',
+        'question',
+        'opt1',
+        'opt2',
+        'opt3',
+        'opt4',
+        'answer',
+        'multiple',
+        'created',
+        'changed',
+      ))
+      ->values(array(
+        'examid'   => $form_state['values']['selected_exam'],
+        'question' => $form_state['values']['question_name'],
+        'opt1'     => $form_state['values']['opt1'],
+        'opt2'     => $form_state['values']['opt2'],
+        'opt3'     => $form_state['values']['opt3'],
+        'opt4'     => $form_state['values']['opt4'],
+        'answer'   => $answer,
+        'multiple' => $form_state['values']['multi_answer'],
+        'created'  => REQUEST_TIME,
+        'changed'  => REQUEST_TIME,
+      ))
+      ->execute();
+    drupal_set_message(t('You have successfully created question for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
+  }
+  else{
+    db_update('exam_questions')
+      ->fields(array(
+        'examid'   => $form_state['values']['selected_exam'],
+        'question' => $form_state['values']['question_name'],
+        'opt1'     => $form_state['values']['opt1'],
+        'opt2'     => $form_state['values']['opt2'],
+        'opt3'     => $form_state['values']['opt3'],
+        'opt4'     => $form_state['values']['opt4'],
+        'answer'   => $answer,
+        'multiple' => $form_state['values']['multi_answer'],
+        'changed'  => REQUEST_TIME,
+      ))
+      ->condition('id', $form_state['values']['question_id'], '=')
+      ->execute();
+    drupal_set_message(t('You have successfully updated question.'));
+  }
 }
 
 /**
@@ -296,7 +232,7 @@ function exam_spider_get_questions($exam_id) {
       $destination = drupal_get_destination();
       $rows[] = array(
         'data' => array(
-          $row->question,
+          filter_xss($row->question),
           $status,
           l(t('Edit'), 'admin/structure/question/' . $row->id . '/edit', array('query' => array($destination))) . ' | ' . l(t('Delete'), 'admin/structure/question/' . $row->id . '/delete', array('query' => array($destination))),
         ),
