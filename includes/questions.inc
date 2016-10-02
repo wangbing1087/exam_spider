@@ -24,23 +24,20 @@ function exam_spider_edit_question($question_id) {
 /**
  * Add/Update question form.
  */
-
-function exam_spider_question_form($form, &$form_state, $default_sel, $question_id =  NULL){
+function exam_spider_question_form($form, &$form_state, $default_sel, $question_id = NULL){
   drupal_add_css(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/css/exam_spider.css');
   drupal_add_js(drupal_get_path('module', EXAM_SPIDER_EXAM_SPIDER) . '/js/exam_spider.js');
   $form = $exam_options = $values = $answer = array();
-  if($question_id){
-      $values = exam_spider_get_question($question_id);
-      $answer = array_flip(explode('-', $values['answer']));
-      $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
-      $default_sel = $values['examid'];
+  if ($question_id) {
+    $values = exam_spider_get_question($question_id);
+    $answer = array_flip(explode('-', $values['answer']));
+    $form['question_id'] = array('#type' => 'value', '#value' => $question_id);
+    $default_sel = $values['examid'];
   }
   $all_exam = exam_spider_get_exam();
   foreach ($all_exam as $option) {
     $exam_options[$option->id] = $option->exam_name;
   }
-
-
   $form['#attributes'] = array('class' => array('questions-action'));
   $form['selected_exam'] = array(
     '#type'          => 'select',
@@ -109,7 +106,6 @@ function exam_spider_question_form_validate(&$form, &$form_state) {
 /**
  * Add/Update question submit page callbacks.
  */
-
 function exam_spider_question_form_submit(&$form, &$form_state) {
   $answer = '';
   for ($i = 1; $i <= 4; $i++) {
@@ -118,7 +114,7 @@ function exam_spider_question_form_submit(&$form, &$form_state) {
     }
   }
   $answer = rtrim($answer, "-");
-  if(arg(3) == 'add') {
+  if (arg(3) == 'add') {
     db_insert('exam_questions')
       ->fields(array(
         'examid',
@@ -147,7 +143,7 @@ function exam_spider_question_form_submit(&$form, &$form_state) {
       ->execute();
     drupal_set_message(t('You have successfully created question for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
-  else{
+  else {
     db_update('exam_questions')
       ->fields(array(
         'examid'   => $form_state['values']['selected_exam'],

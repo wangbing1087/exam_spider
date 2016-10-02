@@ -51,7 +51,7 @@ function exam_spider_dashboard() {
     }
     $user_data = db_select('users', 'u')
       ->fields('u', array('name'))
-      ->condition('uid', $row->uid,'=')
+      ->condition('uid', $row->uid, '=')
       ->execute()
       ->fetchAssoc();
     $destination = drupal_get_destination();
@@ -88,17 +88,16 @@ function exam_spider_add_exam() {
  * Edit exam page callbacks.
  */
 function exam_spider_edit_exam($exam_id) {
-  $values = exam_spider_get_exam($exam_id);  
+  $values = exam_spider_get_exam($exam_id);
   return drupal_get_form('exam_spider_exam_form', $values);
 }
 
 /**
  * Exam Add/Update form.
  */
-
 function exam_spider_exam_form($form, &$form_state, $values) {
   $form = array();
-  if($values){
+  if ($values) {
     $form['exam_id'] = array('#type' => 'value', '#value' => $values['id']);
   }
   $form['exam_name'] = array(
@@ -184,7 +183,7 @@ function exam_spider_exam_form($form, &$form_state, $values) {
  */
 function exam_spider_exam_form_validate($form, &$form_state) {
   if ($form_state['values']['exam_duration'] !== '' && (!is_numeric($form_state['values']['exam_duration']) || intval($form_state['values']['exam_duration']) != $form_state['values']['exam_duration'] || $form_state['values']['exam_duration'] < 0)) {
-     form_set_error('exam_duration', t('@examSpiderExamTitle duration must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
+    form_set_error('exam_duration', t('@examSpiderExamTitle duration must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
   }
   if ($form_state['values']['negative_mark_per'] !== '' && (!is_numeric($form_state['values']['negative_mark_per']) || intval($form_state['values']['negative_mark_per']) != $form_state['values']['negative_mark_per'] || $form_state['values']['negative_mark_per'] < 0)) {
     form_set_error('negative_mark_per', t('@examSpiderExamTitle negative mark must be a positive integer.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));
@@ -197,10 +196,9 @@ function exam_spider_exam_form_validate($form, &$form_state) {
 /**
  * Exam Add/Update form submit callbacks.
  */
-
 function exam_spider_exam_form_submit($form, &$form_state) {
   global $user;
-  if(arg(3) == 'add') {
+  if (arg(3) == 'add') {
     db_insert('exam_list')
       ->fields(array(
         'exam_name',
@@ -234,7 +232,7 @@ function exam_spider_exam_form_submit($form, &$form_state) {
 
     drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state['values']['exam_name'])));
   }
-  else{
+  else {
     db_update('exam_list')
       ->fields(array(
         'exam_name'         => $form_state['values']['exam_name'],
@@ -591,7 +589,7 @@ function exam_spider_exam_results($form, &$form_state) {
   foreach ($results as $row) {
     $user_data = db_select('users', 'u')
       ->fields('u', array('name'))
-      ->condition('uid', $row->uid,'=')
+      ->condition('uid', $row->uid, '=')
       ->execute()
       ->fetchAssoc();
     $exam_data = exam_spider_get_exam($row->examid);
