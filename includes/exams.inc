@@ -410,7 +410,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
             '#options' => $options,
             '#title'   => t('@question', array('@question' => $value->question)),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">Next</a></li>',
+            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
           );
         }
         else {
@@ -419,7 +419,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
             '#title'   => t('@question', array('@question' => $value->question)),
             '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">Next</a></li>',
+            '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
           );
         }
       }
