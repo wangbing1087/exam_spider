@@ -21,6 +21,7 @@ function exam_spider_help($path, $arg) {
       $output = '';
       $output .= '<h3>' . t('Exam Spider') . '</h3>';
       $output .= '<p>' . t("Exam spider module provides online exam or quiz with single and multiple answers for a question as well as you can enable/disable time limit, negative marking, Display Random Question,Exam Published or unpublished. Easily set re attempt exam time in days, User can reattempt exam after specified time period for specific exam.") . '</p>';
+      $output .= '<p>' . l('View List of exams', 'examspider/start') . '</p>';
       return $output;
   }
 }
@@ -86,7 +87,7 @@ function exam_spider_menu() {
     'type'           => MENU_CALLBACK,
   ) + $exam_base;
   $items[EXAM_SPIDER_EXAM_URL . '/start'] = array(
-    'title'         => 'Start ' . EXAM_SPIDER_EXAM_TITLE,
+    'title'         => 'List of ' . EXAM_SPIDER_EXAM_TITLE,
     'page callback' => 'exam_spider_exam_start',
     'type'          => MENU_CALLBACK,
   ) + $exam_base_user;

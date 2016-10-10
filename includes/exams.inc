@@ -58,7 +58,7 @@ function exam_spider_dashboard() {
     $rows[] = array(
       'data' => array(
         EXAM_SPIDER_EXAM_TITLE . '-' . $row->id,
-        l($row->exam_name, EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
+        l(filter_xss($row->exam_name), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
         filter_xss($row->exam_description),
         $user_data['name'],
         $status,
@@ -321,8 +321,8 @@ function exam_spider_exam_start() {
     if ($row->status == 1) {
       $rows[] = array(
         'data' => array(
-          l(t('@examName', array('@examName' => $row->exam_name)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
-          $row->exam_description,
+          l(t('@examName', array('@examName' => filter_xss($row->exam_name))), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
+          filter_xss($row->exam_description),
           l(t('Start @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)), EXAM_SPIDER_EXAM_URL . '/' . $row->id . '/continue'),
         ),
       );
@@ -388,6 +388,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         ->condition('examid', $exam_id, '=')->execute();
     }
     $results = $query->fetchAll();
+    drupal_set_title(filter_xss($exam_data['exam_name']));
     if (empty($results)) {
       $output .= t('No question created yet for this @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
     }
@@ -407,8 +408,8 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         if ($value->multiple == 1) {
           $form['question'][$value->id] = array(
             '#type'    => 'checkboxes',
-            '#options' => $options,
-            '#title'   => t('@question', array('@question' => $value->question)),
+            '#options' => filter_xss($options),
+            '#title'   => t('@question', array('@question' => filter_xss($value->question))),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
           );
@@ -416,8 +417,8 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
         else {
           $form['question'][$value->id] = array(
             '#type'    => 'radios',
-            '#title'   => t('@question', array('@question' => $value->question)),
-            '#options' => $options,
+            '#title'   => t('@question', array('@question' => filter_xss($value->question))),
+            '#options' => filter_xss($options),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
           );
@@ -597,7 +598,7 @@ function exam_spider_exam_results($form, &$form_state) {
     $rows[] = array(
       'data' => array(
         t('REG -') . $row->id,
-        $exam_data['exam_name'],
+        filter_xss_admin($exam_data['exam_name']),
         $user_data['name'],
         $row->total,
         $row->obtain,
