@@ -401,14 +401,14 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
       );
       $total_slides = count($results);
       foreach ($results as $key => $value) {
-        $options[1] = $value->opt1;
-        $options[2] = $value->opt2;
-        $options[3] = $value->opt3;
-        $options[4] = $value->opt4;
+        $options[1] = filter_xss($value->opt1);
+        $options[2] = filter_xss($value->opt2);
+        $options[3] = filter_xss($value->opt3);
+        $options[4] = filter_xss($value->opt4);
         if ($value->multiple == 1) {
           $form['question'][$value->id] = array(
             '#type'    => 'checkboxes',
-            '#options' => filter_xss($options),
+            '#options' => $options,
             '#title'   => t('@question', array('@question' => filter_xss($value->question))),
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
@@ -418,7 +418,7 @@ function exam_spider_exam_continue($form, &$form_state, $exam_id) {
           $form['question'][$value->id] = array(
             '#type'    => 'radios',
             '#title'   => t('@question', array('@question' => filter_xss($value->question))),
-            '#options' => filter_xss($options),
+            '#options' => $options,
             '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
             '#suffix'  => ' <a class="exam_spider_slide_next button" href="javascript:void(0);">' . t('Next') . '</a></li>',
           );
