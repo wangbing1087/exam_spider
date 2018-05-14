@@ -22,6 +22,9 @@ https://www.drupal.org/docs/7/extending-drupal/installing-modules
 * Specific instructions for the Exam Spider module are here:
 https://www.drupal.org/project/2728279/git-instructions
 
+##REQUIREMENTS
+None.
+
 ##CONFIGURATION
  * Any user can access all exams list to start exam using below url:
 examspider/start
