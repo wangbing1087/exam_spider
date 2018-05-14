@@ -716,14 +716,14 @@ Many Thanks,
 function exam_spider_exam_config($form, &$form_state) {
   $form['exam_spider_exam_name'] = array(
     '#type' => 'textfield',
-    '#title' => t(EXAM_SPIDER_EXAM_TITLE . ' Name'),
+    '#title' => EXAM_SPIDER_EXAM_TITLE . t(' Name'),
     '#default_value' => EXAM_SPIDER_EXAM_TITLE,
     '#description' => t('Please enter exam name to update'),
     '#required' => TRUE,
   );
   $form['exam_spider_exam_url'] = array(
     '#type' => 'textfield',
-    '#title' => t(EXAM_SPIDER_EXAM_TITLE . ' URL'),
+    '#title' => EXAM_SPIDER_EXAM_TITLE . t(' URL'),
     '#default_value' => EXAM_SPIDER_EXAM_URL,
     '#description' => t('Please enter exam URL to update'),
     '#required' => TRUE,
@@ -739,10 +739,10 @@ function exam_spider_exam_config($form, &$form_state) {
 function exam_spider_exam_config_validate($form, &$form_state) {
   $exam_spider_exam_name = $form_state['values']['exam_spider_exam_name'];
   $exam_spider_exam_url = $form_state['values']['exam_spider_exam_url'];
-  if(preg_match('/[^a-z]+$/i',$exam_spider_exam_name)){
+  if (preg_match('/[^a-z]+$/i',$exam_spider_exam_name)) {
     form_set_error('exam_spider_exam_name', t('Please use only charcters to update name.'));
   }
-  else if(preg_match('/[^a-z]+$/',$exam_spider_exam_url)){
+  else if (preg_match('/[^a-z]+$/',$exam_spider_exam_url)) {
     form_set_error('exam_spider_exam_url', t('Please use only lowercase charcters to update path.'));
   }
   $updated_path = 'admin/structure/'.$exam_spider_exam_url;
@@ -751,7 +751,7 @@ function exam_spider_exam_config_validate($form, &$form_state) {
   if (($menu_item['number_parts'] == $exposed_args_count) && drupal_valid_path($updated_path) && ($exam_spider_exam_url != EXAM_SPIDER_EXAM_URL)) {
     form_set_error('exam_spider_exam_url', t('A path already exists for the source path @source.', array('@source' => $updated_path)));
   }
-  else{
+  else {
     variable_set('menu_rebuild_needed', TRUE);
   }
   
@@ -761,7 +761,7 @@ function exam_spider_exam_config_validate($form, &$form_state) {
  * Exam configuration form submit callbacks.
  */
 function exam_spider_exam_config_submit($form, &$form_state) {
-  if (isset($form_state['values']['exam_spider_exam_url'])){
+  if (isset($form_state['values']['exam_spider_exam_url'])) {
     drupal_goto('admin/structure/'.$form_state['values']['exam_spider_exam_url']);
   }
 }

@@ -10,7 +10,8 @@
  */
 define('EXAM_SPIDER_EXAM_URL', variable_get('exam_spider_exam_url', 'examspider'));
 define('EXAM_SPIDER_EXAM_TITLE', variable_get('exam_spider_exam_name', 'Exam'));
-define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider'); // No need change module name using get module path
+// No need change module name using get module path
+define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider');
 
 /**
  * Implements hook_help().
@@ -82,7 +83,7 @@ function exam_spider_menu() {
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 3,
   ) + $exam_base;
-   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
     'title' => EXAM_SPIDER_EXAM_TITLE . ' settings',
     'description' => 'Configure my module',
     'page callback' => 'drupal_get_form',
