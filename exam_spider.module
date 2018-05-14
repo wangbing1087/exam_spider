@@ -10,7 +10,7 @@
  */
 define('EXAM_SPIDER_EXAM_URL', variable_get('exam_spider_exam_url', 'examspider'));
 define('EXAM_SPIDER_EXAM_TITLE', variable_get('exam_spider_exam_name', 'Exam'));
-// No need change module name using get module path
+// No need change module name using get module path.
 define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider');
 
 /**

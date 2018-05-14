@@ -716,14 +716,14 @@ Many Thanks,
 function exam_spider_exam_config($form, &$form_state) {
   $form['exam_spider_exam_name'] = array(
     '#type' => 'textfield',
-    '#title' => EXAM_SPIDER_EXAM_TITLE . t(' Name'),
+    '#title' => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
     '#default_value' => EXAM_SPIDER_EXAM_TITLE,
     '#description' => t('Please enter exam name to update'),
     '#required' => TRUE,
   );
   $form['exam_spider_exam_url'] = array(
     '#type' => 'textfield',
-    '#title' => EXAM_SPIDER_EXAM_TITLE . t(' URL'),
+    '#title' => t('@examSpiderExamTitle URL', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
     '#default_value' => EXAM_SPIDER_EXAM_URL,
     '#description' => t('Please enter exam URL to update'),
     '#required' => TRUE,
@@ -739,13 +739,13 @@ function exam_spider_exam_config($form, &$form_state) {
 function exam_spider_exam_config_validate($form, &$form_state) {
   $exam_spider_exam_name = $form_state['values']['exam_spider_exam_name'];
   $exam_spider_exam_url = $form_state['values']['exam_spider_exam_url'];
-  if (preg_match('/[^a-z]+$/i',$exam_spider_exam_name)) {
+  if (preg_match('/[^a-z]+$/i', $exam_spider_exam_name)) {
     form_set_error('exam_spider_exam_name', t('Please use only charcters to update name.'));
   }
-  else if (preg_match('/[^a-z]+$/',$exam_spider_exam_url)) {
+  elseif (preg_match('/[^a-z]+$/', $exam_spider_exam_url)) {
     form_set_error('exam_spider_exam_url', t('Please use only lowercase charcters to update path.'));
   }
-  $updated_path = 'admin/structure/'.$exam_spider_exam_url;
+  $updated_path = 'admin/structure/' . $exam_spider_exam_url;
   $exposed_args_count = count(explode('/', $updated_path));
   $menu_item = menu_get_item($updated_path);
   if (($menu_item['number_parts'] == $exposed_args_count) && drupal_valid_path($updated_path) && ($exam_spider_exam_url != EXAM_SPIDER_EXAM_URL)) {
@@ -754,7 +754,6 @@ function exam_spider_exam_config_validate($form, &$form_state) {
   else {
     variable_set('menu_rebuild_needed', TRUE);
   }
-  
 }
 
 /**
@@ -762,6 +761,6 @@ function exam_spider_exam_config_validate($form, &$form_state) {
  */
 function exam_spider_exam_config_submit($form, &$form_state) {
   if (isset($form_state['values']['exam_spider_exam_url'])) {
-    drupal_goto('admin/structure/'.$form_state['values']['exam_spider_exam_url']);
+    drupal_goto('admin/structure/' . $form_state['values']['exam_spider_exam_url']);
   }
 }
