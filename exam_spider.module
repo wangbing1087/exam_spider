@@ -8,9 +8,9 @@
 /**
  * Define Exam variable for Exam title and Path.
  */
-define('EXAM_SPIDER_EXAM_URL', 'examspider');
-define('EXAM_SPIDER_EXAM_TITLE', 'Exam');
-define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider');
+define('EXAM_SPIDER_EXAM_URL', variable_get('exam_spider_exam_url', 'examspider'));
+define('EXAM_SPIDER_EXAM_TITLE', variable_get('exam_spider_exam_name', 'Exam'));
+define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider'); // No need change module name using get module path
 
 /**
  * Implements hook_help().
@@ -60,6 +60,7 @@ function exam_spider_menu() {
   );
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL] = array(
     'title'         => EXAM_SPIDER_EXAM_TITLE . ' Spider',
+    'description' => 'Add/edit new exams, and rename exams configuration.',
     'page callback' => 'exam_spider_dashboard',
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/dashboard'] = array(
@@ -73,6 +74,21 @@ function exam_spider_menu() {
     'page callback'  => 'exam_spider_add_exam',
     'type'           => MENU_LOCAL_TASK,
     'weight'         => 2,
+  ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
+    'title'         => EXAM_SPIDER_EXAM_TITLE . ' Results',
+    'page callback'  => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_results'),
+    'type'          => MENU_LOCAL_TASK,
+    'weight'        => 3,
+  ) + $exam_base;
+   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
+    'title' => EXAM_SPIDER_EXAM_TITLE . ' settings',
+    'description' => 'Configure my module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_config'),
+    'type'          => MENU_LOCAL_TASK,
+    'weight'        => 4,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/edit'] = array(
     'title'          => 'Edit ' . EXAM_SPIDER_EXAM_TITLE,
@@ -97,13 +113,6 @@ function exam_spider_menu() {
     'page arguments' => array('exam_spider_exam_continue', 1),
     'type'           => MENU_CALLBACK,
   ) + $exam_base_user;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
-    'title'         => EXAM_SPIDER_EXAM_TITLE . ' Results',
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_results'),
-    'type'          => MENU_LOCAL_TASK,
-    'weight'        => 3,
-  ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/delete'] = array(
     'title'          => 'Delete Result',
     'page callback'  => 'drupal_get_form',
@@ -120,7 +129,7 @@ function exam_spider_menu() {
     'title'          => 'Add Question',
     'page callback'  => 'exam_spider_add_question',
     'page arguments' => array(4),
-    'type'           => MENU_LOCAL_TASK,
+    'type'           => MENU_CALLBACK,
   ) + $question_base;
   $items['admin/structure/question/%/edit'] = array(
     'title'          => 'Edit Question',
