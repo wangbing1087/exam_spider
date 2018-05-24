@@ -70,18 +70,12 @@ function exam_spider_menu() {
     'type'          => MENU_DEFAULT_LOCAL_TASK,
     'weight'        => 1,
   ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'] = array(
-    'title'          => 'Lists',
-    'page callback'  => 'exam_spider_add_exam',
-    'type'           => MENU_LOCAL_TASK,
-    'weight'         => 2,
-  ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
     'title'         => 'Results',
     'page callback'  => 'drupal_get_form',
     'page arguments' => array('exam_spider_exam_results'),
     'type'          => MENU_LOCAL_TASK,
-    'weight'        => 3,
+    'weight'        => 2,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
     'title' => 'Settings',
@@ -89,7 +83,12 @@ function exam_spider_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('exam_spider_exam_config'),
     'type'          => MENU_LOCAL_TASK,
-    'weight'        => 4,
+    'weight'        => 3,
+  ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'] = array(
+    'title'          => 'Create ' . EXAM_SPIDER_EXAM_TITLE,
+    'page callback'  => 'exam_spider_add_exam',
+    'type'           => MENU_CALLBACK,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/edit'] = array(
     'title'          => 'Edit ' . EXAM_SPIDER_EXAM_TITLE,
