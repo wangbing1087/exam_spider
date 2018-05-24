@@ -60,7 +60,7 @@ function exam_spider_menu() {
     'access arguments' => array('exam spider dashboard'),
   );
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL] = array(
-    'title'         => EXAM_SPIDER_EXAM_TITLE . ' Spider',
+    'title'         => 'Exam Spider',
     'description' => 'Add/edit new exams, and rename exams configuration.',
     'page callback' => 'exam_spider_dashboard',
   ) + $exam_base;
@@ -71,20 +71,20 @@ function exam_spider_menu() {
     'weight'        => 1,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'] = array(
-    'title'          => 'Create ' . EXAM_SPIDER_EXAM_TITLE,
+    'title'          => 'Lists',
     'page callback'  => 'exam_spider_add_exam',
     'type'           => MENU_LOCAL_TASK,
     'weight'         => 2,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
-    'title'         => EXAM_SPIDER_EXAM_TITLE . ' Results',
+    'title'         => 'Results',
     'page callback'  => 'drupal_get_form',
     'page arguments' => array('exam_spider_exam_results'),
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 3,
   ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
-    'title' => EXAM_SPIDER_EXAM_TITLE . ' settings',
+    'title' => 'Settings',
     'description' => 'Configure my module',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('exam_spider_exam_config'),
