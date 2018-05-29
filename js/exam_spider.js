@@ -49,7 +49,7 @@
         if (!$('#edit-multi-answer').is(':checked')) {
           if ($(this).is(':checked')) {
             answercheckbox.attr('disabled', 'disabled');
-            $(this).prop("disabled", false);;
+            $(this).prop('disabled', false);
           }
           else {
             answercheckbox.prop('disabled', false);
