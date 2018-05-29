@@ -77,6 +77,18 @@ function exam_spider_menu() {
     'type'          => MENU_LOCAL_TASK,
     'weight'        => 2,
   ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/delete'] = array(
+    'title'          => 'Delete Result',
+    'page callback'  => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_result_delete_confirm', 4),
+    'type'           => MENU_CALLBACK,
+  ) + $exam_base;
+  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/%/mail'] = array(
+    'title'          => 'Send Score Card of Result',
+    'page callback'  => 'exam_spider_exam_result_mail',
+    'page arguments' => array(4, 5),
+    'type'           => MENU_CALLBACK,
+  ) + $exam_base;
   $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
     'title' => 'Settings',
     'description' => 'Configure my module',
@@ -102,29 +114,6 @@ function exam_spider_menu() {
     'page arguments' => array('exam_spider_exam_delete_confirm', 3),
     'type'           => MENU_CALLBACK,
   ) + $exam_base;
-  $items[EXAM_SPIDER_EXAM_URL . '/start'] = array(
-    'title'         => 'List of ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback' => 'exam_spider_exam_start',
-    'type'          => MENU_CALLBACK,
-  ) + $exam_base_user;
-  $items[EXAM_SPIDER_EXAM_URL . '/%/continue'] = array(
-    'title'          => 'Continue ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_continue', 1),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base_user;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/delete'] = array(
-    'title'          => 'Delete Result',
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_result_delete_confirm', 4),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/%/mail'] = array(
-    'title'          => 'Send Score Card of Result',
-    'page callback'  => 'exam_spider_exam_result_mail',
-    'page arguments' => array(4, 5),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
   $items['admin/structure/question/add/%'] = array(
     'title'          => 'Add Question',
     'page callback'  => 'exam_spider_add_question',
@@ -143,6 +132,17 @@ function exam_spider_menu() {
     'page arguments' => array('exam_spider_question_delete_confirm', 3),
     'type'           => MENU_CALLBACK,
   ) + $question_base;
+  $items[EXAM_SPIDER_EXAM_URL . '/start'] = array(
+    'title'         => 'List of ' . EXAM_SPIDER_EXAM_TITLE,
+    'page callback' => 'exam_spider_exam_start',
+    'type'          => MENU_CALLBACK,
+  ) + $exam_base_user;
+  $items[EXAM_SPIDER_EXAM_URL . '/%/continue'] = array(
+    'title'          => 'Continue ' . EXAM_SPIDER_EXAM_TITLE,
+    'page callback'  => 'drupal_get_form',
+    'page arguments' => array('exam_spider_exam_continue', 1),
+    'type'           => MENU_CALLBACK,
+  ) + $exam_base_user;
   return $items;
 }
 

@@ -284,7 +284,9 @@ function exam_spider_exam_delete_confirm_submit($form, &$form_state) {
     db_delete('exam_questions')
       ->condition('examid', $exam_id, '=')
       ->execute();
-
+    db_delete('exam_results')
+      ->condition('examid', $exam_id)
+      ->execute();
     drupal_set_message(t('@exam_name has been deleted successfully.', array('@exam_name' => $exam_data['exam_name'])));
   }
 }
@@ -529,33 +531,35 @@ function exam_spider_exam_results($form, &$form_state) {
   $output = NULL;
   $exam_names = array();
   $exams_data = exam_spider_get_exam();
-
-  foreach ($exams_data as $exam_name) {
-    $exam_names[$exam_name->id] = $exam_name->exam_name;
-  }
   $form['#method'] = 'get';
-  $form['filter'] = array(
-    '#type'        => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed'   => TRUE,
-    '#title'       => t('Filter option'),
-    '#attributes'  => array('class' => array('container-inline')),
-  );
+  if ($exams_data) {
+    foreach ($exams_data as $exam_name) {
+      $exam_names[$exam_name->id] = $exam_name->exam_name;
+    }
+  
+    $form['filter'] = array(
+      '#type'        => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed'   => TRUE,
+      '#title'       => t('Filter option'),
+      '#attributes'  => array('class' => array('container-inline')),
+    );
 
-  $form['filter']['exam_name'] = array(
-    '#type'          => 'select',
-    '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-    '#options'       => $exam_names,
-    '#default_value' => isset($_GET['exam_name']) ? $_GET['exam_name'] : NULL,
-  );
+    $form['filter']['exam_name'] = array(
+      '#type'          => 'select',
+      '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#options'       => $exam_names,
+      '#default_value' => isset($_GET['exam_name']) ? $_GET['exam_name'] : NULL,
+    );
 
-  $form['filter']['submit'] = array(
-    '#type'  => 'submit',
-    '#value' => t('Filter'),
-  );
-  $form['filter']['reset_button'] = array(
-    '#markup' => l(t('Reset'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results', array('attributes' => array('class' => array('button')))),
-  );
+    $form['filter']['submit'] = array(
+      '#type'  => 'submit',
+      '#value' => t('Filter'),
+    );
+    $form['filter']['reset_button'] = array(
+      '#markup' => l(t('Reset'), 'admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results', array('attributes' => array('class' => array('button')))),
+    );
+  }
 
   $header = array(
     array('data' => 'REG Id', 'field' => 'id', 'sort' => 'desc'),

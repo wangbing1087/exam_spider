@@ -42,17 +42,17 @@
       var answercheckbox = $('.answer.form-checkbox');
       removedisable();
       $('#edit-multi-answer').click(function () {
-        answercheckbox.removeAttr('checked');
-        answercheckbox.removeAttr('disabled');
+        answercheckbox.prop('checked',false);
+        answercheckbox.prop("disabled", false);;
       });
       answercheckbox.click(function () {
         if (!$('#edit-multi-answer').is(':checked')) {
           if ($(this).is(':checked')) {
             answercheckbox.attr('disabled', 'disabled');
-            $(this).removeAttr('disabled');
+            $(this).prop("disabled", false);;
           }
           else {
-            answercheckbox.removeAttr('disabled');
+            answercheckbox.prop("disabled", false);;
           }
         }
       });
@@ -61,7 +61,7 @@
           answercheckbox.each(function (i) {
             if ($('#edit-answer' + i).is(':checked')) {
               answercheckbox.attr('disabled', 'disabled');
-              $('#edit-answer' + i).removeAttr('disabled');
+              $('#edit-answer' + i).prop("disabled", false);;
             }
           });
         }
