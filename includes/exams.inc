@@ -536,7 +536,6 @@ function exam_spider_exam_results($form, &$form_state) {
     foreach ($exams_data as $exam_name) {
       $exam_names[$exam_name->id] = $exam_name->exam_name;
     }
-  
     $form['filter'] = array(
       '#type'        => 'fieldset',
       '#collapsible' => TRUE,
