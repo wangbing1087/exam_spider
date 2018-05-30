@@ -26,14 +26,14 @@ class ExamSpiderExamForm extends FormBase {
       $form['exam_id'] = array('#type' => 'value', '#value' => $values['id']);
     }
     $form['exam_name'] = array(
-      '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#title'         => $this->t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
       '#type'          => 'textfield',
       '#maxlength'     => '170',
       '#required'      => TRUE,
       '#default_value' => isset($values['exam_name']) ? $values['exam_name'] : NULL,
     );
     $form['exam_description'] = array(
-      '#title'         => t('Description'),
+      '#title'         => $this->t('Description'),
       '#type'          => 'textarea',
       '#maxlength'     => '550',
       '#cols'          => 20,
@@ -42,14 +42,14 @@ class ExamSpiderExamForm extends FormBase {
     );
     $form['examsettings'] = array(
       '#type'        => 'fieldset',
-      '#title'       => t('@examSpiderExamTitle settings', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#title'       => $this->t('@examSpiderExamTitle settings', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
       '#collapsible' => TRUE,
       '#collapsed'   => FALSE,
 
     );
     $form['examsettings']['exam_duration'] = array(
-      '#title'         => t('@examSpiderExamTitle Duration', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-      '#description'   => t('@examSpiderExamTitle time duration in minutes.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#title'         => $this->t('@examSpiderExamTitle Duration', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#description'   => $this->t('@examSpiderExamTitle time duration in minutes.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
       '#type'          => 'number',
       '#maxlength'     => '10',
       '#size'          => 10,
@@ -58,7 +58,7 @@ class ExamSpiderExamForm extends FormBase {
       '#min' => 1,
     );
     $form['examsettings']['total_marks'] = array(
-      '#title'            => t('Total Marks'),
+      '#title'            => $this->t('Total Marks'),
       '#type'             => 'number',
       '#maxlength'        => '10',
       '#size'             => 10,
@@ -68,22 +68,22 @@ class ExamSpiderExamForm extends FormBase {
     );
     $form['examsettings']['random_quest'] = array(
       '#type'          => 'checkbox',
-      '#title'         => t('Display Random Question'),
+      '#title'         => $this->t('Display Random Question'),
       '#default_value' => isset($values['random_quest']) ? $values['random_quest'] : NULL,
     );
     $form['examsettings']['status'] = array(
       '#type'          => 'checkbox',
-      '#title'         => t('Published'),
+      '#title'         => $this->t('Published'),
       '#default_value' => isset($values['status']) ? $values['status'] : NULL,
     );
     $form['examsettings']['negative_mark'] = array(
       '#type'          => 'checkbox',
-      '#title'         => t('Negative Marking'),
+      '#title'         => $this->t('Negative Marking'),
       '#default_value' => isset($values['negative_mark']) ? $values['negative_mark'] : NULL,
     );
     $form['examsettings']['negative_mark_per'] = array(
-      '#title'         => t('Negative mark %'),
-      '#description'   => t('@examSpiderExamTitle negative marking in %.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#title'         => $this->t('Negative mark %'),
+      '#description'   => $this->t('@examSpiderExamTitle negative marking in %.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
       '#type'          => 'number',
       '#maxlength'     => '10',
       '#size'          => 10,
@@ -92,8 +92,8 @@ class ExamSpiderExamForm extends FormBase {
       '#min' => 0,
     );
     $form['examsettings']['re_attempt'] = array(
-      '#title'         => t('Re-attempt @examSpiderExamTitle time', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
-      '#description'   => t('Re-attempt @examSpiderExamTitle time in days.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#title'         => $this->t('Re-attempt @examSpiderExamTitle time', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+      '#description'   => $this->t('Re-attempt @examSpiderExamTitle time in days.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
       '#type'          => 'number',
       '#maxlength'     => '10',
       '#size'          => 10,
@@ -103,7 +103,7 @@ class ExamSpiderExamForm extends FormBase {
     );
     $form['submit'] = array(
       '#type'  => 'submit',
-      '#value' => t('Submit'),
+      '#value' => $this->t('Submit'),
     );
     return $form;
   }
@@ -137,14 +137,14 @@ class ExamSpiderExamForm extends FormBase {
         ->fields($values)
         ->condition('id', $exam_id)
         ->execute();
-      drupal_set_message(t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
+      drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
     }
     else {
-      db_insert('exam_list')
+      db_inser$this->t('exam_list')
         ->fields($values)
         ->execute();
-      drupal_set_message(t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
+      drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
     }
-    $form_state->setRedirect('exam_spider.exam_spider_dashboard');
+    $form_state->setRedirec$this->t('exam_spider.exam_spider_dashboard');
   }
 }

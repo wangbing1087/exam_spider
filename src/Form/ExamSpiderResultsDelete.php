@@ -26,8 +26,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
   /**
    * Delete Result confirm text.
    */
-  public function getQuestion() { 
-    $examspider_service = new ExamSpider();
+  public function getQuestion() {
     $resultid = $this->id;
     return t('Do you want to delete REG - @resultid result?', array('@resultid' => $resultid));
   }
@@ -73,7 +72,6 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $resultid = $this->id;
-    $query = \Drupal::database();
     db_delete('exam_results')
       ->condition('id', $resultid)
       ->execute();

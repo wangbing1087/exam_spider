@@ -7,17 +7,18 @@ use Symfony\Component\Routing\Route;
 /**
  * Defines a route subscriber to register a url for serving image styles.
  */
-class ExamSpiderRoutes{
+class ExamSpiderRoutes {
   /**
    * Returns an array of route objects.
    *
    * @return \Symfony\Component\Routing\Route[]
    *   An array of route objects.
    */
+
   public function routes() {
     $routes = [];
     $routes['exam_spider.exam_spider_dashboard'] = new Route(
-      '/admin/structure/'.EXAM_SPIDER_EXAM_URL,
+      '/admin/structure/' . EXAM_SPIDER_EXAM_URL,
       array(
         '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::exam_spider_dashboard',
         '_title'      => EXAM_SPIDER_EXAM_TITLE . 'Dashboard',
@@ -27,7 +28,7 @@ class ExamSpiderRoutes{
       )
     );
     $routes['exam_spider.exam_spider_exam_results'] = new Route(
-      '/admin/structure/'.EXAM_SPIDER_EXAM_URL.'/results',
+      '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results',
        array(
         '_form' => '\Drupal\exam_spider\Form\ExamSpiderResultsForm',
         '_title'      => EXAM_SPIDER_EXAM_TITLE . 'Results',
@@ -47,7 +48,7 @@ class ExamSpiderRoutes{
       )
     );
     $routes['exam_spider.exam_spider_exam_settings'] = new Route(
-      '/admin/structure/'.EXAM_SPIDER_EXAM_URL.'/config',
+      '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config',
        array(
         '_form' => '\Drupal\exam_spider\Form\ExamSpiderSettingsForm',
         '_title'      => EXAM_SPIDER_EXAM_TITLE . 'Settings',
@@ -57,7 +58,7 @@ class ExamSpiderRoutes{
       )
     );
     $routes['exam_spider.exam_spider_add_exam'] = new Route(
-      '/admin/structure/'.EXAM_SPIDER_EXAM_URL.'/add',
+      '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add',
        array(
         '_form' => '\Drupal\exam_spider\Form\ExamSpiderExamForm',
         '_title'      => 'Create ' . EXAM_SPIDER_EXAM_TITLE,

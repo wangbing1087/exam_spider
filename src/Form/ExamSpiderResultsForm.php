@@ -33,7 +33,7 @@ class ExamSpiderResultsForm extends FormBase {
 			  ),
 			);
 		$examresults_url->setOptions($link_options);
- 		$examresults_link = Link::fromTextAndUrl(t('Reset'), $examresults_url)->toString();
+ 		$examresults_link = Link::fromTextAndUrl($this->t('Reset'), $examresults_url)->toString();
 	  $form['#method'] = 'get';
 	  if ($exams_data) {
 	    foreach ($exams_data as $exam_name) {
@@ -42,20 +42,20 @@ class ExamSpiderResultsForm extends FormBase {
 	  
 	    $form['filter'] = array(
 	      '#type' => 'details',
-	      '#title'       => t('Filter option'),
+	      '#title'       => $this->t('Filter option'),
 	      '#attributes'  => array('class' => array('container-inline')),
 	    );
 
 	    $form['filter']['exam_name'] = array(
 	      '#type'          => 'select',
-	      '#title'         => t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+	      '#title'         => $this->t('@examSpiderExamTitle Name', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
 	      '#options'       => $exam_names,
 	      '#default_value' => isset($_GET['exam_name']) ? $_GET['exam_name'] : NULL,
 	    );
 
 	    $form['filter']['submit'] = array(
 	      '#type'  => 'submit',
-	      '#value' => t('Filter'),
+	      '#value' => $this->t('Filter'),
 	    );
 	    $form['filter']['reset_button'] = array(
 	     '#markup' => $examresults_link,

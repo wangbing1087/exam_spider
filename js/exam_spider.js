@@ -88,7 +88,7 @@
       }
 
       $('.exam_spider_slider_exam .exam_spider_slider:first-child').addClass('show');
-      $('.exam_spider_slide_next').once('a').on('click',function () {
+      $('.exam_spider_slide_next').once('a').on('click', function () {
         exam_spider_slider();
       });
     }

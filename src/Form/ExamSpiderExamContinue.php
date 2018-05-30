@@ -38,7 +38,7 @@ class ExamSpiderExamContinue extends FormBase {
 		  $user_last_attempt_timestamp = $user_last_result['created'];
 		  $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
 		  if ($re_attempt_timestamp > REQUEST_TIME) {
-			  $re_exam_warning = t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
+			  $re_exam_warning = $this->t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
 			      '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,
 			      '@re_attempt' => $re_attempt,
 			    ));
@@ -67,7 +67,7 @@ class ExamSpiderExamContinue extends FormBase {
 		    $results = $query->fetchAll();
 		    $form['#title'] = $this->t($exam_data['exam_name']);
 		    if (empty($results)) {
-		      $output .= t('No question created yet for this @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
+		      $output .= $this->t('No question created yet for this @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
 		    }
 		    else {
 		      if ($exam_data['exam_duration'] > 0) {
@@ -87,26 +87,26 @@ class ExamSpiderExamContinue extends FormBase {
 		          $form['question'][$value->id] = array(
 		            '#type'    => 'checkboxes',
 		            '#options' => $options,
-		            '#title'   => t('@question', array('@question' => Xss::filter($value->question))),
+		            '#title'   => $this->t('@question', array('@question' => Xss::filter($value->question))),
 		            '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . t('Next') . '</a></li>',
+		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
 		          );
 		        }
 		        else {
 		          $form['question'][$value->id] = array(
 		            '#type'    => 'radios',
-		            '#title'   => t('@question', array('@question' => Xss::filter($value->question))),
+		            '#title'   => $this->t('@question', array('@question' => Xss::filter($value->question))),
 		            '#options' => $options,
 		            '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
-		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . t('Next') . '</a></li>',
+		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
 		          );
 		        }
 		      }
 		      $form['next'] = array(
 		        '#type'   => 'submit',
-		        '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . t('<h2>I am done.</h2><br />'),
+		        '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . $this->t('<h2>I am done.</h2><br />'),
 		        '#suffix' => '</li>',
-		        '#value'  => t('Submit'),
+		        '#value'  => $this->t('Submit'),
 		      );
 		      $form['#tree'] = TRUE;
 		      $form['li_suffix'] = array(
@@ -172,7 +172,7 @@ class ExamSpiderExamContinue extends FormBase {
       }
     }
     $correct_answers = $total_quest - $wrong_quest;
-    $reg_id = db_insert('exam_results')
+    $reg_id = db_inser$this->t('exam_results')
       ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
       ->values(array(
         'examid'  => $form_state->getValue('exam_id'),
@@ -183,8 +183,8 @@ class ExamSpiderExamContinue extends FormBase {
         'created' => REQUEST_TIME,
       ))
       ->execute();
-    drupal_set_message(t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id)));
-    $exam_result_data = t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array(
+    drupal_set_message($this->t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id)));
+    $exam_result_data = $this->t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array(
       '@score_obtain' => $score_obtain,
       '@total_marks' => $total_marks,
       '@correctAnswers' => $correct_answers,

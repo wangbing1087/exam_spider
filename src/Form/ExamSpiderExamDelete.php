@@ -74,7 +74,6 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
     $examspider_service = new ExamSpider();
     $exam_id = $this->id;
     $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
-    $query = \Drupal::database();
     db_delete('exam_list')
       ->condition('id', $exam_id)
       ->execute();

@@ -3,11 +3,12 @@
 namespace Drupal\exam_spider\Controller;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+
 /**
  * A class for muliple ExamSpider functions.
  */
 class ExamSpider {
-	/**
+  /**
    * Displays a listing of Exams list.
    */
  	public function exam_spider_dashboard(){
@@ -201,7 +202,6 @@ class ExamSpider {
       ->execute()
       ->fetchAll();
 	  $rows = array();
-	  $i = 0;
 	  foreach ($results as $row) {
 	  	$deleteresult_url = Url::fromRoute('exam_spider.exam_spider_delete_result', ['resultid' => $row->id]);
  			$deleteresult_link = Link::fromTextAndUrl(t('Delete'), $deleteresult_url)->toString();
