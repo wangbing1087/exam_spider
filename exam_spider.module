@@ -5,203 +5,26 @@
  * Exam spider module file.
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+
 /**
  * Define Exam variable for Exam title and Path.
  */
-define('EXAM_SPIDER_EXAM_URL', variable_get('exam_spider_exam_url', 'examspider'));
-define('EXAM_SPIDER_EXAM_TITLE', variable_get('exam_spider_exam_name', 'Exam'));
-// No need change module name using get module path.
-define('EXAM_SPIDER_EXAM_SPIDER', 'exam_spider');
+define('EXAM_SPIDER_EXAM_TITLE',\Drupal::config('exam_spider.settings')->get('exam_spider_exam_name'));
+define('EXAM_SPIDER_EXAM_URL', \Drupal::config('exam_spider.settings')->get('exam_spider_exam_url'));
 
 /**
  * Implements hook_help().
  */
-function exam_spider_help($path, $arg) {
-  switch ($path) {
-    case 'admin/help#exam_spider':
+function exam_spider_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.exam_spider':
       $output = '';
       $output .= '<h3>' . t('Exam Spider') . '</h3>';
       $output .= '<p>' . t("Exam spider module provides online exam or quiz with single and multiple answers for a question as well as you can enable/disable time limit, negative marking, Display Random Question,Exam Published or unpublished. Easily set re attempt exam time in days, User can reattempt exam after specified time period for specific exam.") . '</p>';
-      $output .= '<p>' . l(t('View List of exams'), 'examspider/start') . '</p>';
+       $output .= '<p>' . t('<a href="@exam_spider_listof_exams">View List of exams</a>.', ['@exam_spider_listof_exams' => \Drupal::url('exam_spider.exam_spider_dashboard')]).
+       '</p>';
       return $output;
-  }
-}
-
-/**
- * Hook_perm() for Exam Spider permissions.
- */
-function exam_spider_permission() {
-  return array(
-    'exam spider dashboard' => array(
-      'title'       => t("Use exam spider Dashboard"),
-      'description' => t('Allows a user to access the <a href="@url">Exam Spider Dashboard</a>.', array('@url' => url('admin/structure/' . EXAM_SPIDER_EXAM_URL))),
-    ),
-    'exam spider user'      => array(
-      'title'       => t("Use exam spider user"),
-      'description' => t('Allows a user to access the exam start.'),
-    ),
-  );
-}
-
-/**
- * Hook_menu function().
- */
-function exam_spider_menu() {
-  $exam_base_user = array(
-    'file'             => 'includes/exams.inc',
-    'access arguments' => array('exam spider user'),
-  );
-  $exam_base = array(
-    'file'             => 'includes/exams.inc',
-    'access arguments' => array('exam spider dashboard'),
-  );
-  $question_base = array(
-    'file'             => 'includes/questions.inc',
-    'access arguments' => array('exam spider dashboard'),
-  );
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL] = array(
-    'title'         => 'Exam Spider',
-    'description' => 'Add/edit new exams, and rename exams configuration.',
-    'page callback' => 'exam_spider_dashboard',
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/dashboard'] = array(
-    'title'         => 'Dashboard',
-    'page callback' => 'exam_spider_dashboard',
-    'type'          => MENU_DEFAULT_LOCAL_TASK,
-    'weight'        => 1,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results'] = array(
-    'title'         => 'Results',
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_results'),
-    'type'          => MENU_LOCAL_TASK,
-    'weight'        => 2,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/delete'] = array(
-    'title'          => 'Delete Result',
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_result_delete_confirm', 4),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/%/%/mail'] = array(
-    'title'          => 'Send Score Card of Result',
-    'page callback'  => 'exam_spider_exam_result_mail',
-    'page arguments' => array(4, 5),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config'] = array(
-    'title' => 'Settings',
-    'description' => 'Configure my module',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_config'),
-    'type'          => MENU_LOCAL_TASK,
-    'weight'        => 3,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/add'] = array(
-    'title'          => 'Create ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback'  => 'exam_spider_add_exam',
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/edit'] = array(
-    'title'          => 'Edit ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback'  => 'exam_spider_edit_exam',
-    'page arguments' => array(3),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/' . EXAM_SPIDER_EXAM_URL . '/%/delete'] = array(
-    'title'          => 'Delete ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_delete_confirm', 3),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base;
-  $items['admin/structure/question/add/%'] = array(
-    'title'          => 'Add Question',
-    'page callback'  => 'exam_spider_add_question',
-    'page arguments' => array(4),
-    'type'           => MENU_CALLBACK,
-  ) + $question_base;
-  $items['admin/structure/question/%/edit'] = array(
-    'title'          => 'Edit Question',
-    'page callback'  => 'exam_spider_edit_question',
-    'page arguments' => array(3),
-    'type'           => MENU_CALLBACK,
-  ) + $question_base;
-  $items['admin/structure/question/%/delete'] = array(
-    'title'          => 'Delete Question',
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_question_delete_confirm', 3),
-    'type'           => MENU_CALLBACK,
-  ) + $question_base;
-  $items[EXAM_SPIDER_EXAM_URL . '/start'] = array(
-    'title'         => 'List of ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback' => 'exam_spider_exam_start',
-    'type'          => MENU_CALLBACK,
-  ) + $exam_base_user;
-  $items[EXAM_SPIDER_EXAM_URL . '/%/continue'] = array(
-    'title'          => 'Continue ' . EXAM_SPIDER_EXAM_TITLE,
-    'page callback'  => 'drupal_get_form',
-    'page arguments' => array('exam_spider_exam_continue', 1),
-    'type'           => MENU_CALLBACK,
-  ) + $exam_base_user;
-  return $items;
-}
-
-/**
- * Get exam list using exam id and without exam id complete exam list.
- */
-function exam_spider_get_exam($exam_id = NULL) {
-  if (is_numeric($exam_id)) {
-    $query = db_select("exam_list", "el")
-      ->fields("el")
-      ->condition('id', $exam_id, '=');
-    $query = $query->execute();
-    return $query->fetchAssoc();
-  }
-  else {
-    $query = db_select("exam_list", "el")
-      ->fields("el");
-    $query = $query->execute();
-    return $query->fetchAll();
-  }
-}
-
-/**
- * Get questions using question id and without question id questions list.
- */
-function exam_spider_get_question($question_id = NULL) {
-  if (is_numeric($question_id)) {
-    $query = db_select("exam_questions", "eq")
-      ->fields("eq")
-      ->condition('id', $question_id, '=');
-    $query = $query->execute();
-    return $query->fetchAssoc();
-  }
-  else {
-    $query = db_select("exam_questions", "eq")
-      ->fields("eq");
-    $query = $query->execute();
-    return $query->fetchAll();
-  }
-}
-
-/**
- * Get any user last result for any exam.
- */
-function exam_spider_any_exam_last_result($exam_id = NULL, $uid = NULL) {
-  if ($uid === NULL) {
-    global $user;
-    $uid = $user->uid;
-  }
-  if (is_numeric($exam_id)) {
-    $query = db_select("exam_results", "er")
-      ->fields("er")
-      ->condition('examid', $exam_id, '=')
-      ->orderBy('id', 'DESC')
-      ->condition('uid', $uid, '=');
-    $query = $query->execute();
-    return $query->fetchAssoc();
-  }
-  else {
-    return FALSE;
   }
 }

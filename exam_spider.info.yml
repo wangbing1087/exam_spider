@@ -1,0 +1,4 @@
+name: Exam Spider
+description: 'Provides Exam with single and multiple options with time clock as well as provide negative marking.'
+type: module
+core: 8.x

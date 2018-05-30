@@ -1,19 +1,22 @@
-.questions-action fieldset .form-type-textarea {
+.questions-action .details-wrapper .form-type-textarea {
   float: left;
   padding: 0;
   width: 50%;
 }
-.questions-action fieldset .form-type-checkbox {
+.questions-action .details-wrapper .form-type-checkbox {
   box-sizing: border-box;
   float: left;
   padding: 30px 30px;
   width: 50%;
 }
-.fieldset-wrapper .option_set {
+details#edit-options {
+  display: inline-block;
+}
+.details-wrapper .option_set {
   float: left;
   width: 100%;
 }
-.questions-action fieldset .form-item-multi-answer {
+.questions-action .details-wrapper .form-item-multi-answer {
   padding: 0;
 }
 #exam_timer {
@@ -34,4 +37,7 @@
   padding-left: 0;
   padding-right: 8px;
   padding-top: 2px;
+}
+.questions-list-table{
+  margin-top: 1em;
 }
