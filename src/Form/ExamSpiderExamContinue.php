@@ -55,7 +55,7 @@ class ExamSpiderExamContinue extends FormBase {
 		    $form['#prefix'] = '<div id="exam_timer"></div>';
 		    $form['#attached']['library'][] = 'exam_spider/exam_spider';
 		    if ($exam_data['status'] == 0) {
-		      //throw new AccessDeniedHttpException();
+		      // throw new AccessDeniedHttpException();
 		    }
 		    if ($exam_data['random_quest'] == 1) {
 		      $query = db_select("exam_questions", "eq")

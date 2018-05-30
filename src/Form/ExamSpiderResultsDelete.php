@@ -27,7 +27,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    */
   public function getQuestion() {
     $resultid = $this->id;
-    return  $this->t('Do you want to delete REG - @resultid result?', array['@resultid' => $resultid]);
+    return $this->t('Do you want to delete REG - @resultid result?', array['@resultid' => $resultid]);
   }
 
   /**
@@ -41,21 +41,21 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    * Delete Result Description text.
    */
   public function getDescription() {
-    return  $this->t('This action cannot be undone.');
+    return $this->t('This action cannot be undone.');
   }
 
   /**
    * Delete button text.
    */
   public function getConfirmText() {
-    return  $this->t('Delete it!');
+    return $this->t('Delete it!');
   }
 
   /**
    * Cancel button text.
    */
   public function getCancelText() {
-    return  $this->t('Cancel');
+    return $this->t('Cancel');
   }
 
   /**
@@ -65,7 +65,6 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     $this->id = $resultid;
     return parent::buildForm($form, $form_state);
   }
-
 
   /**
    * Delete Result form submit callbacks.
@@ -78,5 +77,5 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     drupal_set_message($this->t('REG - @resultid result has been deleted successfully.', ['@resultid' => $resultid]));
     $form_state->setRedirect('exam_spider.exam_spider_exam_results');
   }
-  
+
 }

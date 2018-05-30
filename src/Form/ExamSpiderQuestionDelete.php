@@ -32,7 +32,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
     $examspider_service = new ExamSpider();
     $questionid = $this->id;
     $question_data = $examspider_service->exam_spider_get_question($questionid);
-    return t('Do you want to delete @question question?', array('@question' => $question_data['question']));
+    return t('Do you want to delete @question question?', ['@question' => $question_data['question']]);
   }
 
   /**
@@ -46,21 +46,21 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
    * Delete Question Description text.
    */
   public function getDescription() {
-    return t('This action cannot be undone.');
+    return $this->t('This action cannot be undone.');
   }
 
   /**
    * Delete button text.
    */
   public function getConfirmText() {
-    return t('Delete it!');
+    return $this->t('Delete it!');
   }
 
   /**
    * Cancel button text.
    */
   public function getCancelText() {
-    return t('Cancel');
+    return $this->t('Cancel');
   }
 
   /**
@@ -69,13 +69,6 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $questionid = NULL) {
     $this->id = $questionid;
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * Delete Question form validate callback.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
   }
   
   /**
@@ -92,4 +85,5 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
     drupal_set_message(t('%question_name question has been deleted.', array('%question_name' => $question_data['question'])));
     $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
   }
+
 }

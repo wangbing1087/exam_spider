@@ -77,10 +77,10 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
    * Exam settings submit callbacks.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Retrieve the configuration
+    // Retrieve the configuration.
     $exam_spider_exam_name = $form_state->getValue('exam_spider_exam_name');
     $exam_spider_exam_url = $form_state->getValue('exam_spider_exam_url');
-    // $updated_path = '/admin/structure/' . $exam_spider_exam_url;
+    // $updated_path = '/admin/structure/' . $exam_spider_exam_url;.
     $this->configFactory->getEditable('exam_spider.settings')
       ->set('exam_spider_exam_name', $exam_spider_exam_name)
       ->set('exam_spider_exam_url', $exam_spider_exam_url)

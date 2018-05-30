@@ -117,13 +117,6 @@ class ExamSpiderExamForm extends FormBase {
   }
 
   /**
-   * Add/Update exam page validate callbacks.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-
-  }
-
-  /**
    * Exam Add/Update form submit callbacks.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
@@ -156,5 +149,5 @@ class ExamSpiderExamForm extends FormBase {
     }
     $form_state->setRedirec$this->t('exam_spider.exam_spider_dashboard');
   }
-  
+
 }

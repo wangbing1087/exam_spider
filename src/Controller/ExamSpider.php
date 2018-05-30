@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\exam_spider\Controller;
+
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
@@ -10,14 +11,14 @@ use Drupal\Core\Url;
 class ExamSpider {
 
   /**
-    * Displays a listing of Exams list.
-    */
+   * Displays a listing of Exams list.
+   */
  	public function exam_spider_dashboard() {
  		$createexam_url = Url::fromRoute('exam_spider.exam_spider_add_exam');
  		$createexam_link = Link::fromTextAndUrl($this->t('+ Create @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $createexam_url)->toString();
- 		$output['add_exams_link'] = array(
+ 		$output['add_exams_link'] = [
 			'#markup' => $createexam_link,
-    );
+    ];
     $header = [
 	    [
 	      'data'  => EXAM_SPIDER_EXAM_TITLE . ' Id',
@@ -26,7 +27,8 @@ class ExamSpider {
 	    ],
 	    [
 	    	'data' => EXAM_SPIDER_EXAM_TITLE . ' Name',
-	    	'field' => 'el.exam_name'),
+	    	'field' => 'el.exam_name'
+	    ],
 	    [
 	      'data'  => EXAM_SPIDER_EXAM_TITLE . ' Description',
 	      'field' => 'exam_description',
@@ -109,7 +111,7 @@ class ExamSpider {
 		    [
 		    	'data' => 'Operations',
 		    ],
-		  );
+		  ];
 			$query = \Drupal::database()->select("exam_questions", "eq")
 		 	  ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
 	      ->extend('\Drupal\Core\Database\Query\TableSortExtender');
@@ -145,7 +147,7 @@ class ExamSpider {
 		    '#theme' => 'table',
 		    '#header' => $header,
 		    '#rows' => $rows,
-		    '#empty' => t('No question created yet for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)),
+		    '#empty' => $this->t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
 		    '#attributes' => ['class' => 'questions-list-table'],
 		  ];
 			$output['questions_pager'] = ['#type' => 'pager'];
@@ -155,7 +157,7 @@ class ExamSpider {
 	/**
 	 * Get exam results function.
 	 */
-	public function exam_spider_exam_results(){
+	public function exam_spider_exam_results() {
     $header = [
 	    [
 	      'data'  => 'REG Id',

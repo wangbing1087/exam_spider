@@ -8,13 +8,13 @@ use Symfony\Component\Routing\Route;
  * Defines a route subscriber to register a url for serving image styles.
  */
 class ExamSpiderRoutes {
+  
   /**
    * Returns an array of route objects.
    *
    * @return \Symfony\Component\Routing\Route[]
    *   An array of route objects.
    */
-
   public function routes() {
     $routes = [];
     $routes['exam_spider.exam_spider_dashboard'] = new Route(

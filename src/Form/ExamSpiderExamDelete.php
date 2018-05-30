@@ -15,7 +15,7 @@ use Drupal\exam_spider\Controller\ExamSpider;
 class ExamSpiderExamDelete extends ConfirmFormBase {
 
   /**
-   * Delete Exam form.
+   * @Delete Exam form.
    */
   public function getFormId() {
     return 'delete_exam_form';
@@ -44,21 +44,21 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
    * Delete Exam Description text.
    */
   public function getDescription() {
-    return t('This action cannot be undone.');
+    return $this->t('This action cannot be undone.');
   }
 
   /**
    * Delete button text.
    */
   public function getConfirmText() {
-    return t('Delete it!');
+    return $this->t('Delete it!');
   }
 
   /**
    * Cancel button text.
    */
   public function getCancelText() {
-    return t('Cancel');
+    return $this->t('Cancel');
   }
 
   /**
