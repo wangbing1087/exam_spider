@@ -15,6 +15,7 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderQuestionDelete extends ConfirmFormBase {
+
   /**
    * Delete Question form.
    */
@@ -23,6 +24,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   }
 
   public $questionid;
+
   /**
    * Delete Question confirm text.
    */
@@ -32,30 +34,35 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
     $question_data = $examspider_service->exam_spider_get_question($questionid);
     return t('Do you want to delete @question question?', array('@question' => $question_data['question']));
   }
+
   /**
    * Delete Question cancel url.
    */
   public function getCancelUrl() {
     return new Url('exam_spider.exam_spider_dashboard');
   }
+
   /**
    * Delete Question Description text.
    */
   public function getDescription() {
     return t('This action cannot be undone.');
   }
+
   /**
    * Delete button text.
    */
   public function getConfirmText() {
     return t('Delete it!');
   }
+
   /**
    * Cancel button text.
    */
   public function getCancelText() {
     return t('Cancel');
   }
+
   /**
    * Delete Question form.
    */
@@ -63,12 +70,14 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
     $this->id = $questionid;
     return parent::buildForm($form, $form_state);
   }
+
   /**
    * Delete Question form validate callback.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
   }
+  
   /**
    * Delete Question form submit callbacks.
    */

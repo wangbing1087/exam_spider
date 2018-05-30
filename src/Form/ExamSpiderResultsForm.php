@@ -14,9 +14,16 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderResultsForm extends FormBase {
+  /**
+   * Get exam results form.
+   */
   public function getFormId() {
     return 'exam_results_form';
   }
+
+  /**
+   * Build exam results form.
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
   	$examspider_service = new ExamSpider();
 	  $form = array();
@@ -65,6 +72,7 @@ class ExamSpiderResultsForm extends FormBase {
 	  $form['#suffix'] = drupal_render($exam_spider_exam_results);
 	  return $form;
   }
+
 	/**
 	 * Add/Update exam results validate callbacks.
 	 */
@@ -78,4 +86,5 @@ class ExamSpiderResultsForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
   }
+  
 }

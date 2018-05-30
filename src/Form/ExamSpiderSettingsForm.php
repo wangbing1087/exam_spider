@@ -12,17 +12,25 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderSettingsForm extends ConfigFormBase {
+  /**
+   * Get exam Spider settings.
+   */
   public function getFormId() {
     return 'exam_spider_settings_form';
   }
+
   /**
-   * {@inheritdoc}
+   * Get edit exam Spider settings.
    */
   protected function getEditableConfigNames() {
     return [
       'exam_spider.settings',
     ];
   }
+
+  /**
+   * Build exam Spider settings form.
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
   	$config = $this->config('exam_spider.settings');
   	$form['exam_spider_exam_name'] = array(
@@ -41,6 +49,7 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
 	  );
 	  return parent::buildForm($form, $form_state);
   }
+
 	/**
 	 * Add/Update exam settings validate callbacks.
 	 */
@@ -82,4 +91,5 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
     //drupal_flush_all_caches();
     $form_state->setRedirect('exam_spider.exam_spider_dashboard');
   }
+
 }

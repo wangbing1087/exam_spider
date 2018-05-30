@@ -16,9 +16,13 @@ use Drupal\Component\Utility\Xss;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderExamContinue extends FormBase {
+
   public function getFormId() {
     return 'exam_continue_form';
   }
+  /**
+   * Exam continue form.
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
   	if (!empty($_SESSION['exam_result_data'])) {
   		$form['exam_result_data'] = array(
@@ -118,6 +122,7 @@ class ExamSpiderExamContinue extends FormBase {
   	}
 	  return $form;
   }
+  
 	/**
 	 * Exam continue page validate callbacks.
 	 */

@@ -15,6 +15,7 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderResultsDelete extends ConfirmFormBase {
+
   /**
    * Delete Result form.
    */
@@ -23,6 +24,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
   }
 
   public $resultid;
+
   /**
    * Delete Result confirm text.
    */
@@ -30,30 +32,35 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     $resultid = $this->id;
     return t('Do you want to delete REG - @resultid result?', array('@resultid' => $resultid));
   }
+
   /**
    * Delete Result cancel url.
    */
   public function getCancelUrl() {
     return new Url('exam_spider.exam_spider_exam_results');
   }
+
   /**
    * Delete Result Description text.
    */
   public function getDescription() {
     return t('This action cannot be undone.');
   }
+
   /**
    * Delete button text.
    */
   public function getConfirmText() {
     return t('Delete it!');
   }
+
   /**
    * Cancel button text.
    */
   public function getCancelText() {
     return t('Cancel');
   }
+
   /**
    * Delete Result form.
    */
@@ -61,12 +68,14 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     $this->id = $resultid;
     return parent::buildForm($form, $form_state);
   }
+
   /**
    * Delete Result form validate callback.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
   }
+
   /**
    * Delete Result form submit callbacks.
    */
@@ -78,4 +87,5 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     drupal_set_message(t('REG - @resultid result has been deleted successfully.', array('@resultid' => $resultid)));
     $form_state->setRedirect('exam_spider.exam_spider_exam_results');
   }
+  
 }

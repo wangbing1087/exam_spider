@@ -12,9 +12,16 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderQuestionForm extends FormBase {
+  /**
+   * Add/Update get Question form.
+   */
   public function getFormId() {
     return 'add_edit_question_form';
   }
+
+  /**
+    * Add/edit Question form.
+    */
   public function buildForm(array $form, FormStateInterface $form_state) {
   	$examspider_service = new ExamSpider();
 	  $form = $exam_options = $values = $answer = array();
@@ -91,6 +98,7 @@ class ExamSpiderQuestionForm extends FormBase {
 	  $form['#suffix'] = drupal_render($exam_spider_get_questions);
 	  return $form;
   }
+
 	/**
 	 * Add/Update exam page validate callbacks.
 	 */
