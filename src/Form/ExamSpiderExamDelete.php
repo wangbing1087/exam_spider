@@ -2,11 +2,9 @@
 
 namespace Drupal\exam_spider\Form;
 
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\Core\Render\Element;
 use Drupal\exam_spider\Controller\ExamSpider;
 
 /**
@@ -15,6 +13,7 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form.
  */
 class ExamSpiderExamDelete extends ConfirmFormBase {
+
   /**
    * Delete Exam form.
    */
@@ -31,7 +30,7 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
     $examspider_service = new ExamSpider();
     $exam_id = $this->id;
     $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
-    return t('Do you want to delete @exam_name @examSpiderExamTitle ?', array('@exam_name' => $exam_data['exam_name'], '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
+    return t('Do you want to delete @exam_name @examSpiderExamTitle ?', ['@exam_name' => $exam_data['exam_name'], '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
   }
 
   /**
@@ -68,13 +67,6 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $examid = NULL) {
     $this->id = $examid;
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * Delete Exam form validate callback.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
   }
 
   /**

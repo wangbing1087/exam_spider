@@ -83,7 +83,6 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $examspider_service = new ExamSpider();
-    $query = \Drupal::database();
     $questionid = $this->id;
     $question_data = $examspider_service->exam_spider_get_question($questionid);
     $examid = $question_data['examid'];

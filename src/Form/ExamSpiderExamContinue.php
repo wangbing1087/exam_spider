@@ -25,9 +25,9 @@ class ExamSpiderExamContinue extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
   	if (!empty($_SESSION['exam_result_data'])) {
-  		$form['exam_result_data'] = array(
+  		$form['exam_result_data'] = [
 	      '#markup' => $_SESSION['exam_result_data'],
-	    );
+	    ];
 	    $_SESSION['exam_result_data'] = '';
   	}
   	else{
@@ -35,20 +35,20 @@ class ExamSpiderExamContinue extends FormBase {
 	    $path_args = explode('/', $current_path);
 	    $exam_id = $path_args[2];
 	  	$examspider_service = new ExamSpider();
-		  $form['exam_id'] = array('#type' => 'value', '#value' => $exam_id);
+		  $form['exam_id'] = ['#type' => 'value', '#value' => $exam_id];
 		  $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
 		  $re_attempt = $exam_data['re_attempt'];
 		  $user_last_result = $examspider_service->exam_spider_any_exam_last_result($exam_id);
 		  $user_last_attempt_timestamp = $user_last_result['created'];
 		  $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
 		  if ($re_attempt_timestamp > REQUEST_TIME) {
-			  $re_exam_warning = $this->t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', array(
+			  $re_exam_warning = $this->t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', [
 			      '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,
 			      '@re_attempt' => $re_attempt,
-			    ));
-		    $form['re_exam_warning'] = array(
+			    ]);
+		    $form['re_exam_warning'] = [
 		      '#markup' => $re_exam_warning,
-		    );
+		    ];
 		  }
 			else {
 		    $output = NULL;
@@ -71,15 +71,15 @@ class ExamSpiderExamContinue extends FormBase {
 		    $results = $query->fetchAll();
 		    $form['#title'] = $this->t($exam_data['exam_name']);
 		    if (empty($results)) {
-		      $output .= $this->t('No question created yet for this @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE));
+		      $output .= $this->t('No question created yet for this @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
 		    }
 		    else {
 		      if ($exam_data['exam_duration'] > 0) {
-		        //exam_spider_clock('exam-spider-exam-continue');
+		        // exam_spider_clock('exam-spider-exam-continue');
 		      }
-		      $form['li_prefix'] = array(
+		      $form['li_prefix'] = [
 		        '#markup' => ' <ul class="exam_spider_slider_exam">',
-		      );
+		      ];
 		      $total_slides = count($results);
 		      foreach ($results as $key => $value) {
 		        $options[1] = Xss::filter($value->opt1);
@@ -88,46 +88,39 @@ class ExamSpiderExamContinue extends FormBase {
 		        $options[4] = Xss::filter($value->opt4);
 
 		        if ($value->multiple == 1) {
-		          $form['question'][$value->id] = array(
+		          $form['question'][$value->id] = [
 		            '#type'    => 'checkboxes',
 		            '#options' => $options,
-		            '#title'   => $this->t('@question', array('@question' => Xss::filter($value->question))),
+		            '#title'   => $this->t('@question', ['@question' => Xss::filter($value->question)]),
 		            '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
 		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
-		          );
+		          ];
 		        }
 		        else {
-		          $form['question'][$value->id] = array(
+		          $form['question'][$value->id] = [
 		            '#type'    => 'radios',
-		            '#title'   => $this->t('@question', array('@question' => Xss::filter($value->question))),
+		            '#title'   => $this->t('@question', ['@question' => Xss::filter($value->question)]),
 		            '#options' => $options,
 		            '#prefix'  => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
 		            '#suffix'  => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
-		          );
+		          ];
 		        }
 		      }
-		      $form['next'] = array(
+		      $form['next'] = [
 		        '#type'   => 'submit',
 		        '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . $this->t('<h2>I am done.</h2><br />'),
 		        '#suffix' => '</li>',
 		        '#value'  => $this->t('Submit'),
-		      );
+		      ];
 		      $form['#tree'] = TRUE;
-		      $form['li_suffix'] = array(
+		      $form['li_suffix'] = [
 		        '#markup' => '</ul>',
-		      );
+		      ];
 		    }
 		    $form['#suffix'] = $output;
 		  }
   	}
 	  return $form;
-  }
-  
-	/**
-	 * Exam continue page validate callbacks.
-	 */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-
   }
 
   /**

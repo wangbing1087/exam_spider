@@ -70,7 +70,7 @@
       function exam_spider_slider() {
         if ($('.exam_spider_slider_exam').find('.show')) {
           var current_id = $('.exam_spider_slider_exam').find('.show').attr('id');
-          if (current_id) { 
+          if (current_id) {
             var numeric_id = current_id.split('_');
             var counter_next = parseInt(numeric_id[1]) + parseInt(1);
             var total_slides = $('.exam_spider_slider_exam li').length;

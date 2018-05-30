@@ -12,12 +12,14 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderExamForm extends FormBase {
+
   /**
    * Add/Update get exam form.
    */
   public function getFormId() {
     return 'add_edit_exam_form';
   }
+
   /**
    * Add/Update build exam form.
    */
@@ -29,7 +31,7 @@ class ExamSpiderExamForm extends FormBase {
       $examspider_service = new ExamSpider();
       $exam_id = $path_args[4];
       $values = $examspider_service->exam_spider_get_exam($exam_id);
-      $form['exam_id'] = array('#type' => 'value', '#value' => $values['id']);
+      $form['exam_id'] = ['#type' => 'value', '#value' => $values['id']];
     }
     $form['exam_name'] = [
       '#title'         => $this->t('@examSpiderExamTitle Name', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
@@ -144,14 +146,15 @@ class ExamSpiderExamForm extends FormBase {
         ->fields($values)
         ->condition('id', $exam_id)
         ->execute();
-      drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
+      drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
     }
     else {
       db_insert('exam_list')
         ->fields($values)
         ->execute();
-      drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
+      drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
     }
     $form_state->setRedirec$this->t('exam_spider.exam_spider_dashboard');
   }
+  
 }

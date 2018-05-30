@@ -2,12 +2,9 @@
 
 namespace Drupal\exam_spider\Form;
 
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\Core\Render\Element;
-use Drupal\exam_spider\Controller\ExamSpider;
 
 /**
  * Class ExamSpiderResultsDelete.
@@ -30,7 +27,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    */
   public function getQuestion() {
     $resultid = $this->id;
-    return t('Do you want to delete REG - @resultid result?', array('@resultid' => $resultid));
+    return  $this->t('Do you want to delete REG - @resultid result?', array['@resultid' => $resultid]);
   }
 
   /**
@@ -44,21 +41,21 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    * Delete Result Description text.
    */
   public function getDescription() {
-    return t('This action cannot be undone.');
+    return  $this->t('This action cannot be undone.');
   }
 
   /**
    * Delete button text.
    */
   public function getConfirmText() {
-    return t('Delete it!');
+    return  $this->t('Delete it!');
   }
 
   /**
    * Cancel button text.
    */
   public function getCancelText() {
-    return t('Cancel');
+    return  $this->t('Cancel');
   }
 
   /**
@@ -69,12 +66,6 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     return parent::buildForm($form, $form_state);
   }
 
-  /**
-   * Delete Result form validate callback.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
 
   /**
    * Delete Result form submit callbacks.
@@ -84,7 +75,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
     db_delete('exam_results')
       ->condition('id', $resultid)
       ->execute();
-    drupal_set_message(t('REG - @resultid result has been deleted successfully.', array('@resultid' => $resultid)));
+    drupal_set_message($this->t('REG - @resultid result has been deleted successfully.', ['@resultid' => $resultid]));
     $form_state->setRedirect('exam_spider.exam_spider_exam_results');
   }
   
