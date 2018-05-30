@@ -9,7 +9,7 @@
  * Implements hook_schema().
  */
 function exam_spider_schema() {
-  $schema = array();
+  $schema = [];
   $schema['exam_list'] = [
     'description' => 'Exam list Information',
     'fields'      => [
@@ -92,8 +92,8 @@ function exam_spider_schema() {
         'default'     => 0,
       ],
     ],
-    'primary key' => array('id'),
-  );
+    'primary key' => ['id'],
+  ];
   $schema['exam_questions'] = [
     'description' => 'Exam Questions Information',
     'fields'      => [
@@ -169,8 +169,8 @@ function exam_spider_schema() {
         'default'     => 0,
       ],
     ],
-    'primary key' => ('id'),
-  );
+    'primary key' => ['id'],
+  ];
   $schema['exam_results'] = [
     'description' => 'Exam results list Information',
     'fields'      => [
@@ -216,7 +216,7 @@ function exam_spider_schema() {
         'default'     => 0,
       ],
     ],
-    'primary key' => ('id'),
+    'primary key' => ['id'],
   ];
   return $schema;
 }
