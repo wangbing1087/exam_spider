@@ -140,7 +140,7 @@ class ExamSpiderExamForm extends FormBase {
       drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));
     }
     else {
-      db_inser$this->t('exam_list')
+      db_insert('exam_list')
         ->fields($values)
         ->execute();
       drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name'))));

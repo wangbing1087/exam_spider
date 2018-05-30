@@ -136,7 +136,7 @@ class ExamSpiderQuestionForm extends FormBase {
       drupal_set_message($this->t('You have successfully updated question.'));
 		}
 		else{
-			db_inser$this->t('exam_questions')
+			db_insert('exam_questions')
         ->fields($values)
         ->execute();
       drupal_set_message($this->t('You have successfully created question for this @examSpiderExamTitle', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE)));

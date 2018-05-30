@@ -172,7 +172,7 @@ class ExamSpiderExamContinue extends FormBase {
       }
     }
     $correct_answers = $total_quest - $wrong_quest;
-    $reg_id = db_inser$this->t('exam_results')
+    $reg_id = db_insert('exam_results')
       ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
       ->values(array(
         'examid'  => $form_state->getValue('exam_id'),
