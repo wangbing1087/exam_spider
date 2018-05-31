@@ -13,6 +13,13 @@ use Drupal\user\Entity\User;
 class ExamSpider extends ControllerBase {
 
   /**
+   * The logged in user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $user;
+
+  /**
    * Displays a listing of Exams list.
    */
   public function examSpiderDashboard() {

@@ -12,13 +12,18 @@ use Drupal\Core\Url;
 class ExamSpiderResultsDelete extends ConfirmFormBase {
 
   /**
+   * The result ID.
+   *
+   * @var integer
+   */
+  public $resultid;
+
+  /**
    * Delete Result form.
    */
   public function getFormId() {
     return 'delete_result_form';
   }
-
-  public $resultid;
 
   /**
    * Delete Result confirm text.

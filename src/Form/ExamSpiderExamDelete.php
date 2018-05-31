@@ -13,15 +13,18 @@ use Drupal\exam_spider\Controller\ExamSpider;
 class ExamSpiderExamDelete extends ConfirmFormBase {
 
   /**
-   * Delete Exam form.
+   * The exam ID.
    *
-   * @examid Exam Id.
+   * @var integer
+   */
+  public $examid;
+  
+  /**
+   * Delete Exam form.
    */
   public function getFormId() {
     return 'delete_exam_form';
   }
-
-  public $examid;
 
   /**
    * Delete Exam confirm text.

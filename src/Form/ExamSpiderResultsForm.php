@@ -66,7 +66,7 @@ class ExamSpiderResultsForm extends FormBase {
       ];
     }
     $exam_spider_exam_results = $examspider_service->examSpiderExamResults();
-    $form['#suffix'] = drupal_render($exam_spider_exam_results);
+    $form['#suffix'] = \Drupal::service('renderer')->render($exam_spider_exam_results);
     return $form;
   }
 
