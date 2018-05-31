@@ -36,9 +36,9 @@ class ExamSpiderExamContinue extends FormBase {
       $exam_id = $path_args[2];
       $examspider_service = new ExamSpider();
       $form['exam_id'] = ['#type' => 'value', '#value' => $exam_id];
-      $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
+      $exam_data = $examspider_service->examSpiderGetExam($exam_id);
       $re_attempt = $exam_data['re_attempt'];
-      $user_last_result = $examspider_service->exam_spider_any_exam_last_result($exam_id);
+      $user_last_result = $examspider_service->examSpiderAnyExamLastResult($exam_id);
       $user_last_attempt_timestamp = $user_last_result['created'];
       $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
       if ($re_attempt_timestamp > REQUEST_TIME) {
@@ -129,7 +129,7 @@ class ExamSpiderExamContinue extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $examspider_service = new ExamSpider();
     $score_obtain = $total_marks = $wrong_quest = 0;
-    $exam_data = $examspider_service->exam_spider_get_exam($form_state->getValue('exam_id'));
+    $exam_data = $examspider_service->examSpiderGetExam($form_state->getValue('exam_id'));
     $total_marks = $exam_data['total_marks'];
     $negative_mark = $exam_data['negative_mark'];
     $negative_mark_per = $exam_data['negative_mark_per'];
@@ -137,7 +137,7 @@ class ExamSpiderExamContinue extends FormBase {
     $mark_per_quest = ($total_marks / $total_quest);
     $negative_marking_number = (($mark_per_quest * $negative_mark_per) / 100);
     foreach ($form_state->getValue('question') as $key => $answervalues) {
-      $question_data = $examspider_service->exam_spider_get_question($key);
+      $question_data = $examspider_service->examSpiderGetQuestion($key);
       if (is_array($answervalues)) {
         $answer_combine = '';
         foreach ($answervalues as $key => $answervalue) {
@@ -170,7 +170,8 @@ class ExamSpiderExamContinue extends FormBase {
       }
     }
     $correct_answers = $total_quest - $wrong_quest;
-    $reg_id = db_insert('exam_results')
+    $connection = \Drupal::database();
+    $reg_id = $connection->db_insert('exam_results')
       ->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])
       ->values([
         'examid' => $form_state->getValue('exam_id'),

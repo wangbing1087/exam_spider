@@ -30,7 +30,7 @@ class ExamSpiderExamForm extends FormBase {
     if ($path_args[5] == 'edit' && is_numeric($path_args[4])) {
       $examspider_service = new ExamSpider();
       $exam_id = $path_args[4];
-      $values = $examspider_service->exam_spider_get_exam($exam_id);
+      $values = $examspider_service->examSpiderGetExam($exam_id);
       $form['exam_id'] = ['#type' => 'value', '#value' => $values['id']];
     }
     $form['exam_name'] = [

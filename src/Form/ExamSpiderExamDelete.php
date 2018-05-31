@@ -27,7 +27,7 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
   public function getQuestion() {
     $examspider_service = new ExamSpider();
     $exam_id = $this->id;
-    $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
+    $exam_data = $examspider_service->examSpiderGetExam($exam_id);
     return t('Do you want to delete @exam_name @examSpiderExamTitle ?', ['@exam_name' => $exam_data['exam_name'], '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
   }
 
@@ -72,18 +72,19 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $examspider_service = new ExamSpider();
+    $connection = \Drupal::database();
     $exam_id = $this->id;
-    $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
-    db_delete('exam_list')
+    $exam_data = $examspider_service->examSpiderGetExam($exam_id);
+    $connection->db_delete('exam_list')
       ->condition('id', $exam_id)
       ->execute();
-    db_delete('exam_questions')
+    $connection->db_delete('exam_questions')
       ->condition('examid', $exam_id)
       ->execute();
-    db_delete('exam_results')
+    $connection->db_delete('exam_results')
       ->condition('examid', $exam_id)
       ->execute();
-    drupal_set_message(t('@exam_name has been deleted successfully.', ['@exam_name' => $exam_data['exam_name']]));
+    $connection->drupal_set_message(t('@exam_name has been deleted successfully.', ['@exam_name' => $exam_data['exam_name']]));
     $form_state->setRedirect('exam_spider.exam_spider_dashboard');
   }
 

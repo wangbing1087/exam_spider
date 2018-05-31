@@ -20,7 +20,7 @@ class ExamSpiderRoutes {
     $routes['exam_spider.exam_spider_dashboard'] = new Route(
       '/admin/structure/' . EXAM_SPIDER_EXAM_URL,
       [
-        '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::exam_spider_dashboard',
+        '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::examSpiderDashboard',
         '_title' => EXAM_SPIDER_EXAM_TITLE . 'Dashboard',
       ],
       [

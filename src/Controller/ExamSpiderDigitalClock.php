@@ -31,7 +31,7 @@ class ExamSpiderDigitalClock {
    * Get time limit function.
    */
   private function getTimeLimit() {
-    $values = exam_spider_get_exam(arg(1));
+    $values = examSpiderGetExam(arg(1));
     $timer = time() + intval($values['exam_duration'] * 60);
     return date('r', $timer);
   }

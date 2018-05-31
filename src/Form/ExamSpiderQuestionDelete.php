@@ -27,7 +27,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   public function getQuestion() {
     $examspider_service = new ExamSpider();
     $questionid = $this->id;
-    $question_data = $examspider_service->exam_spider_get_question($questionid);
+    $question_data = $examspider_service->examSpiderGetQuestion($questionid);
     return t('Do you want to delete @question question?', ['@question' => $question_data['question']]);
   }
 
@@ -73,7 +73,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $examspider_service = new ExamSpider();
     $questionid = $this->id;
-    $question_data = $examspider_service->exam_spider_get_question($questionid);
+    $question_data = $examspider_service->examSpiderGetQuestion($questionid);
     $examid = $question_data['examid'];
     db_delete('exam_questions')
       ->condition('id', $questionid)

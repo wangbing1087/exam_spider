@@ -30,7 +30,7 @@ class ExamSpiderResultsForm extends FormBase {
     $form = [];
     $form['#attached']['library'][] = 'exam_spider/exam_spider';
     $exam_names = [];
-    $exams_data = $examspider_service->exam_spider_get_exam();
+    $exams_data = $examspider_service->examSpiderGetExam();
     $examresults_url = Url::fromRoute('exam_spider.exam_spider_exam_results');
     $link_options = [
       'attributes' => [
@@ -65,7 +65,7 @@ class ExamSpiderResultsForm extends FormBase {
         '#markup' => $examresults_link,
       ];
     }
-    $exam_spider_exam_results = $examspider_service->exam_spider_exam_results();
+    $exam_spider_exam_results = $examspider_service->examSpiderExamResults();
     $form['#suffix'] = drupal_render($exam_spider_exam_results);
     return $form;
   }

@@ -32,12 +32,12 @@ class ExamSpiderQuestionForm extends FormBase {
     $default_sel = $path_args[5];
     if ($path_args[6] == 'edit' && is_numeric($path_args[5])) {
       $question_id = $path_args[5];
-      $values = $examspider_service->exam_spider_get_question($question_id);
+      $values = $examspider_service->examSpiderGetQuestion($question_id);
       $answer = array_flip(explode('-', $values['answer']));
       $form['question_id'] = ['#type' => 'value', '#value' => $question_id];
       $default_sel = $values['examid'];
     }
-    $all_exam = $examspider_service->exam_spider_get_exam();
+    $all_exam = $examspider_service->examSpiderGetExam();
     foreach ($all_exam as $option) {
       $exam_options[$option->id] = $option->exam_name;
     }
@@ -95,7 +95,7 @@ class ExamSpiderQuestionForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
     ];
-    $exam_spider_get_questions = $examspider_service->exam_spider_get_questions($default_sel);
+    $exam_spider_get_questions = $examspider_service->examSpiderGetQuestionsList($default_sel);
     $form['#suffix'] = drupal_render($exam_spider_get_questions);
     return $form;
   }
