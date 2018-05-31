@@ -23,7 +23,9 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
    * Get edit exam Spider settings.
    */
   protected function getEditableConfigNames() {
-    return ['exam_spider.settings',];
+    return [
+      'exam_spider.settings',
+    ];
   }
 
   /**
@@ -31,8 +33,20 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('exam_spider.settings');
-    $form['exam_spider_exam_name'] = ['#type' => 'textfield', '#title' => $this->t('@examSpiderExamTitle Name', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#default_value' => $config->get('exam_spider_exam_name'), '#description' => $this->t('Please enter exam name to update'), '#required' => TRUE,];
-    $form['exam_spider_exam_url'] = ['#type' => 'textfield', '#title' => $this->t('@examSpiderExamTitle URL', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#default_value' => $config->get('exam_spider_exam_url'), '#description' => $this->t('Please enter exam URL to update'), '#required' => TRUE,];
+    $form['exam_spider_exam_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('@examSpiderExamTitle Name', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#default_value' => $config->get('exam_spider_exam_name'),
+      '#description' => $this->t('Please enter exam name to update'),
+      '#required' => TRUE,
+    ];
+    $form['exam_spider_exam_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('@examSpiderExamTitle URL', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#default_value' => $config->get('exam_spider_exam_url'),
+      '#description' => $this->t('Please enter exam URL to update'),
+      '#required' => TRUE,
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -65,7 +79,10 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
     $exam_spider_exam_name = $form_state->getValue('exam_spider_exam_name');
     $exam_spider_exam_url = $form_state->getValue('exam_spider_exam_url');
     // $updated_path = '/admin/structure/' . $exam_spider_exam_url;.
-    $this->configFactory->getEditable('exam_spider.settings')->set('exam_spider_exam_name', $exam_spider_exam_name)->set('exam_spider_exam_url', $exam_spider_exam_url)->save();
+    $this->configFactory->getEditable('exam_spider.settings')
+      ->set('exam_spider_exam_name', $exam_spider_exam_name)
+      ->set('exam_spider_exam_url', $exam_spider_exam_url)
+      ->save();
     parent::submitForm($form, $form_state);
     // drupal_flush_all_caches();
     $form_state->setRedirect('exam_spider.exam_spider_dashboard');

@@ -33,19 +33,86 @@ class ExamSpiderExamForm extends FormBase {
       $values = $examspider_service->exam_spider_get_exam($exam_id);
       $form['exam_id'] = ['#type' => 'value', '#value' => $values['id']];
     }
-    $form['exam_name'] = ['#title' => $this->t('@examSpiderExamTitle Name', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#type' => 'textfield', '#maxlength' => '170', '#required' => TRUE, '#default_value' => isset($values['exam_name']) ? $values['exam_name'] : NULL,];
-    $form['exam_description'] = ['#title' => $this->t('Description'), '#type' => 'textarea', '#maxlength' => '550', '#cols' => 20, '#rows' => 1, '#default_value' => isset($values['exam_description']) ? $values['exam_description'] : NULL,];
-    $form['examsettings'] = ['#type' => 'fieldset', '#title' => $this->t('@examSpiderExamTitle settings', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#collapsible' => TRUE, '#collapsed' => FALSE,
+    $form['exam_name'] = [
+      '#title' => $this->t('@examSpiderExamTitle Name', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#type' => 'textfield',
+      '#maxlength' => '170',
+      '#required' => TRUE,
+      '#default_value' => isset($values['exam_name']) ? $values['exam_name'] : NULL,
+    ];
+    $form['exam_description'] = [
+      '#title' => $this->t('Description'),
+      '#type' => 'textarea',
+      '#maxlength' => '550',
+      '#cols' => 20,
+      '#rows' => 1,
+      '#default_value' => isset($values['exam_description']) ? $values['exam_description'] : NULL,
+    ];
+    $form['examsettings'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('@examSpiderExamTitle settings', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
 
     ];
-    $form['examsettings']['exam_duration'] = ['#title' => $this->t('@examSpiderExamTitle Duration', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#description' => $this->t('@examSpiderExamTitle time duration in minutes.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#type' => 'number', '#maxlength' => '10', '#size' => 10, '#required' => TRUE, '#default_value' => isset($values['exam_duration']) ? $values['exam_duration'] : NULL, '#min' => 1,];
-    $form['examsettings']['total_marks'] = ['#title' => $this->t('Total Marks'), '#type' => 'number', '#maxlength' => '10', '#size' => 10, '#required' => TRUE, '#default_value' => isset($values['total_marks']) ? $values['total_marks'] : NULL, '#min' => 1,];
-    $form['examsettings']['random_quest'] = ['#type' => 'checkbox', '#title' => $this->t('Display Random Question'), '#default_value' => isset($values['random_quest']) ? $values['random_quest'] : NULL,];
-    $form['examsettings']['status'] = ['#type' => 'checkbox', '#title' => $this->t('Published'), '#default_value' => isset($values['status']) ? $values['status'] : NULL,];
-    $form['examsettings']['negative_mark'] = ['#type' => 'checkbox', '#title' => $this->t('Negative Marking'), '#default_value' => isset($values['negative_mark']) ? $values['negative_mark'] : NULL,];
-    $form['examsettings']['negative_mark_per'] = ['#title' => $this->t('Negative mark %'), '#description' => $this->t('@examSpiderExamTitle negative marking in %.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#type' => 'number', '#maxlength' => '10', '#size' => 10, '#required' => TRUE, '#default_value' => isset($values['negative_mark_per']) ? $values['negative_mark_per'] : 0, '#min' => 0,];
-    $form['examsettings']['re_attempt'] = ['#title' => $this->t('Re-attempt @examSpiderExamTitle time', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#description' => $this->t('Re-attempt @examSpiderExamTitle time in days.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), '#type' => 'number', '#maxlength' => '10', '#size' => 10, '#required' => TRUE, '#default_value' => isset($values['re_attempt']) ? $values['re_attempt'] : 0, '#min' => 0,];
-    $form['submit'] = ['#type' => 'submit', '#value' => $this->t('Submit'),];
+    $form['examsettings']['exam_duration'] = [
+      '#title' => $this->t('@examSpiderExamTitle Duration', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#description' => $this->t('@examSpiderExamTitle time duration in minutes.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#type' => 'number',
+      '#maxlength' => '10',
+      '#size' => 10,
+      '#required' => TRUE,
+      '#default_value' => isset($values['exam_duration']) ? $values['exam_duration'] : NULL,
+      '#min' => 1,
+    ];
+    $form['examsettings']['total_marks'] = [
+      '#title' => $this->t('Total Marks'),
+      '#type' => 'number',
+      '#maxlength' => '10',
+      '#size' => 10,
+      '#required' => TRUE,
+      '#default_value' => isset($values['total_marks']) ? $values['total_marks'] : NULL,
+      '#min' => 1,
+    ];
+    $form['examsettings']['random_quest'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Display Random Question'),
+      '#default_value' => isset($values['random_quest']) ? $values['random_quest'] : NULL,
+    ];
+    $form['examsettings']['status'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Published'),
+      '#default_value' => isset($values['status']) ? $values['status'] : NULL,
+    ];
+    $form['examsettings']['negative_mark'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Negative Marking'),
+      '#default_value' => isset($values['negative_mark']) ? $values['negative_mark'] : NULL,
+    ];
+    $form['examsettings']['negative_mark_per'] = [
+      '#title' => $this->t('Negative mark %'),
+      '#description' => $this->t('@examSpiderExamTitle negative marking in %.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#type' => 'number',
+      '#maxlength' => '10',
+      '#size' => 10,
+      '#required' => TRUE,
+      '#default_value' => isset($values['negative_mark_per']) ? $values['negative_mark_per'] : 0,
+      '#min' => 0,
+    ];
+    $form['examsettings']['re_attempt'] = [
+      '#title' => $this->t('Re-attempt @examSpiderExamTitle time', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#description' => $this->t('Re-attempt @examSpiderExamTitle time in days.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#type' => 'number',
+      '#maxlength' => '10',
+      '#size' => 10,
+      '#required' => TRUE,
+      '#default_value' => isset($values['re_attempt']) ? $values['re_attempt'] : 0,
+      '#min' => 0,
+    ];
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+    ];
     return $form;
   }
 
@@ -68,10 +135,15 @@ class ExamSpiderExamForm extends FormBase {
     $values['changed'] = REQUEST_TIME;
 
     if ($exam_id) {
-      db_update('exam_list')->fields($values)->condition('id', $exam_id)->execute();
+      db_update('exam_list')
+        ->fields($values)
+        ->condition('id', $exam_id)
+        ->execute();
       drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
     } else {
-      db_insert('exam_list')->fields($values)->execute();
+      db_insert('exam_list')
+        ->fields($values)
+        ->execute();
       drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
     }
     $form_state->setRedirect('exam_spider.exam_spider_dashboard');

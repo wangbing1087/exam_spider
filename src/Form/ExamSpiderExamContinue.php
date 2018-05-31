@@ -16,9 +16,6 @@ use Drupal\Component\Utility\Xss;
  */
 class ExamSpiderExamContinue extends FormBase {
 
-  /**
-   * Get Exam continue form.
-   */
   public function getFormId() {
     return 'exam_continue_form';
   }
@@ -28,7 +25,9 @@ class ExamSpiderExamContinue extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     if (!empty($_SESSION['exam_result_data'])) {
-      $form['exam_result_data'] = ['#markup' => $_SESSION['exam_result_data'],];
+      $form['exam_result_data'] = [
+        '#markup' => $_SESSION['exam_result_data'],
+      ];
       $_SESSION['exam_result_data'] = '';
     } else {
       $current_path = \Drupal::service('path.current')->getPath();
@@ -42,8 +41,13 @@ class ExamSpiderExamContinue extends FormBase {
       $user_last_attempt_timestamp = $user_last_result['created'];
       $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
       if ($re_attempt_timestamp > REQUEST_TIME) {
-        $re_exam_warning = $this->t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@re_attempt' => $re_attempt,]);
-        $form['re_exam_warning'] = ['#markup' => $re_exam_warning,];
+        $re_exam_warning = $this->t('You have already attempt this @examSpiderExamTitle, You will be eligible again after @re_attempt days from previus @examSpiderExamTitle attempt day.', [
+          '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE,
+          '@re_attempt' => $re_attempt,
+        ]);
+        $form['re_exam_warning'] = [
+          '#markup' => $re_exam_warning,
+        ];
       } else {
         $output = NULL;
         $form['#prefix'] = '<div id="exam_timer"></div>';
@@ -52,10 +56,14 @@ class ExamSpiderExamContinue extends FormBase {
           // throw new AccessDeniedHttpException();
         }
         if ($exam_data['random_quest'] == 1) {
-          $query = db_select("exam_questions", "eq")->fields("eq")->condition('examid', $exam_id)->orderRandom()->execute();
+          $query = db_select("exam_questions", "eq")
+            ->fields("eq")
+            ->condition('examid', $exam_id)->orderRandom()->execute();
 
         } else {
-          $query = db_select("exam_questions", "eq")->fields("eq")->condition('examid', $exam_id)->execute();
+          $query = db_select("exam_questions", "eq")
+            ->fields("eq")
+            ->condition('examid', $exam_id)->execute();
         }
         $results = $query->fetchAll();
         $form['#title'] = $this->t($exam_data['exam_name']);
@@ -65,7 +73,9 @@ class ExamSpiderExamContinue extends FormBase {
           if ($exam_data['exam_duration'] > 0) {
             // exam_spider_clock('exam-spider-exam-continue');
           }
-          $form['li_prefix'] = ['#markup' => ' <ul class="exam_spider_slider_exam">',];
+          $form['li_prefix'] = [
+            '#markup' => ' <ul class="exam_spider_slider_exam">',
+          ];
           $total_slides = count($results);
           foreach ($results as $key => $value) {
             $options[1] = Xss::filter($value->opt1);
@@ -74,14 +84,33 @@ class ExamSpiderExamContinue extends FormBase {
             $options[4] = Xss::filter($value->opt4);
 
             if ($value->multiple == 1) {
-              $form['question'][$value->id] = ['#type' => 'checkboxes', '#options' => $options, '#title' => $this->t('@question', ['@question' => Xss::filter($value->question)]), '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">', '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',];
+              $form['question'][$value->id] = [
+                '#type' => 'checkboxes',
+                '#options' => $options,
+                '#title' => $this->t('@question', ['@question' => Xss::filter($value->question)]),
+                '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
+                '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
+              ];
             } else {
-              $form['question'][$value->id] = ['#type' => 'radios', '#title' => $this->t('@question', ['@question' => Xss::filter($value->question)]), '#options' => $options, '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">', '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',];
+              $form['question'][$value->id] = [
+                '#type' => 'radios',
+                '#title' => $this->t('@question', ['@question' => Xss::filter($value->question)]),
+                '#options' => $options,
+                '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
+                '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
+              ];
             }
           }
-          $form['next'] = ['#type' => 'submit', '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . $this->t('<h2>I am done.</h2><br />'), '#suffix' => '</li>', '#value' => $this->t('Submit'),];
+          $form['next'] = [
+            '#type' => 'submit',
+            '#prefix' => '<li id="examslide_' . $total_slides . '" class="exam_spider_slider">' . $this->t('<h2>I am done.</h2><br />'),
+            '#suffix' => '</li>',
+            '#value' => $this->t('Submit'),
+          ];
           $form['#tree'] = TRUE;
-          $form['li_suffix'] = ['#markup' => '</ul>',];
+          $form['li_suffix'] = [
+            '#markup' => '</ul>',
+          ];
         }
         $form['#suffix'] = $output;
       }
@@ -133,9 +162,24 @@ class ExamSpiderExamContinue extends FormBase {
       }
     }
     $correct_answers = $total_quest - $wrong_quest;
-    $reg_id = db_insert('exam_results')->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])->values(['examid' => $form_state->getValue('exam_id'), 'uid' => \Drupal::currentUser()->id(), 'total' => $total_marks, 'obtain' => $score_obtain, 'wrong' => $wrong_quest, 'created' => REQUEST_TIME,])->execute();
+    $reg_id = db_insert('exam_results')
+      ->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])
+      ->values([
+        'examid' => $form_state->getValue('exam_id'),
+        'uid' => \Drupal::currentUser()->id(),
+        'total' => $total_marks,
+        'obtain' => $score_obtain,
+        'wrong' => $wrong_quest,
+        'created' => REQUEST_TIME,
+      ])
+      ->execute();
     drupal_set_message($this->t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id]));
-    $exam_result_data = $this->t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', ['@score_obtain' => $score_obtain, '@total_marks' => $total_marks, '@correctAnswers' => $correct_answers, '@wrong_quest' => $wrong_quest,]);
+    $exam_result_data = $this->t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', [
+      '@score_obtain' => $score_obtain,
+      '@total_marks' => $total_marks,
+      '@correctAnswers' => $correct_answers,
+      '@wrong_quest' => $wrong_quest,
+    ]);
     $_SESSION['exam_result_data'] = $exam_result_data;
   }
 

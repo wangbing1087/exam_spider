@@ -15,7 +15,7 @@ use Drupal\exam_spider\Controller\ExamSpider;
 class ExamSpiderExamDelete extends ConfirmFormBase {
 
   /**
-   * Get Delete Exam form.
+   * @Delete Exam form.
    */
   public function getFormId() {
     return 'delete_exam_form';
@@ -76,9 +76,15 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
     $examspider_service = new ExamSpider();
     $exam_id = $this->id;
     $exam_data = $examspider_service->exam_spider_get_exam($exam_id);
-    db_delete('exam_list')->condition('id', $exam_id)->execute();
-    db_delete('exam_questions')->condition('examid', $exam_id)->execute();
-    db_delete('exam_results')->condition('examid', $exam_id)->execute();
+    db_delete('exam_list')
+      ->condition('id', $exam_id)
+      ->execute();
+    db_delete('exam_questions')
+      ->condition('examid', $exam_id)
+      ->execute();
+    db_delete('exam_results')
+      ->condition('examid', $exam_id)
+      ->execute();
     drupal_set_message(t('@exam_name has been deleted successfully.', ['@exam_name' => $exam_data['exam_name']]));
     $form_state->setRedirect('exam_spider.exam_spider_dashboard');
   }

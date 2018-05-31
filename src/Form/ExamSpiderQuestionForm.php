@@ -42,18 +42,59 @@ class ExamSpiderQuestionForm extends FormBase {
       $exam_options[$option->id] = $option->exam_name;
     }
     $form['#attributes'] = ['class' => ['questions-action']];
-    $form['selected_exam'] = ['#type' => 'select', '#title' => $this->t('Select ' . EXAM_SPIDER_EXAM_TITLE), '#options' => $exam_options, '#default_value' => isset($default_sel) ? $default_sel : NULL, '#required' => TRUE,];
-    $form['question_name'] = ['#title' => $this->t('Question Name'), '#type' => 'textfield', '#maxlength' => '170', '#required' => TRUE, '#default_value' => isset($values['question']) ? $values['question'] : NULL,];
-    $form['options'] = ['#type' => 'details', '#title' => $this->t('Option settings'), '#open' => TRUE,];
-    $form['options']['multi_answer'] = ['#type' => 'checkbox', '#title' => $this->t('Enable Multiple Answers'), '#default_value' => isset($values['multiple']) ? $values['multiple'] : NULL,];
+    $form['selected_exam'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Select ' . EXAM_SPIDER_EXAM_TITLE),
+      '#options' => $exam_options,
+      '#default_value' => isset($default_sel) ? $default_sel : NULL,
+      '#required' => TRUE,
+    ];
+    $form['question_name'] = [
+      '#title' => $this->t('Question Name'),
+      '#type' => 'textfield',
+      '#maxlength' => '170',
+      '#required' => TRUE,
+      '#default_value' => isset($values['question']) ? $values['question'] : NULL,
+    ];
+    $form['options'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Option settings'),
+      '#open' => TRUE,
+    ];
+    $form['options']['multi_answer'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable Multiple Answers'),
+      '#default_value' => isset($values['multiple']) ? $values['multiple'] : NULL,
+    ];
     for ($i = 1; $i <= 4; $i++) {
 
-      $form['options']['opt' . $i] = ['#title' => $this->t('Option @i', ['@i' => $i]), '#type' => 'textarea', '#maxlength' => '550', '#cols' => 20, '#rows' => 1, '#required' => TRUE, '#default_value' => isset($values['opt' . $i]) ? $values['opt' . $i] : NULL, '#prefix' => '<div class="option_set">',];
-      $form['options']['answer' . $i] = ['#type' => 'checkbox', '#title' => $this->t('Correct Option'), '#attributes' => ['class' => ['answer']], '#default_value' => isset($answer['opt' . $i]) ? 1 : NULL, '#suffix' => '</div>',];
+      $form['options']['opt' . $i] = [
+        '#title' => $this->t('Option @i', ['@i' => $i]),
+        '#type' => 'textarea',
+        '#maxlength' => '550',
+        '#cols' => 20,
+        '#rows' => 1,
+        '#required' => TRUE,
+        '#default_value' => isset($values['opt' . $i]) ? $values['opt' . $i] : NULL,
+        '#prefix' => '<div class="option_set">',
+      ];
+      $form['options']['answer' . $i] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Correct Option'),
+        '#attributes' => ['class' => ['answer']],
+        '#default_value' => isset($answer['opt' . $i]) ? 1 : NULL,
+        '#suffix' => '</div>',
+      ];
     }
 
-    $form['submit'] = ['#type' => 'submit', '#value' => $this->t('Submit'),];
-    $form['submit'] = ['#type' => 'submit', '#value' => $this->t('Submit'),];
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+    ];
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+    ];
     $exam_spider_get_questions = $examspider_service->exam_spider_get_questions($default_sel);
     $form['#suffix'] = drupal_render($exam_spider_get_questions);
     return $form;
@@ -97,10 +138,15 @@ class ExamSpiderQuestionForm extends FormBase {
 
     $question_id = $form_state->getValue('question_id');
     if ($question_id) {
-      db_update('exam_questions')->fields($values)->condition('id', $question_id)->execute();
+      db_update('exam_questions')
+        ->fields($values)
+        ->condition('id', $question_id)
+        ->execute();
       drupal_set_message($this->t('You have successfully updated question.'));
     } else {
-      db_insert('exam_questions')->fields($values)->execute();
+      db_insert('exam_questions')
+        ->fields($values)
+        ->execute();
       drupal_set_message($this->t('You have successfully created question for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]));
     }
     $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
