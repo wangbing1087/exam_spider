@@ -47,7 +47,8 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $query = db_select('exam_list', 'el')
+    $connection = \Drupal::database();
+    $query = $connection->select('exam_list', 'el')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields('el',

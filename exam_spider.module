@@ -13,6 +13,7 @@ use Drupal\Core\Url;
  */
 define('EXAM_SPIDER_EXAM_TITLE', \Drupal::config('exam_spider.settings')->get('exam_spider_exam_name'));
 define('EXAM_SPIDER_EXAM_URL', \Drupal::config('exam_spider.settings')->get('exam_spider_exam_url'));
+
 /**
  * Implements hook_help().
  */
