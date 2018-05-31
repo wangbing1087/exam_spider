@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Route;
  * Defines a route subscriber to register a url for serving image styles.
  */
 class ExamSpiderRoutes {
-  
+
   /**
    * Returns an array of route objects.
    *

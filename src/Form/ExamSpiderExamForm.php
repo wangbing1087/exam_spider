@@ -147,7 +147,7 @@ class ExamSpiderExamForm extends FormBase {
         ->execute();
       drupal_set_message($this->t('You have successfully created @examSpiderExamTitle, Please add Questions for @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
     }
-    $form_state->setRedirec$this->t('exam_spider.exam_spider_dashboard');
+    $form_state->setRedirect('exam_spider.exam_spider_dashboard');
   }
 
 }

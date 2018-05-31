@@ -171,23 +171,23 @@ class ExamSpiderExamContinue extends FormBase {
     }
     $correct_answers = $total_quest - $wrong_quest;
     $reg_id = db_insert('exam_results')
-      ->fields(array('examid', 'uid', 'total', 'obtain', 'wrong', 'created'))
-      ->values(array(
+      ->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])
+      ->values([
         'examid'  => $form_state->getValue('exam_id'),
         'uid'     => \Drupal::currentUser()->id(),
         'total'   => $total_marks,
         'obtain'  => $score_obtain,
         'wrong'   => $wrong_quest,
         'created' => REQUEST_TIME,
-      ))
+      ])
       ->execute();
-    drupal_set_message($this->t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', array('@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id)));
-    $exam_result_data = $this->t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', array(
+    drupal_set_message($this->t('Your @examSpiderExamTitle has submitted successfully and your REG id is REG-@reg_id.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@reg_id' => $reg_id]));
+    $exam_result_data = $this->t('<b>You have got @score_obtain marks out of @total_marks<br/>Correct Answer(s) @correctAnswers <br/>Wrong Answer(s) @wrong_quest<b>', [
       '@score_obtain' => $score_obtain,
       '@total_marks' => $total_marks,
       '@correctAnswers' => $correct_answers,
       '@wrong_quest' => $wrong_quest,
-    ));
+    ]);
     $_SESSION['exam_result_data'] = $exam_result_data;
   }
 

@@ -27,7 +27,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    */
   public function getQuestion() {
     $resultid = $this->id;
-    return $this->t('Do you want to delete REG - @resultid result?', array['@resultid' => $resultid]);
+    return $this->t('Do you want to delete REG - @resultid result?', ['@resultid' => $resultid]);
   }
 
   /**

@@ -15,7 +15,7 @@ class ExamSpider {
    */
  	public function exam_spider_dashboard() {
  		$createexam_url = Url::fromRoute('exam_spider.exam_spider_add_exam');
- 		$createexam_link = Link::fromTextAndUrl($this->t('+ Create @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $createexam_url)->toString();
+ 		$createexam_link = Link::fromTextAndUrl(t('+ Create @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $createexam_url)->toString();
  		$output['add_exams_link'] = [
 			'#markup' => $createexam_link,
     ];
@@ -48,13 +48,15 @@ class ExamSpider {
 	 	$query = \Drupal::database()->select('exam_list', 'el')
 	 	  ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
-	  $query->fields('el', ['id', 'exam_name', 'exam_description', 'uid' , 'status']);
+	  $query->fields('el', 
+	  	['id', 'exam_name', 'exam_description', 'uid', 'status']
+	  );
 		$results = $query
       ->limit(10)
       ->orderByHeader($header)
       ->execute()
       ->fetchAll();
-	  $rows = array();
+	  $rows = [];
 	  foreach ($results as $row) {
 	  	if ($row->status == 0) {
 	      $status = 'Closed';
@@ -70,7 +72,7 @@ class ExamSpider {
 			$deleteexam_link = Link::fromTextAndUrl(t('Delete'), $deleteexam_url)->toString();
 		  $examcontinue_url = Url::fromRoute('exam_spider.exam_spider_exam_continue', ['examid' => $row->id]);
 		  $examcontinue_link = Link::fromTextAndUrl(t($row->exam_name), $examcontinue_url)->toString();
-			$operations = t('@addquestion_link | @editexam_link | @deleteexam_link', array('@addquestion_link' => $addquestion_link, '@editexam_link' => $editexam_link, '@deleteexam_link' => $deleteexam_link));
+			$operations = t('@addquestion_link | @editexam_link | @deleteexam_link', ['@addquestion_link' => $addquestion_link, '@editexam_link' => $editexam_link, '@deleteexam_link' => $deleteexam_link]);
 	  	$user = \Drupal\user\Entity\User::load($row->uid);
 	    $rows[] = [
 	      'data' => [
@@ -87,12 +89,13 @@ class ExamSpider {
 	    '#theme' => 'table',
 	    '#header' => $header,
 	    '#rows' => $rows,
-	    '#empty' => $this->t('No Exams available.@create_exam_link', ['@create_exam_link' => $createexam_link]),
+	    '#empty' => t('No Exams available.@create_exam_link', ['@create_exam_link' => $createexam_link]),
 	    '#attributes' => ['class' => 'exams-list-table'],
 	  ];
 		$output['exams_pager'] = ['#type' => 'pager'];
 	  return $output;
   }
+
 	/**
 	 * Get Question list using exam id function.
 	 */
@@ -122,7 +125,7 @@ class ExamSpider {
 	      ->orderByHeader($header)
 	      ->execute()
 	      ->fetchAll();
-	    $rows = [);
+	    $rows = [];
 	    foreach ($results as $row) {
 		    $editquestion_url = Url::fromRoute('exam_spider.exam_spider_edit_question', ['questionid' => $row->id]);
 				$editquestion_link = Link::fromTextAndUrl($this->t('Edit'), $editquestion_url)->toString();
@@ -147,13 +150,14 @@ class ExamSpider {
 		    '#theme' => 'table',
 		    '#header' => $header,
 		    '#rows' => $rows,
-		    '#empty' => $this->t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+		    '#empty' => t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
 		    '#attributes' => ['class' => 'questions-list-table'],
 		  ];
 			$output['questions_pager'] = ['#type' => 'pager'];
 	  }
 	  return $output;
 	}
+
 	/**
 	 * Get exam results function.
 	 */
@@ -233,6 +237,7 @@ class ExamSpider {
 		$output['exams_result_pager'] = ['#type' => 'pager'];
 	  return $output;
  	}
+
 	/**
 	 * Get exam list using exam id and without exam id complete exam list.
 	 */
@@ -251,6 +256,7 @@ class ExamSpider {
 	    return $query->fetchAll();
 	  }
 	}
+
 	/**
 	 * Get questions using question id and without question id questions list.
 	 */
@@ -269,6 +275,7 @@ class ExamSpider {
 	    return $query->fetchAll();
 	  }
 	}
+
 	/**
 	 * Get any user last result for any exam.
 	 */
@@ -289,4 +296,5 @@ class ExamSpider {
 	    return FALSE;
 	  }
 	}
+
 }

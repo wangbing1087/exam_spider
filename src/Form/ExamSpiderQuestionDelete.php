@@ -82,7 +82,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
     db_delete('exam_questions')
     ->condition('id', $questionid)
     ->execute();
-    drupal_set_message(t('%question_name question has been deleted.', array('%question_name' => $question_data['question'])));
+    drupal_set_message(t('%question_name question has been deleted.', ['%question_name' => $question_data['question']]));
     $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
   }
 
