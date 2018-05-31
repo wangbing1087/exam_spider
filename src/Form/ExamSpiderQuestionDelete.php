@@ -14,85 +14,74 @@ use Drupal\exam_spider\Controller\ExamSpider;
  *
  * @package Drupal\exam_spider\Form
  */
-class ExamSpiderQuestionDelete extends ConfirmFormBase
-{
+class ExamSpiderQuestionDelete extends ConfirmFormBase {
 
-    /**
-     * Delete Question form.
-     */
-    public function getFormId()
-    {
-        return 'delete_question_form';
-    }
+  /**
+   * Delete Question form.
+   */
+  public function getFormId() {
+    return 'delete_question_form';
+  }
 
-    public $questionid;
+  public $questionid;
 
-    /**
-     * Delete Question confirm text.
-     */
-    public function getQuestion()
-    {
-        $examspider_service = new ExamSpider();
-        $questionid = $this->id;
-        $question_data = $examspider_service->exam_spider_get_question($questionid);
-        return t('Do you want to delete @question question?', ['@question' => $question_data['question']]);
-    }
+  /**
+   * Delete Question confirm text.
+   */
+  public function getQuestion() {
+    $examspider_service = new ExamSpider();
+    $questionid = $this->id;
+    $question_data = $examspider_service->exam_spider_get_question($questionid);
+    return t('Do you want to delete @question question?', ['@question' => $question_data['question']]);
+  }
 
-    /**
-     * Delete Question cancel url.
-     */
-    public function getCancelUrl()
-    {
-        return new Url('exam_spider.exam_spider_dashboard');
-    }
+  /**
+   * Delete Question cancel url.
+   */
+  public function getCancelUrl() {
+    return new Url('exam_spider.exam_spider_dashboard');
+  }
 
-    /**
-     * Delete Question Description text.
-     */
-    public function getDescription()
-    {
-        return $this->t('This action cannot be undone.');
-    }
+  /**
+   * Delete Question Description text.
+   */
+  public function getDescription() {
+    return $this->t('This action cannot be undone.');
+  }
 
-    /**
-     * Delete button text.
-     */
-    public function getConfirmText()
-    {
-        return $this->t('Delete it!');
-    }
+  /**
+   * Delete button text.
+   */
+  public function getConfirmText() {
+    return $this->t('Delete it!');
+  }
 
-    /**
-     * Cancel button text.
-     */
-    public function getCancelText()
-    {
-        return $this->t('Cancel');
-    }
+  /**
+   * Cancel button text.
+   */
+  public function getCancelText() {
+    return $this->t('Cancel');
+  }
 
-    /**
-     * Delete Question form.
-     */
-    public function buildForm(array $form, FormStateInterface $form_state, $questionid = NULL)
-    {
-        $this->id = $questionid;
-        return parent::buildForm($form, $form_state);
-    }
+  /**
+   * Delete Question form.
+   */
+  public function buildForm(array $form, FormStateInterface $form_state, $questionid = NULL) {
+    $this->id = $questionid;
+    return parent::buildForm($form, $form_state);
+  }
 
-    /**
-     * Delete Question form submit callbacks.
-     */
-    public function submitForm(array &$form, FormStateInterface $form_state)
-    {
-        $examspider_service = new ExamSpider();
-        $questionid = $this->id;
-        $question_data = $examspider_service->exam_spider_get_question($questionid);
-        $examid = $question_data['examid'];
-        db_delete('exam_questions')
-            ->condition('id', $questionid)
-            ->execute();
-        drupal_set_message(t('%question_name question has been deleted.', ['%question_name' => $question_data['question']]));
-        $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
-    }
+  /**
+   * Delete Question form submit callbacks.
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $examspider_service = new ExamSpider();
+    $questionid = $this->id;
+    $question_data = $examspider_service->exam_spider_get_question($questionid);
+    $examid = $question_data['examid'];
+    db_delete('exam_questions')->condition('id', $questionid)->execute();
+    drupal_set_message(t('%question_name question has been deleted.', ['%question_name' => $question_data['question']]));
+    $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
+  }
 
 }

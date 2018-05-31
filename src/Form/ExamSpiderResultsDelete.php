@@ -71,9 +71,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $resultid = $this->id;
-    db_delete('exam_results')
-      ->condition('id', $resultid)
-      ->execute();
+    db_delete('exam_results')->condition('id', $resultid)->execute();
     drupal_set_message($this->t('REG - @resultid result has been deleted successfully.', ['@resultid' => $resultid]));
     $form_state->setRedirect('exam_spider.exam_spider_exam_results');
   }
