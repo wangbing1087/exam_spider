@@ -143,7 +143,7 @@ class ExamSpiderQuestionForm extends FormBase {
         ->condition('id', $question_id)
         ->execute();
       drupal_set_message($this->t('You have successfully updated question.'));
-    } 
+    }
     else {
       db_insert('exam_questions')
         ->fields($values)

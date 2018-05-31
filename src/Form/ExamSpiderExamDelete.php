@@ -14,6 +14,8 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
 
   /**
    * Delete Exam form.
+   *
+   * @examid Exam Id.
    */
   public function getFormId() {
     return 'delete_exam_form';

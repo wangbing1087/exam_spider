@@ -5,8 +5,6 @@ namespace Drupal\exam_spider\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\exam_spider\Controller\ExamSpider;
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 use Drupal\Component\Utility\Xss;
 
 /**
@@ -16,6 +14,9 @@ use Drupal\Component\Utility\Xss;
  */
 class ExamSpiderExamContinue extends FormBase {
 
+  /**
+   * Get Exam continue form.
+   */
   public function getFormId() {
     return 'exam_continue_form';
   }
@@ -29,7 +30,7 @@ class ExamSpiderExamContinue extends FormBase {
         '#markup' => $_SESSION['exam_result_data'],
       ];
       $_SESSION['exam_result_data'] = '';
-    } 
+    }
     else {
       $current_path = \Drupal::service('path.current')->getPath();
       $path_args = explode('/', $current_path);
@@ -49,7 +50,7 @@ class ExamSpiderExamContinue extends FormBase {
         $form['re_exam_warning'] = [
           '#markup' => $re_exam_warning,
         ];
-      } 
+      }
       else {
         $output = NULL;
         $form['#prefix'] = '<div id="exam_timer"></div>';
@@ -62,7 +63,7 @@ class ExamSpiderExamContinue extends FormBase {
             ->fields("eq")
             ->condition('examid', $exam_id)->orderRandom()->execute();
 
-        } 
+        }
         else {
           $query = db_select("exam_questions", "eq")
             ->fields("eq")
@@ -72,7 +73,7 @@ class ExamSpiderExamContinue extends FormBase {
         $form['#title'] = $exam_data['exam_name'];
         if (empty($results)) {
           $output .= $this->t('No question created yet for this @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
-        } 
+        }
         else {
           if ($exam_data['exam_duration'] > 0) {
             // exam_spider_clock('exam-spider-exam-continue');
@@ -95,7 +96,7 @@ class ExamSpiderExamContinue extends FormBase {
                 '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
                 '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
               ];
-            } 
+            }
             else {
               $form['question'][$value->id] = [
                 '#type' => 'radios',
@@ -148,19 +149,19 @@ class ExamSpiderExamContinue extends FormBase {
         $checkanswer = rtrim($answer_combine, "-");
         if ($checkanswer == $question_data['answer']) {
           $score_obtain += $mark_per_quest;
-        } 
+        }
         else {
           if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;
           }
           $wrong_quest += 1;
         }
-      } 
+      }
       else {
         $checkanswer = 'opt' . $answervalues;
         if ($checkanswer == $question_data['answer']) {
           $score_obtain += $mark_per_quest;
-        } 
+        }
         else {
           if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;

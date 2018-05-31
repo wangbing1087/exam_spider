@@ -58,7 +58,7 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
     $exam_spider_exam_url = $form_state->getValue('exam_spider_exam_url');
     if (preg_match('/[^a-z]+$/i', $exam_spider_exam_name)) {
       $form_state->setErrorByName('exam_spider_exam_name', $this->t('Please use only charcters to update name.'));
-    } 
+    }
     elseif (preg_match('/[^a-z]+$/', $exam_spider_exam_url)) {
       $form_state->setErrorByName('exam_spider_exam_url', $this->t('Please use only lowercase charcters to update path.'));
     }
@@ -67,7 +67,7 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
     $url_object = $pathvalidator->getUrlIfValid($updated_path);
     if (!empty($url_object) && ($exam_spider_exam_url != EXAM_SPIDER_EXAM_URL)) {
       $form_state->setErrorByName('exam_spider_exam_url', $this->t('A path already exists for the source path @source.', ['@source' => $updated_path]));
-    } 
+    }
     else {
       drupal_flush_all_caches();
     }

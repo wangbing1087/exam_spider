@@ -5,6 +5,7 @@ namespace Drupal\exam_spider\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\user\Entity\User;
 
 /**
  * A class for muliple ExamSpider functions.
@@ -62,7 +63,7 @@ class ExamSpider extends ControllerBase {
     foreach ($results as $row) {
       if ($row->status == 0) {
         $status = 'Closed';
-      } 
+      }
       else {
         $status = 'Open';
       }
@@ -73,9 +74,15 @@ class ExamSpider extends ControllerBase {
       $deleteexam_url = Url::fromRoute('exam_spider.exam_spider_delete_exam', ['examid' => $row->id]);
       $deleteexam_link = Link::fromTextAndUrl($this->t('Delete'), $deleteexam_url)->toString();
       $examcontinue_url = Url::fromRoute('exam_spider.exam_spider_exam_continue', ['examid' => $row->id]);
-      $examcontinue_link = Link::fromTextAndUrl($this->t($row->exam_name), $examcontinue_url)->toString();
-      $operations = $this->t('@addquestion_link | @editexam_link | @deleteexam_link', ['@addquestion_link' => $addquestion_link, '@editexam_link' => $editexam_link, '@deleteexam_link' => $deleteexam_link]);
-      $user = \Drupal\user\Entity\User::load($row->uid);
+      $examcontinue_link = Link::fromTextAndUrl($row->exam_name, $examcontinue_url)->toString();
+      $operations = $this->t(
+        '@addquestion_link | @editexam_link | @deleteexam_link', [
+          '@addquestion_link' => $addquestion_link,
+          '@editexam_link' => $editexam_link,
+          '@deleteexam_link' => $deleteexam_link,
+        ]
+      );
+      $user = User::load($row->uid);
       $rows[] = [
         'data' => [
           EXAM_SPIDER_EXAM_TITLE . '-' . $row->id,
@@ -84,7 +91,7 @@ class ExamSpider extends ControllerBase {
           $user->get('name')->value,
           $status,
           $operations,
-        ]
+        ],
       ];
     }
     $output['exams_list'] = [
@@ -101,7 +108,7 @@ class ExamSpider extends ControllerBase {
   /**
    * Get Question list using exam id function.
    */
-  function examSpiderGetQuestionsList($exam_id) {
+  public function examSpiderGetQuestionsList($exam_id) {
     $output = NULL;
     if (is_numeric($exam_id)) {
       $header = [
@@ -133,10 +140,10 @@ class ExamSpider extends ControllerBase {
         $editquestion_link = Link::fromTextAndUrl($this->t('Edit'), $editquestion_url)->toString();
         $deletequestion_url = Url::fromRoute('exam_spider.exam_spider_delete_question', ['questionid' => $row->id]);
         $deletequestion_link = Link::fromTextAndUrl($this->t('Delete'), $deletequestion_url)->toString();
-        $operations = $this->t('@editquestion_link | @deletequestion_link ', ['@editquestion_link' => $editquestion_link, '@deletequestion_link' => $deletequestion_link]);
+        $operations = $this->t('@editquestion_link | @deletequestion_link', ['@editquestion_link' => $editquestion_link, '@deletequestion_link' => $deletequestion_link]);
         if ($row->status == 0) {
           $status = 'Closed';
-        } 
+        }
         else {
           $status = 'Open';
         }
@@ -201,7 +208,9 @@ class ExamSpider extends ControllerBase {
     $query = \Drupal::database()->select('exam_results', 'er')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
-    $query->fields('er', ['id', 'examid', 'uid', 'total', 'obtain', 'wrong', 'created']);
+    $query->fields(
+      'er', ['id', 'examid', 'uid', 'total', 'obtain', 'wrong', 'created']
+    );
     if (isset($_GET['exam_name'])) {
       $query->condition('examid', $_GET['exam_name']);
     }
@@ -215,7 +224,7 @@ class ExamSpider extends ControllerBase {
       $deleteresult_url = Url::fromRoute('exam_spider.exam_spider_delete_result', ['resultid' => $row->id]);
       $deleteresult_link = Link::fromTextAndUrl($this->t('Delete'), $deleteresult_url)->toString();
       $exam_data = $this->examSpiderGetExam($row->examid);
-      $user = \Drupal\user\Entity\User::load($row->uid);
+      $user = User::load($row->uid);
       $rows[] = [
         'data' => [
           $this->t('REG -') . $row->id,
@@ -250,7 +259,7 @@ class ExamSpider extends ControllerBase {
         ->condition('id', $exam_id);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } 
+    }
     else {
       $query = db_select("exam_list", "el")
         ->fields("el");
@@ -269,7 +278,7 @@ class ExamSpider extends ControllerBase {
         ->condition('id', $question_id);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } 
+    }
     else {
       $query = db_select("exam_questions", "eq")
         ->fields("eq");
@@ -293,7 +302,7 @@ class ExamSpider extends ControllerBase {
         ->condition('uid', $uid);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } 
+    }
     else {
       return FALSE;
     }

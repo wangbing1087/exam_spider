@@ -140,7 +140,7 @@ class ExamSpiderExamForm extends FormBase {
         ->condition('id', $exam_id)
         ->execute();
       drupal_set_message($this->t('You have successfully updated @examName @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE, '@examName' => $form_state->getValue('exam_name')]));
-    } 
+    }
     else {
       db_insert('exam_list')
         ->fields($values)
