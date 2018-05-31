@@ -2,17 +2,13 @@
 
 namespace Drupal\exam_spider\Form;
 
-use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\Core\Render\Element;
 use Drupal\exam_spider\Controller\ExamSpider;
 
 /**
  * Class ExamSpiderQuestionDelete.
- *
- * @package Drupal\exam_spider\Form
  */
 class ExamSpiderQuestionDelete extends ConfirmFormBase {
 

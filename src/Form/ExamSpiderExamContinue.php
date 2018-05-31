@@ -29,7 +29,8 @@ class ExamSpiderExamContinue extends FormBase {
         '#markup' => $_SESSION['exam_result_data'],
       ];
       $_SESSION['exam_result_data'] = '';
-    } else {
+    } 
+    else {
       $current_path = \Drupal::service('path.current')->getPath();
       $path_args = explode('/', $current_path);
       $exam_id = $path_args[2];
@@ -48,7 +49,8 @@ class ExamSpiderExamContinue extends FormBase {
         $form['re_exam_warning'] = [
           '#markup' => $re_exam_warning,
         ];
-      } else {
+      } 
+      else {
         $output = NULL;
         $form['#prefix'] = '<div id="exam_timer"></div>';
         $form['#attached']['library'][] = 'exam_spider/exam_spider';
@@ -60,16 +62,18 @@ class ExamSpiderExamContinue extends FormBase {
             ->fields("eq")
             ->condition('examid', $exam_id)->orderRandom()->execute();
 
-        } else {
+        } 
+        else {
           $query = db_select("exam_questions", "eq")
             ->fields("eq")
             ->condition('examid', $exam_id)->execute();
         }
         $results = $query->fetchAll();
-        $form['#title'] = $this->t($exam_data['exam_name']);
+        $form['#title'] = $exam_data['exam_name'];
         if (empty($results)) {
           $output .= $this->t('No question created yet for this @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
-        } else {
+        } 
+        else {
           if ($exam_data['exam_duration'] > 0) {
             // exam_spider_clock('exam-spider-exam-continue');
           }
@@ -91,7 +95,8 @@ class ExamSpiderExamContinue extends FormBase {
                 '#prefix' => '<li id="examslide_' . $key . '" class="exam_spider_slider">',
                 '#suffix' => ' <a class="exam_spider_slide_next button" href="#next">' . $this->t('Next') . '</a></li>',
               ];
-            } else {
+            } 
+            else {
               $form['question'][$value->id] = [
                 '#type' => 'radios',
                 '#title' => $this->t('@question', ['@question' => Xss::filter($value->question)]),
@@ -143,17 +148,20 @@ class ExamSpiderExamContinue extends FormBase {
         $checkanswer = rtrim($answer_combine, "-");
         if ($checkanswer == $question_data['answer']) {
           $score_obtain += $mark_per_quest;
-        } else {
+        } 
+        else {
           if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;
           }
           $wrong_quest += 1;
         }
-      } else {
+      } 
+      else {
         $checkanswer = 'opt' . $answervalues;
         if ($checkanswer == $question_data['answer']) {
           $score_obtain += $mark_per_quest;
-        } else {
+        } 
+        else {
           if ($negative_mark == 1) {
             $score_obtain -= $negative_marking_number;
           }

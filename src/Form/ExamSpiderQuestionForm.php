@@ -44,7 +44,7 @@ class ExamSpiderQuestionForm extends FormBase {
     $form['#attributes'] = ['class' => ['questions-action']];
     $form['selected_exam'] = [
       '#type' => 'select',
-      '#title' => $this->t('Select ' . EXAM_SPIDER_EXAM_TITLE),
+      '#title' => $this->t('Select @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
       '#options' => $exam_options,
       '#default_value' => isset($default_sel) ? $default_sel : NULL,
       '#required' => TRUE,
@@ -143,7 +143,8 @@ class ExamSpiderQuestionForm extends FormBase {
         ->condition('id', $question_id)
         ->execute();
       drupal_set_message($this->t('You have successfully updated question.'));
-    } else {
+    } 
+    else {
       db_insert('exam_questions')
         ->fields($values)
         ->execute();

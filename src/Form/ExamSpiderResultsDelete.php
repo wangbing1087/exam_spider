@@ -8,8 +8,6 @@ use Drupal\Core\Url;
 
 /**
  * Class ExamSpiderResultsDelete.
- *
- * @package Drupal\exam_spider\Form
  */
 class ExamSpiderResultsDelete extends ConfirmFormBase {
 

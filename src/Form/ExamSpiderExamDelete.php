@@ -9,13 +9,11 @@ use Drupal\exam_spider\Controller\ExamSpider;
 
 /**
  * Class ExamSpiderExamDelete.
- *
- * @package Drupal\exam_spider\Form.
  */
 class ExamSpiderExamDelete extends ConfirmFormBase {
 
   /**
-   * @Delete Exam form.
+   * Delete Exam form.
    */
   public function getFormId() {
     return 'delete_exam_form';

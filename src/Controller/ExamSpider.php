@@ -16,7 +16,7 @@ class ExamSpider extends ControllerBase {
    */
   public function exam_spider_dashboard() {
     $createexam_url = Url::fromRoute('exam_spider.exam_spider_add_exam');
-    $createexam_link = Link::fromTextAndUrl(t('+ Create @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $createexam_url)->toString();
+    $createexam_link = Link::fromTextAndUrl($this->t('+ Create @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $createexam_url)->toString();
     $output['add_exams_link'] = [
       '#markup' => $createexam_link,
     ];
@@ -28,7 +28,7 @@ class ExamSpider extends ControllerBase {
       ],
       [
         'data' => EXAM_SPIDER_EXAM_TITLE . ' Name',
-        'field' => 'el.exam_name'
+        'field' => 'el.exam_name',
       ],
       [
         'data' => EXAM_SPIDER_EXAM_TITLE . ' Description',
@@ -61,17 +61,18 @@ class ExamSpider extends ControllerBase {
     foreach ($results as $row) {
       if ($row->status == 0) {
         $status = 'Closed';
-      } else {
+      } 
+      else {
         $status = 'Open';
       }
       $addquestion_url = Url::fromRoute('exam_spider.exam_spider_add_question', ['examid' => $row->id]);
-      $addquestion_link = Link::fromTextAndUrl(t('Questions'), $addquestion_url)->toString();
+      $addquestion_link = Link::fromTextAndUrl($this->t('Questions'), $addquestion_url)->toString();
       $editexam_url = Url::fromRoute('exam_spider.exam_spider_edit_exam', ['examid' => $row->id]);
-      $editexam_link = Link::fromTextAndUrl(t('Edit'), $editexam_url)->toString();
+      $editexam_link = Link::fromTextAndUrl($this->t('Edit'), $editexam_url)->toString();
       $deleteexam_url = Url::fromRoute('exam_spider.exam_spider_delete_exam', ['examid' => $row->id]);
-      $deleteexam_link = Link::fromTextAndUrl(t('Delete'), $deleteexam_url)->toString();
+      $deleteexam_link = Link::fromTextAndUrl($this->t('Delete'), $deleteexam_url)->toString();
       $examcontinue_url = Url::fromRoute('exam_spider.exam_spider_exam_continue', ['examid' => $row->id]);
-      $examcontinue_link = Link::fromTextAndUrl(t($row->exam_name), $examcontinue_url)->toString();
+      $examcontinue_link = Link::fromTextAndUrl($this->t($row->exam_name), $examcontinue_url)->toString();
       $operations = t('@addquestion_link | @editexam_link | @deleteexam_link', ['@addquestion_link' => $addquestion_link, '@editexam_link' => $editexam_link, '@deleteexam_link' => $deleteexam_link]);
       $user = \Drupal\user\Entity\User::load($row->uid);
       $rows[] = [
@@ -89,7 +90,7 @@ class ExamSpider extends ControllerBase {
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
-      '#empty' => t('No Exams available.@create_exam_link', ['@create_exam_link' => $createexam_link]),
+      '#empty' => $this->t('No Exams available.@create_exam_link', ['@create_exam_link' => $createexam_link]),
       '#attributes' => ['class' => 'exams-list-table'],
     ];
     $output['exams_pager'] = ['#type' => 'pager'];
@@ -134,7 +135,8 @@ class ExamSpider extends ControllerBase {
         $operations = $this->t('@editquestion_link | @deletequestion_link ', ['@editquestion_link' => $editquestion_link, '@deletequestion_link' => $deletequestion_link]);
         if ($row->status == 0) {
           $status = 'Closed';
-        } else {
+        } 
+        else {
           $status = 'Open';
         }
         $rows[] = [
@@ -149,7 +151,7 @@ class ExamSpider extends ControllerBase {
         '#theme' => 'table',
         '#header' => $header,
         '#rows' => $rows,
-        '#empty' => t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+        '#empty' => $this->t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
         '#attributes' => ['class' => 'questions-list-table'],
       ];
       $output['questions_pager'] = ['#type' => 'pager'];
@@ -169,7 +171,7 @@ class ExamSpider extends ControllerBase {
       ],
       [
         'data' => EXAM_SPIDER_EXAM_TITLE . ' Name',
-        'field' => 'er.examid'
+        'field' => 'er.examid',
       ],
       [
         'data' => 'Name',
@@ -230,7 +232,7 @@ class ExamSpider extends ControllerBase {
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
-      '#empty' => t('No @examSpiderExamTitle result found.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#empty' => $this->t('No @examSpiderExamTitle result found.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
       '#attributes' => ['class' => 'exams-result-table'],
     ];
     $output['exams_result_pager'] = ['#type' => 'pager'];
@@ -247,7 +249,8 @@ class ExamSpider extends ControllerBase {
         ->condition('id', $exam_id);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } else {
+    } 
+    else {
       $query = db_select("exam_list", "el")
         ->fields("el");
       $query = $query->execute();
@@ -265,7 +268,8 @@ class ExamSpider extends ControllerBase {
         ->condition('id', $question_id);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } else {
+    } 
+    else {
       $query = db_select("exam_questions", "eq")
         ->fields("eq");
       $query = $query->execute();
@@ -288,7 +292,8 @@ class ExamSpider extends ControllerBase {
         ->condition('uid', $uid);
       $query = $query->execute();
       return $query->fetchAssoc();
-    } else {
+    } 
+    else {
       return FALSE;
     }
   }
