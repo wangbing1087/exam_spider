@@ -15,10 +15,10 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
   /**
    * The exam ID.
    *
-   * @var integer
+   * @var int
    */
   public $examid;
-  
+
   /**
    * Delete Exam form.
    */

@@ -14,7 +14,7 @@ class ExamSpiderResultsDelete extends ConfirmFormBase {
   /**
    * The result ID.
    *
-   * @var integer
+   * @var int
    */
   public $resultid;
 

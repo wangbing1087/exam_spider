@@ -15,7 +15,7 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   /**
    * The question ID.
    *
-   * @var integer
+   * @var int
    */
   public $questionid;
 
