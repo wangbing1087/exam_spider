@@ -96,7 +96,7 @@ class ExamSpiderQuestionForm extends FormBase {
       '#value' => $this->t('Submit'),
     ];
     $exam_spider_get_questions = $examspider_service->examSpiderGetQuestionsList($default_sel);
-    $form['#suffix'] = drupal_render($exam_spider_get_questions);
+    $form['#suffix'] = \Drupal::service('renderer')->render($exam_spider_get_questions);
     return $form;
   }
 

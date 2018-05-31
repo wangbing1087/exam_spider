@@ -21,7 +21,7 @@ class ExamSpiderRoutes {
       '/admin/structure/' . EXAM_SPIDER_EXAM_URL,
       [
         '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::examSpiderDashboard',
-        '_title' => EXAM_SPIDER_EXAM_TITLE . 'Dashboard',
+        '_title' => EXAM_SPIDER_EXAM_TITLE . ' Dashboard',
       ],
       [
         '_permission' => 'exam spider dashboard',
@@ -31,7 +31,7 @@ class ExamSpiderRoutes {
       '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/results',
       [
         '_form' => '\Drupal\exam_spider\Form\ExamSpiderResultsForm',
-        '_title' => EXAM_SPIDER_EXAM_TITLE . 'Results',
+        '_title' => EXAM_SPIDER_EXAM_TITLE . ' Results',
       ],
       [
         '_permission' => 'exam spider dashboard',
@@ -51,7 +51,7 @@ class ExamSpiderRoutes {
       '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config',
       [
         '_form' => '\Drupal\exam_spider\Form\ExamSpiderSettingsForm',
-        '_title' => EXAM_SPIDER_EXAM_TITLE . 'Settings',
+        '_title' => EXAM_SPIDER_EXAM_TITLE . ' Settings',
       ],
       [
         '_permission' => 'exam spider dashboard',

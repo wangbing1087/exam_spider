@@ -13,13 +13,6 @@ use Drupal\user\Entity\User;
 class ExamSpider extends ControllerBase {
 
   /**
-   * The logged in user.
-   *
-   * @var \Drupal\user\UserInterface
-   */
-  protected $user;
-
-  /**
    * Displays a listing of Exams list.
    */
   public function examSpiderDashboard() {
@@ -54,8 +47,7 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $query = \Drupal::database();
-    $query = $query->select('exam_list', 'el')
+    $query = db_select('exam_list', 'el')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields('el',
@@ -95,7 +87,7 @@ class ExamSpider extends ControllerBase {
           EXAM_SPIDER_EXAM_TITLE . '-' . $row->id,
           $examcontinue_link,
           $row->exam_description,
-          $user->get('name')->value,
+          $user->getUsername(),
           $status,
           $operations,
         ],
@@ -131,7 +123,7 @@ class ExamSpider extends ControllerBase {
           'data' => 'Operations',
         ],
       ];
-      $query = \Drupal::database()->select("exam_questions", "eq")
+      $query = db_select("exam_questions", "eq")
         ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
         ->extend('\Drupal\Core\Database\Query\TableSortExtender');
       $query->fields('eq', ['id', 'question', 'status']);
@@ -212,7 +204,7 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $query = \Drupal::database()->select('exam_results', 'er')
+    $query = db_select('exam_results', 'er')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields(
