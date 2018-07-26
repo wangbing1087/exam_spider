@@ -10,7 +10,6 @@
       if (drupalSettings.getTimeLimit) {
         countdownto();
       }
-      
       function countdownto() {
         var TimeLimit = new Date(drupalSettings.getTimeLimit);
         var forForm = drupalSettings.forForm;
