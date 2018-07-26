@@ -27,3 +27,19 @@ function exam_spider_help($route_name, RouteMatchInterface $route_match) {
       return $output;
   }
 }
+
+/**
+ * Implements hook_mail().
+ */
+function exam_spider_mail($key, &$message, $params) {
+	$options = array(
+		'langcode' => $message['langcode'],
+	);
+	switch ($key) {
+		case 'exam_spider_result':
+		  $message['from'] = \Drupal::config('system.site')->get('mail');
+		  $message['subject'] = t('@subject', array('@subject' => $params['subject']), $options);
+		  $message['body'][] = $params['message'];
+		  break;
+	}
+}

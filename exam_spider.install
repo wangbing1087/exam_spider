@@ -28,7 +28,7 @@ function exam_spider_schema() {
       'exam_description' => [
         'description' => 'Exam Description',
         'type'        => 'varchar',
-        'length'      => 200,
+        'length'      => 500,
         'not null'    => TRUE,
       ],
       'uid'              => [

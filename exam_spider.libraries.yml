@@ -7,3 +7,4 @@ exam_spider:
     js/exam_spider.js: {}
   dependencies:
     - core/jquery
+    - core/drupalSettings

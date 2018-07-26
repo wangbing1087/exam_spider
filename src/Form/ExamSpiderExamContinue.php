@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\exam_spider\Controller\ExamSpider;
 use Drupal\Component\Utility\Xss;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Form builder for the exam continue form.
@@ -56,7 +57,7 @@ class ExamSpiderExamContinue extends FormBase {
         $form['#prefix'] = '<div id="exam_timer"></div>';
         $form['#attached']['library'][] = 'exam_spider/exam_spider';
         if ($exam_data['status'] == 0) {
-          // throw new AccessDeniedHttpException();
+          throw new AccessDeniedHttpException();
         }
         if ($exam_data['random_quest'] == 1) {
           $query = db_select("exam_questions", "eq")
@@ -70,13 +71,14 @@ class ExamSpiderExamContinue extends FormBase {
             ->condition('examid', $exam_id)->execute();
         }
         $results = $query->fetchAll();
-        $form['#title'] = $exam_data['exam_name'];
+        $form['#title'] = Xss::filter($exam_data['exam_name']);
         if (empty($results)) {
           $output .= $this->t('No question created yet for this @examSpiderExamTitle.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
         }
         else {
           if ($exam_data['exam_duration'] > 0) {
-            // exam_spider_clock('exam-spider-exam-continue');
+            $form['#attached']['drupalSettings']['forForm'] = 'exam-continue-form';
+            $form['#attached']['drupalSettings']['getTimeLimit'] = $examspider_service->examSpidergetTimeLimit($exam_data['exam_duration']);
           }
           $form['li_prefix'] = [
             '#markup' => ' <ul class="exam_spider_slider_exam">',
@@ -171,8 +173,7 @@ class ExamSpiderExamContinue extends FormBase {
       }
     }
     $correct_answers = $total_quest - $wrong_quest;
-    $connection = \Drupal::database();
-    $reg_id = $connection->db_insert('exam_results')
+    $reg_id = db_insert('exam_results')
       ->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])
       ->values([
         'examid' => $form_state->getValue('exam_id'),

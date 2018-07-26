@@ -13,6 +13,14 @@ use Drupal\user\Entity\User;
 class ExamSpider extends ControllerBase {
 
   /**
+   * Get time limit function.
+   */
+  public function examSpidergetTimeLimit($exam_duration) {
+    $timer = time() + intval($exam_duration * 60);
+    return date('r', $timer);
+  }
+
+  /**
    * Displays a listing of Exams list.
    */
   public function examSpiderDashboard() {
@@ -223,6 +231,10 @@ class ExamSpider extends ControllerBase {
     foreach ($results as $row) {
       $deleteresult_url = Url::fromRoute('exam_spider.exam_spider_delete_result', ['resultid' => $row->id]);
       $deleteresult_link = Link::fromTextAndUrl($this->t('Delete'), $deleteresult_url)->toString();
+      $sendmail_url = Url::fromRoute('exam_spider.exam_spider_exam_result_mail', ['resultid' => $row->id, 'uid' => $row->uid]);
+      $sendmail_link = Link::fromTextAndUrl($this->t('Send Mail'), $sendmail_url)->toString();
+      $operations = $this->t('@deleteresult_link | @sendmail_link', ['@deleteresult_link' => $deleteresult_link, '@sendmail_link' => $sendmail_link]);
+
       $exam_data = $this->examSpiderGetExam($row->examid);
       $user = User::load($row->uid);
       $rows[] = [
@@ -234,7 +246,7 @@ class ExamSpider extends ControllerBase {
           $row->obtain,
           $row->wrong,
           format_date($row->created, 'short'),
-          $deleteresult_link,
+          $operations,
         ],
       ];
     }
@@ -305,6 +317,106 @@ class ExamSpider extends ControllerBase {
     }
     else {
       return FALSE;
+    }
+  }
+
+  /**
+   * All exam listed page to start exam page callbacks.
+   */
+  public function examSpiderExamStart() {
+    $output = NULL;
+    $header = [
+      [
+        'data' => EXAM_SPIDER_EXAM_TITLE . ' Name',
+        'field' => 'el.exam_name',
+      ],
+      [
+        'data' => EXAM_SPIDER_EXAM_TITLE . ' Description',
+        'field' => 'el.exam_description',
+      ],
+      [
+        'data' => 'Operations',
+      ],
+    ];
+    $query = db_select('exam_list', 'el')
+      ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
+      ->extend('\Drupal\Core\Database\Query\TableSortExtender');
+    $query->fields(
+      'el', ['id', 'exam_name', 'exam_description', 'status']
+    );
+    $results = $query
+      ->limit(10)
+      ->orderByHeader($header)
+      ->execute()
+      ->fetchAll();
+    $rows = [];
+    foreach ($results as $row) {
+      if ($row->status == 1) {
+      
+      }
+      $examcontinue_url = Url::fromRoute('exam_spider.exam_spider_exam_continue', ['examid' => $row->id]);
+      $examcontinue_link = Link::fromTextAndUrl($this->t('Start @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $examcontinue_url)->toString();
+      $examcontinue__name_link = Link::fromTextAndUrl($this->t('@examName', ['@examName' => $row->exam_name]), $examcontinue_url)->toString();
+      $rows[] = [
+        'data' => [
+          $examcontinue__name_link,
+          $row->exam_description,
+          $examcontinue_link,
+        ],
+      ];
+    }
+    $output['exams_start_list'] = [
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+      '#empty' => $this->t('No @examSpiderExamTitle created yet.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+      '#attributes' => ['class' => 'exams-start-table'],
+    ];
+    $output['exams_start_pager'] = ['#type' => 'pager'];
+    return $output;
+  }
+
+  /**
+   * Send result score card via mail.
+   */
+  public function examSpiderExamResultMail($resultid) {
+    if (is_numeric($resultid)) {
+      $query = db_select("exam_results", "er")
+        ->fields("er")
+        ->condition('id', $resultid);
+      $exam_result_data = $query->execute()->fetchAssoc();
+      $user_data = User::load($exam_result_data['uid']);
+      $exam_data = $this->examSpiderGetExam($exam_result_data['examid']);
+      $mailManager = \Drupal::service('plugin.manager.mail');
+      $body = t('Hi @tomail,
+
+      You have got @score_obtain marks out of @total_marks.
+      Wrong Answer(s) @wrong_quest.
+
+      Many Thanks,
+      @sitename', array(
+        '@score_obtain'   => $exam_result_data['obtain'],
+        '@total_marks'    => $exam_result_data['total'],
+        '@wrong_quest'    => $exam_result_data['wrong'],
+        '@sitename'       => \Drupal::config('system.site')->get('name'),
+        '@tomail'         => @$user_data->get('name')->value,
+
+      ));
+      $module = 'exam_spider';
+      $key = 'exam_spider_result';
+      $to = $user_data->get('mail')->value;
+      $params['message'] = $body;
+      $params['subject'] = 'Eaxam Result for ' . $exam_data['exam_name'];
+      $langcode = \Drupal::currentUser()->getPreferredLangcode();
+      $send = true;
+      $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+      if ($result['result'] !== true) {
+        return drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+      }
+      else {
+        return drupal_set_message(t('Your message has been sent.'));
+      }
+      //return $this->redirect('exam_spider.exam_spider_delete_result');
     }
   }
 

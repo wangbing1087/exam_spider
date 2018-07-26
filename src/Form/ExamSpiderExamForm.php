@@ -63,7 +63,7 @@ class ExamSpiderExamForm extends FormBase {
       '#size' => 10,
       '#required' => TRUE,
       '#default_value' => isset($values['exam_duration']) ? $values['exam_duration'] : NULL,
-      '#min' => 1,
+      '#min' => 0,
     ];
     $form['examsettings']['total_marks'] = [
       '#title' => $this->t('Total Marks'),

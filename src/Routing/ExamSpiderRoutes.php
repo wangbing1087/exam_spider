@@ -47,6 +47,16 @@ class ExamSpiderRoutes {
         '_permission' => 'exam spider dashboard',
       ]
     );
+    $routes['exam_spider.exam_spider_exam_result_mail'] = new Route(
+      '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/result/{resultid}/mail',
+      [
+        '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::examSpiderExamResultMail',
+        '_title' => 'Send Score Card of Result',
+      ],
+      [
+        '_permission' => 'exam spider dashboard',
+      ]
+    );
     $routes['exam_spider.exam_spider_exam_settings'] = new Route(
       '/admin/structure/' . EXAM_SPIDER_EXAM_URL . '/config',
       [
@@ -117,6 +127,16 @@ class ExamSpiderRoutes {
         '_permission' => 'exam spider dashboard',
       ]
     );
+    $routes['exam_spider.exam_spider_start'] = new Route(
+      '/' . EXAM_SPIDER_EXAM_URL . '/start',
+      [
+        '_controller' => '\Drupal\exam_spider\Controller\ExamSpider::examSpiderExamStart',
+        '_title' => 'List of ' . EXAM_SPIDER_EXAM_TITLE,
+      ],
+      [
+        '_permission' => 'exam spider user',
+      ]
+    );
     $routes['exam_spider.exam_spider_exam_continue'] = new Route(
       '/' . EXAM_SPIDER_EXAM_URL . '/{examid}/continue',
       [
@@ -124,7 +144,7 @@ class ExamSpiderRoutes {
         '_title' => 'Continue ' . EXAM_SPIDER_EXAM_TITLE,
       ],
       [
-        '_permission' => 'exam spider dashboard',
+        '_permission' => 'exam spider user',
       ]
     );
     return $routes;
