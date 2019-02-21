@@ -352,7 +352,7 @@ class ExamSpider extends ControllerBase {
     $rows = [];
     foreach ($results as $row) {
       if ($row->status == 1) {
-      
+
       }
       $examcontinue_url = Url::fromRoute('exam_spider.exam_spider_exam_continue', ['examid' => $row->id]);
       $examcontinue_link = Link::fromTextAndUrl($this->t('Start @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]), $examcontinue_url)->toString();
@@ -394,29 +394,29 @@ class ExamSpider extends ControllerBase {
       Wrong Answer(s) @wrong_quest.
 
       Many Thanks,
-      @sitename', array(
+      @sitename', [
         '@score_obtain'   => $exam_result_data['obtain'],
         '@total_marks'    => $exam_result_data['total'],
         '@wrong_quest'    => $exam_result_data['wrong'],
         '@sitename'       => \Drupal::config('system.site')->get('name'),
         '@tomail'         => @$user_data->get('name')->value,
 
-      ));
+      ]);
       $module = 'exam_spider';
       $key = 'exam_spider_result';
       $to = $user_data->get('mail')->value;
       $params['message'] = $body;
       $params['subject'] = 'Eaxam Result for ' . $exam_data['exam_name'];
       $langcode = \Drupal::currentUser()->getPreferredLangcode();
-      $send = true;
+      $send = TRUE;
       $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-      if ($result['result'] !== true) {
+      if ($result['result'] !== TRUE) {
         return drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
       }
       else {
         return drupal_set_message(t('Your message has been sent.'));
       }
-      //return $this->redirect('exam_spider.exam_spider_delete_result');
+      // Commented return $this->redirect('exam_spider.exam_spider_delete_result');.
     }
   }
 

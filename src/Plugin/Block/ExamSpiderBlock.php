@@ -13,14 +13,13 @@ use Drupal\exam_spider\Controller\ExamSpider;
  *   admin_label = @Translation("Exam lists"),
  * )
  */
-
 class ExamSpiderBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
    */
   public function build() {
-  	$output[]['#cache']['max-age'] = 0; // No cache
+    $output[]['#cache']['max-age'] = 0;
     $examspider_service = new ExamSpider();
     $output[] = $examspider_service->examSpiderExamStart();
     return $output;
