@@ -38,7 +38,7 @@ function exam_spider_mail($key, &$message, $params) {
   switch ($key) {
     case 'exam_spider_result':
       $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t('@subject', array['@subject' => $params['subject']], $options);
+      $message['subject'] = t('@subject', ['@subject' => $params['subject']], $options);
       $message['body'][] = $params['message'];
       break;
   }
