@@ -3,14 +3,75 @@
 namespace Drupal\exam_spider\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\user\Entity\User;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\user\Entity\User;
+
 
 /**
  * A class for muliple ExamSpider functions.
  */
 class ExamSpider extends ControllerBase {
+
+  /**
+   * The database service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
+   * The user storage.
+   *
+   * @var \Drupal\user\UserStorageInterface
+   */
+  protected $userStorage;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('database'),
+      $container->get('date.formatter'),
+      $container->get('form_builder')
+    );
+  }
+
+  /**
+   * Constructs a DbLogController object.
+   *
+   * @param \Drupal\Core\Database\Connection $database
+   *   A database connection.
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date formatter service.
+   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
+   *   The form builder service.
+   */
+  public function __construct(Connection $database, DateFormatterInterface $date_formatter, FormBuilderInterface $form_builder) {
+    $this->database = $database;
+    $this->dateFormatter = $date_formatter;
+    $this->formBuilder = $form_builder;
+    $this->userStorage = $this->entityManager()->getStorage('user');
+  }
 
   /**
    * Get time limit function.
@@ -55,8 +116,7 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $connection = \Drupal::database();
-    $query = $connection->select('exam_list', 'el')
+    $query = $this->database->select('exam_list', 'el')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields('el',
@@ -90,7 +150,7 @@ class ExamSpider extends ControllerBase {
           '@deleteexam_link' => $deleteexam_link,
         ]
       );
-      $user = User::load($row->uid);
+      $user = $this->userStorage->load($row->uid);
       $rows[] = [
         'data' => [
           EXAM_SPIDER_EXAM_TITLE . '-' . $row->id,
@@ -132,7 +192,7 @@ class ExamSpider extends ControllerBase {
           'data' => 'Operations',
         ],
       ];
-      $query = db_select("exam_questions", "eq")
+      $query = $this->database->select("exam_questions", "eq")
         ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
         ->extend('\Drupal\Core\Database\Query\TableSortExtender');
       $query->fields('eq', ['id', 'question', 'status']);
@@ -213,7 +273,7 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $query = db_select('exam_results', 'er')
+    $query = $this->database->select('exam_results', 'er')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields(
@@ -236,7 +296,7 @@ class ExamSpider extends ControllerBase {
       $operations = $this->t('@deleteresult_link | @sendmail_link', ['@deleteresult_link' => $deleteresult_link, '@sendmail_link' => $sendmail_link]);
 
       $exam_data = $this->examSpiderGetExam($row->examid);
-      $user = User::load($row->uid);
+      $user = $this->userStorage->load($row->uid);
       $rows[] = [
         'data' => [
           $this->t('REG -') . $row->id,
@@ -245,7 +305,7 @@ class ExamSpider extends ControllerBase {
           $row->total,
           $row->obtain,
           $row->wrong,
-          format_date($row->created, 'short'),
+          $this->dateFormatter->format($row->created, 'short'),
           $operations,
         ],
       ];
@@ -266,14 +326,14 @@ class ExamSpider extends ControllerBase {
    */
   public function examSpiderGetExam($exam_id = NULL) {
     if (is_numeric($exam_id)) {
-      $query = db_select("exam_list", "el")
+      $query = $this->database->select("exam_list", "el")
         ->fields("el")
         ->condition('id', $exam_id);
       $query = $query->execute();
       return $query->fetchAssoc();
     }
     else {
-      $query = db_select("exam_list", "el")
+      $query = $this->database->select("exam_list", "el")
         ->fields("el");
       $query = $query->execute();
       return $query->fetchAll();
@@ -285,14 +345,14 @@ class ExamSpider extends ControllerBase {
    */
   public function examSpiderGetQuestion($question_id = NULL) {
     if (is_numeric($question_id)) {
-      $query = db_select("exam_questions", "eq")
+      $query = $this->database->select("exam_questions", "eq")
         ->fields("eq")
         ->condition('id', $question_id);
       $query = $query->execute();
       return $query->fetchAssoc();
     }
     else {
-      $query = db_select("exam_questions", "eq")
+      $query = $this->database->select("exam_questions", "eq")
         ->fields("eq");
       $query = $query->execute();
       return $query->fetchAll();
@@ -307,7 +367,7 @@ class ExamSpider extends ControllerBase {
       $uid = \Drupal::currentUser()->id();
     }
     if (is_numeric($exam_id)) {
-      $query = db_select("exam_results", "er")
+      $query = $this->database->select("exam_results", "er")
         ->fields("er")
         ->condition('examid', $exam_id)
         ->orderBy('id', 'DESC')
@@ -338,7 +398,7 @@ class ExamSpider extends ControllerBase {
         'data' => 'Operations',
       ],
     ];
-    $query = db_select('exam_list', 'el')
+    $query = $this->database->select('exam_list', 'el')
       ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('\Drupal\Core\Database\Query\TableSortExtender');
     $query->fields(
@@ -381,14 +441,14 @@ class ExamSpider extends ControllerBase {
    */
   public function examSpiderExamResultMail($resultid) {
     if (is_numeric($resultid)) {
-      $query = db_select("exam_results", "er")
+      $query = $this->database->select("exam_results", "er")
         ->fields("er")
         ->condition('id', $resultid);
       $exam_result_data = $query->execute()->fetchAssoc();
       $user_data = User::load($exam_result_data['uid']);
       $exam_data = $this->examSpiderGetExam($exam_result_data['examid']);
       $mailManager = \Drupal::service('plugin.manager.mail');
-      $body = t('Hi @tomail,
+      $body = $this->t('Hi @tomail,
 
       You have got @score_obtain marks out of @total_marks.
       Wrong Answer(s) @wrong_quest.
@@ -411,10 +471,10 @@ class ExamSpider extends ControllerBase {
       $send = TRUE;
       $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
       if ($result['result'] !== TRUE) {
-        return drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+        return drupal_set_message($this->t('There was a problem sending your message and it was not sent.'), 'error');
       }
       else {
-        return drupal_set_message(t('Your message has been sent.'));
+        return drupal_set_message($this->t('Your message has been sent.'));
       }
       // Commented return $this->redirect('exam_spider.exam_spider_delete_result');.
     }
