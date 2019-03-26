@@ -4,7 +4,8 @@ namespace Drupal\exam_spider\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\exam_spider\Controller\ExamSpider;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form builder for the add exam form.
@@ -12,6 +13,32 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderExamForm extends FormBase {
+
+  /**
+   * The ExamSpider service.
+   *
+   * @var \Drupal\user\ExamSpiderData
+   */
+  protected $ExamSpiderData;
+
+  /**
+   * Constructs a ExamSpider object.
+   *
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
+   */
+  public function __construct(ExamSpiderDataInterface $examspider_data) {
+    $this->ExamSpiderData = $examspider_data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('exam_spider.data')
+    );
+  }
 
   /**
    * Add/Update get exam form.
@@ -28,9 +55,8 @@ class ExamSpiderExamForm extends FormBase {
     $current_path = \Drupal::service('path.current')->getPath();
     $path_args = explode('/', $current_path);
     if ($path_args[5] == 'edit' && is_numeric($path_args[4])) {
-      $examspider_service = new ExamSpider();
       $exam_id = $path_args[4];
-      $values = $examspider_service->examSpiderGetExam($exam_id);
+      $values = $this->ExamSpiderData->examSpiderGetExam($exam_id);
       $form['exam_id'] = ['#type' => 'value', '#value' => $values['id']];
     }
     $form['exam_name'] = [

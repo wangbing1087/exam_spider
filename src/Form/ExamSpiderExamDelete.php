@@ -5,7 +5,8 @@ namespace Drupal\exam_spider\Form;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\exam_spider\Controller\ExamSpider;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ExamSpiderExamDelete.
@@ -20,6 +21,32 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
   public $examid;
 
   /**
+   * The ExamSpider service.
+   *
+   * @var \Drupal\user\ExamSpiderData
+   */
+  protected $ExamSpiderData;
+
+  /**
+   * Constructs a ExamSpider object.
+   *
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
+   */
+  public function __construct(ExamSpiderDataInterface $examspider_data) {
+    $this->ExamSpiderData = $examspider_data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('exam_spider.data')
+    );
+  }
+
+  /**
    * Delete Exam form.
    */
   public function getFormId() {
@@ -30,9 +57,8 @@ class ExamSpiderExamDelete extends ConfirmFormBase {
    * Delete Exam confirm text.
    */
   public function getQuestion() {
-    $examspider_service = new ExamSpider();
     $exam_id = $this->id;
-    $exam_data = $examspider_service->examSpiderGetExam($exam_id);
+    $exam_data = $this->ExamSpiderData->examSpiderGetExam($exam_id);
     return t('Do you want to delete @exam_name @examSpiderExamTitle ?', ['@exam_name' => $exam_data['exam_name'], '@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]);
   }
 

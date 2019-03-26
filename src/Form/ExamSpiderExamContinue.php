@@ -4,7 +4,8 @@ namespace Drupal\exam_spider\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\exam_spider\Controller\ExamSpider;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Utility\Xss;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -14,6 +15,32 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderExamContinue extends FormBase {
+
+  /**
+   * The ExamSpider service.
+   *
+   * @var \Drupal\user\ExamSpiderData
+   */
+  protected $ExamSpiderData;
+
+  /**
+   * Constructs a ExamSpider object.
+   *
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
+   */
+  public function __construct(ExamSpiderDataInterface $examspider_data) {
+    $this->ExamSpiderData = $examspider_data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('exam_spider.data')
+    );
+  }
 
   /**
    * Get Exam continue form.
@@ -36,11 +63,10 @@ class ExamSpiderExamContinue extends FormBase {
       $current_path = \Drupal::service('path.current')->getPath();
       $path_args = explode('/', $current_path);
       $exam_id = $path_args[2];
-      $examspider_service = new ExamSpider();
       $form['exam_id'] = ['#type' => 'value', '#value' => $exam_id];
-      $exam_data = $examspider_service->examSpiderGetExam($exam_id);
+      $exam_data = $this->ExamSpiderData->examSpiderGetExam($exam_id);
       $re_attempt = $exam_data['re_attempt'];
-      $user_last_result = $examspider_service->examSpiderAnyExamLastResult($exam_id);
+      $user_last_result = $this->ExamSpiderData->examSpiderAnyExamLastResult($exam_id);
       $user_last_attempt_timestamp = $user_last_result['created'];
       $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
       if ($re_attempt_timestamp > REQUEST_TIME) {
@@ -78,7 +104,7 @@ class ExamSpiderExamContinue extends FormBase {
         else {
           if ($exam_data['exam_duration'] > 0) {
             $form['#attached']['drupalSettings']['forForm'] = 'exam-continue-form';
-            $form['#attached']['drupalSettings']['getTimeLimit'] = $examspider_service->examSpidergetTimeLimit($exam_data['exam_duration']);
+            $form['#attached']['drupalSettings']['getTimeLimit'] = $this->ExamSpiderData->examSpidergetTimeLimit($exam_data['exam_duration']);
           }
           $form['li_prefix'] = [
             '#markup' => ' <ul class="exam_spider_slider_exam">',
@@ -130,9 +156,8 @@ class ExamSpiderExamContinue extends FormBase {
    * Exam continue page form submit callbacks.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $examspider_service = new ExamSpider();
     $score_obtain = $total_marks = $wrong_quest = 0;
-    $exam_data = $examspider_service->examSpiderGetExam($form_state->getValue('exam_id'));
+    $exam_data = $this->ExamSpiderData->examSpiderGetExam($form_state->getValue('exam_id'));
     $total_marks = $exam_data['total_marks'];
     $negative_mark = $exam_data['negative_mark'];
     $negative_mark_per = $exam_data['negative_mark_per'];
@@ -140,7 +165,7 @@ class ExamSpiderExamContinue extends FormBase {
     $mark_per_quest = ($total_marks / $total_quest);
     $negative_marking_number = (($mark_per_quest * $negative_mark_per) / 100);
     foreach ($form_state->getValue('question') as $key => $answervalues) {
-      $question_data = $examspider_service->examSpiderGetQuestion($key);
+      $question_data = $this->ExamSpiderData->examSpiderGetQuestion($key);
       if (is_array($answervalues)) {
         $answer_combine = '';
         foreach ($answervalues as $key => $answervalue) {

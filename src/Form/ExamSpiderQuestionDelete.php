@@ -5,7 +5,8 @@ namespace Drupal\exam_spider\Form;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Url;
-use Drupal\exam_spider\Controller\ExamSpider;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ExamSpiderQuestionDelete.
@@ -20,6 +21,32 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
   public $questionid;
 
   /**
+   * The ExamSpider service.
+   *
+   * @var \Drupal\user\ExamSpiderData
+   */
+  protected $ExamSpiderData;
+
+  /**
+   * Constructs a ExamSpider object.
+   *
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
+   */
+  public function __construct(ExamSpiderDataInterface $examspider_data) {
+    $this->ExamSpiderData = $examspider_data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('exam_spider.data')
+    );
+  }
+
+  /**
    * Delete Question form.
    */
   public function getFormId() {
@@ -30,9 +57,8 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
    * Delete Question confirm text.
    */
   public function getQuestion() {
-    $examspider_service = new ExamSpider();
     $questionid = $this->id;
-    $question_data = $examspider_service->examSpiderGetQuestion($questionid);
+    $question_data = $this->ExamSpiderData->examSpiderGetQuestion($questionid);
     return t('Do you want to delete @question question?', ['@question' => $question_data['question']]);
   }
 
@@ -76,9 +102,8 @@ class ExamSpiderQuestionDelete extends ConfirmFormBase {
    * Delete Question form submit callbacks.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $examspider_service = new ExamSpider();
     $questionid = $this->id;
-    $question_data = $examspider_service->examSpiderGetQuestion($questionid);
+    $question_data = $this->ExamSpiderData->examSpiderGetQuestion($questionid);
     $examid = $question_data['examid'];
     db_delete('exam_questions')
       ->condition('id', $questionid)

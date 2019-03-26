@@ -4,13 +4,10 @@ namespace Drupal\exam_spider\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\user\Entity\User;
+use Drupal\exam_spider\ExamSpiderDataInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-
 
 /**
  * A class for muliple ExamSpider functions.
@@ -25,18 +22,11 @@ class ExamSpider extends ControllerBase {
   protected $database;
 
   /**
-   * The date formatter service.
+   * The ExamSpider service.
    *
-   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   * @var \Drupal\user\ExamSpiderData
    */
-  protected $dateFormatter;
-
-  /**
-   * The form builder service.
-   *
-   * @var \Drupal\Core\Form\FormBuilderInterface
-   */
-  protected $formBuilder;
+  protected $ExamSpiderData;
 
   /**
    * The user storage.
@@ -51,34 +41,22 @@ class ExamSpider extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      $container->get('date.formatter'),
-      $container->get('form_builder')
+      $container->get('exam_spider.data')
     );
   }
 
   /**
-   * Constructs a DbLogController object.
+   * Constructs a ExamSpider object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   A database connection.
-   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
-   *   The date formatter service.
-   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
-   *   The form builder service.
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
    */
-  public function __construct(Connection $database, DateFormatterInterface $date_formatter, FormBuilderInterface $form_builder) {
+  public function __construct(Connection $database, ExamSpiderDataInterface $examspider_data) {
     $this->database = $database;
-    $this->dateFormatter = $date_formatter;
-    $this->formBuilder = $form_builder;
     $this->userStorage = $this->entityManager()->getStorage('user');
-  }
-
-  /**
-   * Get time limit function.
-   */
-  public function examSpidergetTimeLimit($exam_duration) {
-    $timer = time() + intval($exam_duration * 60);
-    return date('r', $timer);
+    $this->ExamSpiderData = $examspider_data;
   }
 
   /**
@@ -174,213 +152,6 @@ class ExamSpider extends ControllerBase {
   }
 
   /**
-   * Get Question list using exam id function.
-   */
-  public function examSpiderGetQuestionsList($exam_id) {
-    $output = NULL;
-    if (is_numeric($exam_id)) {
-      $header = [
-        [
-          'data' => 'Question',
-          'field' => 'eq.question',
-        ],
-        [
-          'data' => 'Status',
-          'field' => 'eq.status',
-        ],
-        [
-          'data' => 'Operations',
-        ],
-      ];
-      $query = $this->database->select("exam_questions", "eq")
-        ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
-        ->extend('\Drupal\Core\Database\Query\TableSortExtender');
-      $query->fields('eq', ['id', 'question', 'status']);
-      $query->condition('examid', $exam_id);
-      $results = $query
-        ->limit(10)
-        ->orderByHeader($header)
-        ->execute()
-        ->fetchAll();
-      $rows = [];
-      foreach ($results as $row) {
-        $editquestion_url = Url::fromRoute('exam_spider.exam_spider_edit_question', ['questionid' => $row->id]);
-        $editquestion_link = Link::fromTextAndUrl($this->t('Edit'), $editquestion_url)->toString();
-        $deletequestion_url = Url::fromRoute('exam_spider.exam_spider_delete_question', ['questionid' => $row->id]);
-        $deletequestion_link = Link::fromTextAndUrl($this->t('Delete'), $deletequestion_url)->toString();
-        $operations = $this->t('@editquestion_link | @deletequestion_link', ['@editquestion_link' => $editquestion_link, '@deletequestion_link' => $deletequestion_link]);
-        if ($row->status == 0) {
-          $status = 'Closed';
-        }
-        else {
-          $status = 'Open';
-        }
-        $rows[] = [
-          'data' => [
-            $row->question,
-            $status,
-            $operations,
-          ],
-        ];
-      }
-      $output['questions_list'] = [
-        '#theme' => 'table',
-        '#header' => $header,
-        '#rows' => $rows,
-        '#empty' => $this->t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
-        '#attributes' => ['class' => 'questions-list-table'],
-      ];
-      $output['questions_pager'] = ['#type' => 'pager'];
-    }
-    return $output;
-  }
-
-  /**
-   * Get exam results function.
-   */
-  public function examSpiderExamResults() {
-    $header = [
-      [
-        'data' => 'REG Id',
-        'field' => 'er.id',
-        'sort' => 'desc',
-      ],
-      [
-        'data' => EXAM_SPIDER_EXAM_TITLE . ' Name',
-        'field' => 'er.examid',
-      ],
-      [
-        'data' => 'Name',
-        'field' => 'er.uid',
-      ],
-      [
-        'data' => 'Total Marks',
-        'field' => 'er.total',
-      ],
-      [
-        'data' => 'Obtain Marks',
-        'field' => 'er.obtain',
-      ],
-      [
-        'data' => 'Wrong',
-        'field' => 'er.wrong',
-      ],
-      [
-        'data' => 'Date',
-        'field' => 'er.created',
-      ],
-      [
-        'data' => 'Operations',
-      ],
-    ];
-    $query = $this->database->select('exam_results', 'er')
-      ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
-      ->extend('\Drupal\Core\Database\Query\TableSortExtender');
-    $query->fields(
-      'er', ['id', 'examid', 'uid', 'total', 'obtain', 'wrong', 'created']
-    );
-    if (isset($_GET['exam_name'])) {
-      $query->condition('examid', $_GET['exam_name']);
-    }
-    $results = $query
-      ->limit(10)
-      ->orderByHeader($header)
-      ->execute()
-      ->fetchAll();
-    $rows = [];
-    foreach ($results as $row) {
-      $deleteresult_url = Url::fromRoute('exam_spider.exam_spider_delete_result', ['resultid' => $row->id]);
-      $deleteresult_link = Link::fromTextAndUrl($this->t('Delete'), $deleteresult_url)->toString();
-      $sendmail_url = Url::fromRoute('exam_spider.exam_spider_exam_result_mail', ['resultid' => $row->id, 'uid' => $row->uid]);
-      $sendmail_link = Link::fromTextAndUrl($this->t('Send Mail'), $sendmail_url)->toString();
-      $operations = $this->t('@deleteresult_link | @sendmail_link', ['@deleteresult_link' => $deleteresult_link, '@sendmail_link' => $sendmail_link]);
-
-      $exam_data = $this->examSpiderGetExam($row->examid);
-      $user = $this->userStorage->load($row->uid);
-      $rows[] = [
-        'data' => [
-          $this->t('REG -') . $row->id,
-          $exam_data['exam_name'],
-          $user->get('name')->value,
-          $row->total,
-          $row->obtain,
-          $row->wrong,
-          $this->dateFormatter->format($row->created, 'short'),
-          $operations,
-        ],
-      ];
-    }
-    $output['exams_result_list'] = [
-      '#theme' => 'table',
-      '#header' => $header,
-      '#rows' => $rows,
-      '#empty' => $this->t('No @examSpiderExamTitle result found.', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
-      '#attributes' => ['class' => 'exams-result-table'],
-    ];
-    $output['exams_result_pager'] = ['#type' => 'pager'];
-    return $output;
-  }
-
-  /**
-   * Get exam list using exam id and without exam id complete exam list.
-   */
-  public function examSpiderGetExam($exam_id = NULL) {
-    if (is_numeric($exam_id)) {
-      $query = $this->database->select("exam_list", "el")
-        ->fields("el")
-        ->condition('id', $exam_id);
-      $query = $query->execute();
-      return $query->fetchAssoc();
-    }
-    else {
-      $query = $this->database->select("exam_list", "el")
-        ->fields("el");
-      $query = $query->execute();
-      return $query->fetchAll();
-    }
-  }
-
-  /**
-   * Get questions using question id and without question id questions list.
-   */
-  public function examSpiderGetQuestion($question_id = NULL) {
-    if (is_numeric($question_id)) {
-      $query = $this->database->select("exam_questions", "eq")
-        ->fields("eq")
-        ->condition('id', $question_id);
-      $query = $query->execute();
-      return $query->fetchAssoc();
-    }
-    else {
-      $query = $this->database->select("exam_questions", "eq")
-        ->fields("eq");
-      $query = $query->execute();
-      return $query->fetchAll();
-    }
-  }
-
-  /**
-   * Get any user last result for any exam.
-   */
-  public function examSpiderAnyExamLastResult($exam_id = NULL, $uid = NULL) {
-    if ($uid === NULL) {
-      $uid = \Drupal::currentUser()->id();
-    }
-    if (is_numeric($exam_id)) {
-      $query = $this->database->select("exam_results", "er")
-        ->fields("er")
-        ->condition('examid', $exam_id)
-        ->orderBy('id', 'DESC')
-        ->condition('uid', $uid);
-      $query = $query->execute();
-      return $query->fetchAssoc();
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
    * All exam listed page to start exam page callbacks.
    */
   public function examSpiderExamStart() {
@@ -445,7 +216,7 @@ class ExamSpider extends ControllerBase {
         ->fields("er")
         ->condition('id', $resultid);
       $exam_result_data = $query->execute()->fetchAssoc();
-      $user_data = User::load($exam_result_data['uid']);
+      $user_data = $this->userStorage->load($exam_result_data['uid']);
       $exam_data = $this->examSpiderGetExam($exam_result_data['examid']);
       $mailManager = \Drupal::service('plugin.manager.mail');
       $body = $this->t('Hi @tomail,
@@ -474,9 +245,12 @@ class ExamSpider extends ControllerBase {
         return drupal_set_message($this->t('There was a problem sending your message and it was not sent.'), 'error');
       }
       else {
-        return drupal_set_message($this->t('Your message has been sent.'));
+        return drupal_set_message(
+          $this->t('Your message has been sent.')
+        );
       }
-      // Commented return $this->redirect('exam_spider.exam_spider_delete_result');.
+      // Commented return
+      // $this->redirect('exam_spider.exam_spider_delete_result');.
     }
   }
 

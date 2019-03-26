@@ -4,7 +4,10 @@ namespace Drupal\exam_spider\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\exam_spider\Controller\ExamSpider;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form builder for the add/edit Question form.
@@ -12,6 +15,32 @@ use Drupal\exam_spider\Controller\ExamSpider;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderQuestionForm extends FormBase {
+
+  /**
+   * The ExamSpider service.
+   *
+   * @var \Drupal\user\ExamSpiderData
+   */
+  protected $ExamSpiderData;
+
+  /**
+   * Constructs a ExamSpider object.
+   *
+   * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
+   *   The ExamSpider multiple services.
+   */
+  public function __construct(ExamSpiderDataInterface $examspider_data) {
+    $this->ExamSpiderData = $examspider_data;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('exam_spider.data')
+    );
+  }
 
   /**
    * Add/Update get Question form.
@@ -24,7 +53,6 @@ class ExamSpiderQuestionForm extends FormBase {
    * Add/edit Question form.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $examspider_service = new ExamSpider();
     $form = $exam_options = $values = $answer = [];
     $form['#attached']['library'][] = 'exam_spider/exam_spider';
     $current_path = \Drupal::service('path.current')->getPath();
@@ -32,12 +60,12 @@ class ExamSpiderQuestionForm extends FormBase {
     $default_sel = $path_args[5];
     if ($path_args[6] == 'edit' && is_numeric($path_args[5])) {
       $question_id = $path_args[5];
-      $values = $examspider_service->examSpiderGetQuestion($question_id);
+      $values = $this->ExamSpiderData->examSpiderGetQuestion($question_id);
       $answer = array_flip(explode('-', $values['answer']));
       $form['question_id'] = ['#type' => 'value', '#value' => $question_id];
       $default_sel = $values['examid'];
     }
-    $all_exam = $examspider_service->examSpiderGetExam();
+    $all_exam = $this->ExamSpiderData->examSpiderGetExam();
     foreach ($all_exam as $option) {
       $exam_options[$option->id] = $option->exam_name;
     }
@@ -95,7 +123,7 @@ class ExamSpiderQuestionForm extends FormBase {
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
     ];
-    $exam_spider_get_questions = $examspider_service->examSpiderGetQuestionsList($default_sel);
+    $exam_spider_get_questions = $this->examSpiderGetQuestionsList($default_sel);
     $form['#suffix'] = \Drupal::service('renderer')->render($exam_spider_get_questions);
     return $form;
   }
@@ -151,6 +179,68 @@ class ExamSpiderQuestionForm extends FormBase {
       drupal_set_message($this->t('You have successfully created question for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]));
     }
     $form_state->setRedirect('exam_spider.exam_spider_add_question', ['examid' => $examid]);
+  }
+
+  /**
+   * Get Question list using exam id function.
+   */
+  public function examSpiderGetQuestionsList($exam_id) {
+    $output = NULL;
+    if (is_numeric($exam_id)) {
+      $header = [
+        [
+          'data' => 'Question',
+          'field' => 'eq.question',
+        ],
+        [
+          'data' => 'Status',
+          'field' => 'eq.status',
+        ],
+        [
+          'data' => 'Operations',
+        ],
+      ];
+      $query = db_select("exam_questions", "eq")
+        ->extend('\Drupal\Core\Database\Query\PagerSelectExtender')
+        ->extend('\Drupal\Core\Database\Query\TableSortExtender');
+      $query->fields('eq', ['id', 'question', 'status']);
+      $query->condition('examid', $exam_id);
+      $results = $query
+        ->limit(10)
+        ->orderByHeader($header)
+        ->execute()
+        ->fetchAll();
+      $rows = [];
+      foreach ($results as $row) {
+        $editquestion_url = Url::fromRoute('exam_spider.exam_spider_edit_question', ['questionid' => $row->id]);
+        $editquestion_link = Link::fromTextAndUrl($this->t('Edit'), $editquestion_url)->toString();
+        $deletequestion_url = Url::fromRoute('exam_spider.exam_spider_delete_question', ['questionid' => $row->id]);
+        $deletequestion_link = Link::fromTextAndUrl($this->t('Delete'), $deletequestion_url)->toString();
+        $operations = $this->t('@editquestion_link | @deletequestion_link', ['@editquestion_link' => $editquestion_link, '@deletequestion_link' => $deletequestion_link]);
+        if ($row->status == 0) {
+          $status = 'Closed';
+        }
+        else {
+          $status = 'Open';
+        }
+        $rows[] = [
+          'data' => [
+            $row->question,
+            $status,
+            $operations,
+          ],
+        ];
+      }
+      $output['questions_list'] = [
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+        '#empty' => $this->t('No question created yet for this @examSpiderExamTitle', ['@examSpiderExamTitle' => EXAM_SPIDER_EXAM_TITLE]),
+        '#attributes' => ['class' => 'questions-list-table'],
+      ];
+      $output['questions_pager'] = ['#type' => 'pager'];
+    }
+    return $output;
   }
 
 }
