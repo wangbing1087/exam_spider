@@ -4,10 +4,12 @@ namespace Drupal\exam_spider\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
-use Drupal\exam_spider\ExamSpiderDataInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\exam_spider\ExamSpiderDataInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * A class for muliple ExamSpider functions.
@@ -29,6 +31,20 @@ class ExamSpider extends ControllerBase {
   protected $ExamSpiderData;
 
   /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * The mail manager.
+   *
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   */
+  protected $mailManager;
+
+  /**
    * The user storage.
    *
    * @var \Drupal\user\UserStorageInterface
@@ -41,7 +57,9 @@ class ExamSpider extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      $container->get('exam_spider.data')
+      $container->get('exam_spider.data'),
+      $container->get('language_manager'),
+      $container->get('plugin.manager.mail')
     );
   }
 
@@ -52,11 +70,17 @@ class ExamSpider extends ControllerBase {
    *   A database connection.
    * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
    *   The ExamSpider multiple services.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   *   The language manager.
+   * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
+   *   The mail manager.
    */
-  public function __construct(Connection $database, ExamSpiderDataInterface $examspider_data) {
+  public function __construct(Connection $database, ExamSpiderDataInterface $examspider_data, LanguageManagerInterface $language_manager, MailManagerInterface $mail_manager) {
     $this->database = $database;
     $this->userStorage = $this->entityManager()->getStorage('user');
     $this->ExamSpiderData = $examspider_data;
+    $this->languageManager = $language_manager;
+    $this->mailManager = $mail_manager;
   }
 
   /**
@@ -217,8 +241,7 @@ class ExamSpider extends ControllerBase {
         ->condition('id', $resultid);
       $exam_result_data = $query->execute()->fetchAssoc();
       $user_data = $this->userStorage->load($exam_result_data['uid']);
-      $exam_data = $this->examSpiderGetExam($exam_result_data['examid']);
-      $mailManager = \Drupal::service('plugin.manager.mail');
+      $exam_data = $this->ExamSpiderData->examSpiderGetExam($exam_result_data['examid']);
       $body = $this->t('Hi @tomail,
 
       You have got @score_obtain marks out of @total_marks.
@@ -229,7 +252,7 @@ class ExamSpider extends ControllerBase {
         '@score_obtain'   => $exam_result_data['obtain'],
         '@total_marks'    => $exam_result_data['total'],
         '@wrong_quest'    => $exam_result_data['wrong'],
-        '@sitename'       => \Drupal::config('system.site')->get('name'),
+        '@sitename'       => $this->config('system.site')->get('name'),
         '@tomail'         => @$user_data->get('name')->value,
 
       ]);
@@ -238,19 +261,18 @@ class ExamSpider extends ControllerBase {
       $to = $user_data->get('mail')->value;
       $params['message'] = $body;
       $params['subject'] = 'Eaxam Result for ' . $exam_data['exam_name'];
-      $langcode = \Drupal::currentUser()->getPreferredLangcode();
+      $langcode = $this->languageManager->getDefaultLanguage()->getId();
       $send = TRUE;
-      $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+      $result = $this->mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
       if ($result['result'] !== TRUE) {
-        return drupal_set_message($this->t('There was a problem sending your message and it was not sent.'), 'error');
+        drupal_set_message($this->t('There was a problem sending your message and it was not sent.'), 'error');
       }
       else {
-        return drupal_set_message(
+        drupal_set_message(
           $this->t('Your message has been sent.')
         );
       }
-      // Commented return
-      // $this->redirect('exam_spider.exam_spider_delete_result');.
+      return $this->redirect('exam_spider.exam_spider_exam_results');
     }
   }
 

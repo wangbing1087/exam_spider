@@ -6,6 +6,8 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\Core\Render\Renderer;
+use Drupal\Core\Path\CurrentPathStack;
 use Drupal\exam_spider\ExamSpiderDataInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,13 +26,33 @@ class ExamSpiderQuestionForm extends FormBase {
   protected $ExamSpiderData;
 
   /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
+
+  /**
+   * The current path.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $currentPath;
+
+  /**
    * Constructs a ExamSpider object.
    *
    * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
    *   The ExamSpider multiple services.
+   * @param \Drupal\Core\Render\Renderer $renderer
+   *   The renderer service.
+   * @param \Drupal\Core\Path\CurrentPathStack $current_path
+   *   The current path.
    */
-  public function __construct(ExamSpiderDataInterface $examspider_data) {
+  public function __construct(ExamSpiderDataInterface $examspider_data, Renderer $renderer, CurrentPathStack $current_path) {
     $this->ExamSpiderData = $examspider_data;
+    $this->render = $renderer;
+    $this->currentPath = $current_path;
   }
 
   /**
@@ -38,7 +60,9 @@ class ExamSpiderQuestionForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('exam_spider.data')
+      $container->get('exam_spider.data'),
+      $container->get('renderer'),
+      $container->get('path.current')
     );
   }
 
@@ -55,7 +79,7 @@ class ExamSpiderQuestionForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = $exam_options = $values = $answer = [];
     $form['#attached']['library'][] = 'exam_spider/exam_spider';
-    $current_path = \Drupal::service('path.current')->getPath();
+    $current_path = $this->currentPath->getPath();
     $path_args = explode('/', $current_path);
     $default_sel = $path_args[5];
     if ($path_args[6] == 'edit' && is_numeric($path_args[5])) {
@@ -124,7 +148,7 @@ class ExamSpiderQuestionForm extends FormBase {
       '#value' => $this->t('Submit'),
     ];
     $exam_spider_get_questions = $this->examSpiderGetQuestionsList($default_sel);
-    $form['#suffix'] = \Drupal::service('renderer')->render($exam_spider_get_questions);
+    $form['#suffix'] = $this->render->render($exam_spider_get_questions);
     return $form;
   }
 

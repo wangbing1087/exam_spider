@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\Core\Render\Renderer;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\exam_spider\ExamSpiderDataInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,6 +32,13 @@ class ExamSpiderResultsForm extends FormBase {
    * @var \Drupal\Core\Datetime\DateFormatterInterface
    */
   protected $dateFormatter;
+  
+  /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
 
   /**
    * Constructs a ExamSpider object.
@@ -39,10 +47,13 @@ class ExamSpiderResultsForm extends FormBase {
    *   The ExamSpider multiple services.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
+   * @param \Drupal\Core\Render\Renderer $renderer
+   *   The renderer service.
    */
-  public function __construct(ExamSpiderDataInterface $examspider_data, DateFormatterInterface $date_formatter) {
+  public function __construct(ExamSpiderDataInterface $examspider_data, DateFormatterInterface $date_formatter, Renderer $renderer) {
     $this->ExamSpiderData = $examspider_data;
     $this->dateFormatter = $date_formatter;
+    $this->render = $renderer;
   }
 
   /**
@@ -51,7 +62,8 @@ class ExamSpiderResultsForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('exam_spider.data'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('renderer')
     );
   }
 
