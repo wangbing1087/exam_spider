@@ -71,7 +71,7 @@ class ExamSpiderData implements ExamSpiderDataInterface {
   /**
    * Get any user last result for any exam.
    */
-  public function examSpiderAnyExamLastResult($exam_id = NULL, $uid) {
+  public function examSpiderAnyExamLastResult($uid, $exam_id = NULL) {
     if (is_numeric($exam_id)) {
       $query = $this->connection->select("exam_results", "er")
         ->fields("er")
