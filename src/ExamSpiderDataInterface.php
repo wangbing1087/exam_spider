@@ -26,10 +26,10 @@ interface ExamSpiderDataInterface {
   /**
    * Returns data stored for a Exam result.
    *
-   * @param int $exam_id
-   *   The Exam ID the data is associated with Exam.
    * @param int $uid
    *   The User ID the data is associated with user.
+   * @param int $exam_id
+   *   The Exam ID the data is associated with Exam.
    */
   public function examSpiderAnyExamLastResult($uid, $exam_id = NULL);
 
