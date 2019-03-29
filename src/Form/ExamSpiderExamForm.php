@@ -5,6 +5,8 @@ namespace Drupal\exam_spider\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\exam_spider\ExamSpiderDataInterface;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,13 +24,33 @@ class ExamSpiderExamForm extends FormBase {
   protected $ExamSpiderData;
 
   /**
+   * The current path.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $currentPath;
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs a ExamSpider object.
    *
    * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
    *   The ExamSpider multiple services.
+   * @param \Drupal\Core\Path\CurrentPathStack $current_path
+   *   The current path.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user.
    */
-  public function __construct(ExamSpiderDataInterface $examspider_data) {
+  public function __construct(ExamSpiderDataInterface $examspider_data, CurrentPathStack $current_path, AccountInterface $current_user) {
     $this->ExamSpiderData = $examspider_data;
+    $this->currentPath = $current_path;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -36,7 +58,9 @@ class ExamSpiderExamForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('exam_spider.data')
+      $container->get('exam_spider.data'),
+      $container->get('path.current'),
+      $container->get('current_user')
     );
   }
 
@@ -52,7 +76,7 @@ class ExamSpiderExamForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = [];
-    $current_path = \Drupal::service('path.current')->getPath();
+    $current_path = $this->currentPath->getPath();
     $path_args = explode('/', $current_path);
     if ($path_args[5] == 'edit' && is_numeric($path_args[4])) {
       $exam_id = $path_args[4];
@@ -150,7 +174,7 @@ class ExamSpiderExamForm extends FormBase {
     $values = [];
     $values['exam_name'] = $form_state->getValue('exam_name');
     $values['exam_description'] = $form_state->getValue('exam_description');
-    $values['uid'] = \Drupal::currentUser()->id();
+    $values['uid'] = $this->currentUser->id();
     $values['exam_duration'] = $form_state->getValue('exam_duration');
     $values['total_marks'] = $form_state->getValue('total_marks');
     $values['random_quest'] = $form_state->getValue('random_quest');

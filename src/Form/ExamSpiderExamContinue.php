@@ -8,6 +8,7 @@ use Drupal\exam_spider\ExamSpiderDataInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Utility\Xss;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Form builder for the exam continue form.
@@ -24,13 +25,23 @@ class ExamSpiderExamContinue extends FormBase {
   protected $ExamSpiderData;
 
   /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs a ExamSpider object.
    *
    * @param \Drupal\exam_spider\ExamSpiderDataInterface $examspider_data
    *   The ExamSpider multiple services.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   The current user.
    */
-  public function __construct(ExamSpiderDataInterface $examspider_data) {
+  public function __construct(ExamSpiderDataInterface $examspider_data, AccountInterface $current_user) {
     $this->ExamSpiderData = $examspider_data;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -38,7 +49,8 @@ class ExamSpiderExamContinue extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('exam_spider.data')
+      $container->get('exam_spider.data'),
+      $container->get('current_user')
     );
   }
 
@@ -66,7 +78,8 @@ class ExamSpiderExamContinue extends FormBase {
       $form['exam_id'] = ['#type' => 'value', '#value' => $exam_id];
       $exam_data = $this->ExamSpiderData->examSpiderGetExam($exam_id);
       $re_attempt = $exam_data['re_attempt'];
-      $user_last_result = $this->ExamSpiderData->examSpiderAnyExamLastResult($exam_id);
+      $uid = $this->currentUser->id();
+      $user_last_result = $this->ExamSpiderData->examSpiderAnyExamLastResult($exam_id, $uid);
       $user_last_attempt_timestamp = $user_last_result['created'];
       $re_attempt_timestamp = strtotime('+' . $re_attempt . ' day', $user_last_attempt_timestamp);
       if ($re_attempt_timestamp > REQUEST_TIME) {
@@ -202,7 +215,7 @@ class ExamSpiderExamContinue extends FormBase {
       ->fields(['examid', 'uid', 'total', 'obtain', 'wrong', 'created'])
       ->values([
         'examid' => $form_state->getValue('exam_id'),
-        'uid' => \Drupal::currentUser()->id(),
+        'uid' => $this->currentUser->id(),
         'total' => $total_marks,
         'obtain' => $score_obtain,
         'wrong' => $wrong_quest,

@@ -31,7 +31,7 @@ interface ExamSpiderDataInterface {
    * @param int $uid
    *   The User ID the data is associated with user.
    */
-  public function examSpiderAnyExamLastResult($exam_id = NULL, $uid = NULL);
+  public function examSpiderAnyExamLastResult($exam_id = NULL, $uid);
 
   /**
    * Returns time limit for a Exam.

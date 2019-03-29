@@ -4,6 +4,8 @@ namespace Drupal\exam_spider\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Path\PathValidatorInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form builder for the exam Spider settings form.
@@ -11,6 +13,32 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\exam_spider\Form
  */
 class ExamSpiderSettingsForm extends ConfigFormBase {
+
+  /**
+   * The path validator.
+   *
+   * @var \Drupal\Core\Path\PathValidatorInterface
+   */
+  protected $pathValidator;
+
+  /**
+   * Constructs a ExamSpiderSettingsForm object.
+   *
+   * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
+   *   The path validator.
+   */
+  public function __construct(PathValidatorInterface $path_validator) {
+    $this->pathValidator = $path_validator;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('path.validator')
+    );
+  }
 
   /**
    * Get exam Spider settings.
@@ -63,8 +91,7 @@ class ExamSpiderSettingsForm extends ConfigFormBase {
       $form_state->setErrorByName('exam_spider_exam_url', $this->t('Please use only lowercase charcters to update path.'));
     }
     $updated_path = '/admin/structure/' . $exam_spider_exam_url;
-    $pathvalidator = \Drupal::service('path.validator');
-    $url_object = $pathvalidator->getUrlIfValid($updated_path);
+    $url_object = $this->pathValidator->getUrlIfValid($updated_path);
     if (!empty($url_object) && ($exam_spider_exam_url != EXAM_SPIDER_EXAM_URL)) {
       $form_state->setErrorByName('exam_spider_exam_url', $this->t('A path already exists for the source path @source.', ['@source' => $updated_path]));
     }

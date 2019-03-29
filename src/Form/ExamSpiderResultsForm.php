@@ -2,13 +2,13 @@
 
 namespace Drupal\exam_spider\Form;
 
-use Drupal\user\Entity\User;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\user\UserStorageInterface;
 use Drupal\exam_spider\ExamSpiderDataInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,13 +32,20 @@ class ExamSpiderResultsForm extends FormBase {
    * @var \Drupal\Core\Datetime\DateFormatterInterface
    */
   protected $dateFormatter;
-  
+
   /**
    * The renderer service.
    *
    * @var \Drupal\Core\Render\Renderer
    */
   protected $renderer;
+
+  /**
+   * The user storage.
+   *
+   * @var \Drupal\user\UserStorageInterface
+   */
+  protected $userStorage;
 
   /**
    * Constructs a ExamSpider object.
@@ -49,11 +56,14 @@ class ExamSpiderResultsForm extends FormBase {
    *   The date formatter service.
    * @param \Drupal\Core\Render\Renderer $renderer
    *   The renderer service.
+   * @param \Drupal\user\UserStorageInterface $user_storage
+   *   The user storage.
    */
-  public function __construct(ExamSpiderDataInterface $examspider_data, DateFormatterInterface $date_formatter, Renderer $renderer) {
+  public function __construct(ExamSpiderDataInterface $examspider_data, DateFormatterInterface $date_formatter, Renderer $renderer, UserStorageInterface $user_storage) {
     $this->ExamSpiderData = $examspider_data;
     $this->dateFormatter = $date_formatter;
     $this->render = $renderer;
+    $this->userStorage = $user_storage;
   }
 
   /**
@@ -63,7 +73,8 @@ class ExamSpiderResultsForm extends FormBase {
     return new static(
       $container->get('exam_spider.data'),
       $container->get('date.formatter'),
-      $container->get('renderer')
+      $container->get('renderer'),
+      $container->get('entity_type.manager')->getStorage('user')
     );
   }
 
@@ -117,7 +128,7 @@ class ExamSpiderResultsForm extends FormBase {
       ];
     }
     $exam_spider_exam_results = $this->examSpiderExamResults();
-    $form['#suffix'] = \Drupal::service('renderer')->render($exam_spider_exam_results);
+    $form['#suffix'] = $this->render->render($exam_spider_exam_results);
     return $form;
   }
 
@@ -188,9 +199,7 @@ class ExamSpiderResultsForm extends FormBase {
       $operations = $this->t('@deleteresult_link | @sendmail_link', ['@deleteresult_link' => $deleteresult_link, '@sendmail_link' => $sendmail_link]);
 
       $exam_data = $this->ExamSpiderData->examSpiderGetExam($row->examid);
-      // $user = $this->userStorage->load();
-      // pass your uid.
-      $user = User::load($row->uid);
+      $user = $this->userStorage->load($row->uid);
       $username = $user->getUsername();
       $rows[] = [
         'data' => [
